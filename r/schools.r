@@ -63,10 +63,21 @@ dpad <- r"(E:\data\cornell_pad\)"
 dschools <- path(dpad, "schools")
 
 
+# district identifiers ----------------------------------------------------
+
+ccsid <- "641610"
+gwid <- "640801"
+saraid <- "521800"
+schuyid <- "521701"
+locals <- c(ccsid, gwid, saraid, schuyid)
+
 
 # constants ---------------------------------------------------------------
-subgroups <- vroom(path(dschools, "Subgroups.csv")) %>%
-  setNames(str_to_lower(names(.)))
+
+
+
+# mappings ----------------------------------------------------------------
+
 # Subgroup,Description
 # 1,All Students
 # 2,Male
@@ -139,20 +150,140 @@ download.file(url, path(dschools, "ELAMATH_all2.csv"), mode="wb")
 
 
 # get data ---------------------------------------------------------------
-info1 <- vroom(path(dschools, "BasicInfo.csv"))
-info <- info1 %>%
-  setNames(str_to_lower(names(.))) %>%
-  mutate(districtid=str_trim(districtid))
+#.. rules ----
+# districtid should be 6 chars leading zeros
+# dsb is 6 characters leading zeros
+# geoid is 7 characters leading zero
+# boces is 4 characters leading zeros
+# syear is year ENDING, integer
 
-info2 <- info %>%
-  rename(bedscode=districtid, 
-         dname=district_name, 
+#.. basic info ----
+basic1 <- vroom(path(dschools, "BasicInfo.csv"),
+               col_types = cols(.default = col_character()))
+glimpse(basic1)
+
+basic2 <- basic1 %>%
+  setNames(str_to_lower(names(.))) %>%
+  rename(dname=district_name, 
          grades=grade_range, 
          ineeds=needs_index, 
-         bocescode=boces_cd)
-glimpse(info2)
+         boces=boces_cd) %>%
+  mutate(year=as.integer(year),
+         syear=year + 1,
+         ineeds=as.integer(ineeds)) %>%
+  select(districtid, dsb, geoid, dname, boces, grades, ineeds, year, syear)
+glimpse(basic2)
+
+basic <- basic2 %>%
+  mutate(dname=str_to_title(dname),
+         dname=str_replace(dname,  " Csd", " CSD"),
+         dname=str_replace(dname,  " Sd", " SD"),
+         dname=str_replace(dname,  "Ufsd", "UFSD"), # note no space so replace anywhere
+         dname=str_replace(dname,  "Nyc", "NYC")
+  )
+unique(basic$dname) %>% sort
+glimpse(basic)
+saveRDS(basic, here::here("data", "basic.rds"))
 
 
+#.. subgroups ----
+subgroups <- vroom(path(dschools, "Subgroups.csv")) %>%
+  setNames(str_to_lower(names(.))) %>%
+  mutate(subgroup=as.integer(subgroup))
+subgroups
+
+saveRDS(subgroups, here::here("data", "subgroups.rds"))
+
+# Subgroup,Description
+# 1,All Students
+# 2,Male
+# 3,Female
+# 4,White
+# 5,Black or African American
+# 6,American Indian or Alaska Native
+# 7,Asian or Pacific Islander
+# 8,Hispanic or Latino
+# 9,Multiracial
+# 10,Small Group Total
+# 11,Students with Disabilities
+# 111,General Education
+# 12,Limited English Proficient
+# 112,English Proficient
+# 13,Economically Disadvantaged
+# 113,Not Economically Disadvantaged
+# 14,Migrant
+# 114,Not Migrant
+
+
+#.. enrollment ----
+enroll1 <- vroom(path(dschools, "Enrollments_all.csv"),
+              col_types = cols(.default = col_character()))
+glimpse(enroll1)
+
+enroll2 <- enroll1 %>%
+  setNames(str_to_lower(names(.))) %>%
+  rename(districtid=distrid) %>%
+  mutate(year=as.integer(year),
+         across(-c(districtid, year), as.numeric))
+glimpse(enroll2)
+
+enroll <- enroll2 %>%
+  pivot_longer(cols=-c(districtid, year))
+
+saveRDS(enroll, here::here("data", "enroll.rds"))
+
+
+#.. demographics ----
+demographics1 <- vroom(path(dschools, "Demographics_all.csv"),
+                 col_types = cols(.default = col_character()))
+glimpse(demographics1)
+
+demographics2 <- demographics1 %>%
+  setNames(str_to_lower(names(.))) %>%
+  rename(districtid=district) %>%
+  mutate(year=as.integer(year),
+         across(-c(districtid, year), as.numeric))
+glimpse(demographics2)
+
+demographics <- demographics2 %>%
+  pivot_longer(cols=-c(districtid, year)) %>%
+  mutate(name=str_remove(name, "num_")) %>%
+  filter(!is.na(value))
+glimpse(demographics)
+summary(demographics)  # 1993-2000 year
+count(demographics, name)
+
+saveRDS(demographics, here::here("data", "demographics.rds"))
+
+
+#.. apm not sure what this is ----
+
+
+#.. FARU == finance ----
+finance1 <- vroom(path(dschools, "FARU_all.csv"),
+                       col_types = cols(.default = col_character()))
+glimpse(finance1)
+
+finance2 <- finance1 %>%
+  setNames(str_to_lower(names(.))) %>%
+  rename(districtid=district) %>%
+  mutate(year=as.integer(year),
+         across(-c(districtid, year), as.numeric))
+glimpse(finance2)
+# note that this has OPEB!!!
+
+finance <- finance2 %>%
+  pivot_longer(cols=-c(districtid, year)) %>%
+  filter(!is.na(value))
+
+summary(finance)  # 1993-2018 year
+count(finance, name) # 55 values
+
+saveRDS(finance, here::here("data", "finance.rds"))
+
+
+
+#.. ELA and MATH ----
 scores1 <- vroom(path(dschools, "ELAMATH_all.csv"))
 glimpse(scores1)
 
@@ -310,22 +441,19 @@ glimpse(grates4)
 grates4 %>%
   filter(districtid=="641610") # ends in 2015
 
+grates4 %>%
+  filter(districtid=="641610") %>%
+  ggplot(aes(cohortye, grate)) +
+  geom_line() +
+  geom_point()
+
 
 
 # enrollment --------------------------------------------------------------
-enr1 <- vroom(path(dschools, "Enrollments_all.csv"))
 
-enr2 <- enr1 %>%
-  setNames(str_to_lower(names(.))) %>%
-  rename(districtid=distrid)
 summary(enr2)
 
 
-ccsid <- "641610"
-gwid <- "640801"
-saraid <- "521800"
-schuyid <- "521701"
-locals <- c(ccsid, gwid, saraid, schuyid)
 
 enr2 %>%
   filter(districtid %in% locals) %>%
@@ -342,6 +470,32 @@ enr2 %>%
   ggplot(aes(year, itotal, colour=districtid)) +
   geom_point() +
   geom_line()
+
+enr2 %>%
+  filter(districtid == ccsid) %>%
+  pivot_longer(-c(districtid, year)) %>%
+  filter(name %in% c("g10", "g11", "g12")) %>%
+  ggplot(aes(year, value, colour=name)) +
+  geom_point() +
+  geom_line()
+
+names(enr2)
+g1 <- c("k", "g1", "g2")
+g2 <- c("g3", "g4", "g5")
+g3 <- c("g6", "g7", "g8")
+g4 <- c("g9", "g10", "g11")
+g5 <- c("unelem", "unsec")
+
+g <- g1
+
+enr2 %>%
+  filter(districtid == ccsid) %>%
+  pivot_longer(-c(districtid, year)) %>%
+  filter(name %in% g) %>%
+  ggplot(aes(year, value, colour=name)) +
+  geom_point() +
+  geom_line()
+
 
 
 # BOCES -------------------------------------------------------------------
