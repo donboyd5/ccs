@@ -282,14 +282,14 @@ count(finance, name) # 55 values
 saveRDS(finance, here::here("data", "finance.rds"))
 
 
-
 #.. ELA and MATH ----
-scores1 <- vroom(path(dschools, "ELAMATH_all.csv"))
-glimpse(scores1)
+elamath1 <- vroom(path(dschools, "ELAMATH_all.csv"),
+                  col_types = cols(.default = col_character()))
+glimpse(elamath1)
 
-scores <- scores1 %>%
+elamath2 <- elamath1 %>%
   setNames(str_to_lower(names(.))) %>%
-  rename(bedscode=beds_cd, 
+  rename(districtid=beds_cd, 
          numtested=num_tested, 
          totscore=total_score) %>%
   mutate(bedscode=str_trim(bedscode),
