@@ -15,6 +15,15 @@
 
 # https://www.nyruralschools.org/
 
+# Jan Vink, Cornell PAD (3/31/2022): This is main page I use to download enrollment data:
+#   https://www.p12.nysed.gov/irs/statistics/enroll-n-staff/home.html
+
+# graduation rates:
+# http://www.nysed.gov/news/2022/state-education-department-releases-2017-cohort-high-school-graduation-rates
+# ...2017 cohort, those students who first entered 9th grade in New York’s public schools in 2017
+# this means:
+#   cohortye is the year a student first entered 9th grade in NY public schools
+
 
 # libraries ---------------------------------------------------------------
 
@@ -256,9 +265,6 @@ count(demographics, name)
 saveRDS(demographics, here::here("data", "demographics.rds"))
 
 
-#.. apm not sure what this is ----
-
-
 #.. FARU == finance ----
 finance1 <- vroom(path(dschools, "FARU_all.csv"),
                        col_types = cols(.default = col_character()))
@@ -286,143 +292,92 @@ saveRDS(finance, here::here("data", "finance.rds"))
 elamath1 <- vroom(path(dschools, "ELAMATH_all.csv"),
                   col_types = cols(.default = col_character()))
 glimpse(elamath1)
+count(elamath1, SUBJECT)
+count(elamath1, SUBGROUP)
+count(elamath1, GRADE)
+count(elamath1, YEAR)
 
 elamath2 <- elamath1 %>%
   setNames(str_to_lower(names(.))) %>%
   rename(districtid=beds_cd, 
          numtested=num_tested, 
          totscore=total_score) %>%
-  mutate(bedscode=str_trim(bedscode),
-         cocode=str_sub(bedscode, 1, 2) %>% str_trim) %>%
-  left_join(info2 %>% filter(year==2016) %>% select(-year), by=c("bedscode")) %>%
-  select(cocode, bedscode, dname, year, everything())
+  mutate(districtid=str_pad(districtid, width=6, side="left", pad="0"),
+         across(c(year, subgroup, grade, numtested), as.integer),
+         across(c(starts_with("level"), totscore, avgscore), as.numeric)) %>%
+  select(districtid, year, subject, grade, subgroup, everything())
+summary(elamath2) # looks like -1 should be set to NA
+quantile(elamath2$totscore)
+elamath2 %>% filter(totscore < 0) # totscore looks suspicious
 
-scores2 <- scores %>%
-  filter(!is.na(dname))
+elamath3 <- elamath2 %>%
+  mutate(across(c(starts_with("level"), avgscore), ~ ifelse(.x==-1, NA_real_, .x)),
+         level12=naz(level1) + naz(level2),
+         level34=naz(level3) + naz(level4),
+         totscore=ifelse(totscore < 0, NA_real_, totscore))
+summary(elamath3)
 
-ela8 <- scores2 %>%
-  filter(subject=="ELA", grade==8, subgroup==1)
-count(scores, year)
+elamath <- elamath3 %>%
+  pivot_longer(cols=c(numtested,
+                      starts_with("level"),
+                      totscore, avgscore))
 
-
-count(scores2, subject, grade)
-
-comp <- ela8 %>%
-  filter(numtested >= 40) %>%
-  group_by(year) %>%
-  mutate(ndists=n(), prank=percent_rank(avgscore))
-
-comp %>%
-  filter(str_detect_any(dname, c("HASTINGS", "CAMBRIDGE"))) %>%
-  select(dname, year, avgscore,  prank) %>%
-  arrange(year, dname)
-
-tests <- scores2 %>%
-  filter(subject %in% c("ELA", "MATH"), 
-         grade %in% c(3, 8), 
-         subgroup==1, 
-         numtested >= 35) %>%
-  unite(type, subject, grade, remove=FALSE) %>%
-  group_by(year, type) %>%
-  mutate(ndists=n(), prank=percent_rank(avgscore)) %>%
-  ungroup
-  
-count(scores, year)
-
-comp %>%
-  filter(str_detect(dname, "CAMBRIDGE")) %>%
-  ggplot(aes(year, prank)) +
-  geom_line()
-
-tests %>%
-  filter(str_detect(dname, "CAMBRIDGE")) %>%
-  ggplot(aes(year, prank, colour=type)) +
-  geom_line(size=1) +
-  geom_point(size=1) +
-  theme_bw()
-
-tests %>%
-  filter(str_detect_any(dname, c("GREENWICH", "CAMBRIDGE"))) %>%
-  ggplot(aes(year, prank, colour=type)) +
-  geom_line(size=1) +
-  geom_point(size=1) +
-  geom_hline(yintercept = .5) +
-  theme_bw() +
-  facet_wrap(~dname, ncol=2)
-
-tests %>%
-  filter(str_detect_any(dname, c("GREENWICH", "CAMBRIDGE", "SCHUYLERV")) |
-           dname=="SALEM CSD") %>%
-  ggplot(aes(year, prank, colour=dname)) +
-  geom_line(size=1) +
-  geom_point(size=1) +
-  geom_hline(yintercept = .5) +
-  theme_bw() +
-  facet_wrap(~type, ncol=2)
+saveRDS(elamath, here::here("data", "elamath.rds"))
 
 
-emts <- scores2 %>%
-  filter(subject %in% c("ELA", "MATH"), 
-         subgroup==1, 
-         numtested >= 35) %>%
-  unite(type, subject, grade, remove=FALSE) %>%
-  group_by(year, type) %>%
-  mutate(ndists=n(), prank=percent_rank(avgscore)) %>%
-  ungroup
+#.. graduation  --------------------------------------------------------
+grad1 <- vroom(path(dschools, "graduation_all.csv"),
+               col_types = cols(.default = col_character()))
+glimpse(grad1)
+count(grad1, `_NAME_`)  # all na
+count(grad1, SRCYEAR)
+count(grad1, OUTCOME_YRS)
 
-# create cohorts
-emts %>%
-  filter(subject=="ELA", str_detect(dname, "CAMBRIDGE"), year==2005)
-
-cohorts <- emts %>%
-  group_by(dname, subject) %>%
-  mutate(cohortg3=year + 3 - grade,
-         # student in g3 in 2010 (2010-11) graduates in 2019-2020 (class=2020)
-         class=cohortg3 + 10) %>% 
-  select(cocode, bedscode, dname, subject, year, cohortg3, class, grade, numtested, prank) %>%
-  arrange(dname, subject, cohortg3, grade)
-
-count(cohorts, cohortg3)
-
-cohorts %>%
-  filter(class==2023, str_detect_any(dname, c("CAMBRIDGE", "GREENWICH"))) %>%
-  ggplot(aes(grade, prank, colour=subject)) +
-  geom_line() +
-  geom_point() +
-  facet_wrap(~dname, nrow = 1)
-
-cohorts %>%
-  filter(cohortg3 %in% 2010:2013, str_detect_any(dname, c("CAMBRIDGE"))) %>%
-  ggplot(aes(grade, prank, colour=subject)) +
-  geom_line() +
-  geom_point() +
-  facet_wrap(~cohortg3, nrow = 2)
-
-# 641610   CAMBRIDGE CSD
-
-cohorts %>%
-  # filter(cohortg3 %in% 2010:2013, str_detect_any(dname, c("CAMBRIDGE"))) %>%
-  filter(class %in% 2020:2023, str_detect_any(dname, c("CAMBRIDGE"))) %>%
-  ggplot(aes(grade, prank, colour=as.factor(class))) +
-  geom_line() +
-  geom_point() +
-  facet_wrap(~subject, nrow = 2)
-
-
-
-# graduation rates --------------------------------------------------------
-gr1 <- vroom(path(dschools, "graduation_all.csv"))
-
-gr2 <- gr1 %>%
+grad2 <- grad1 %>%
+  select(-`_NAME_`) %>%
   setNames(str_to_lower(names(.))) %>%
-  mutate(districtid=as.integer(str_trim(district_cd)),
-         districtid=str_pad(districtid, width=6, side="left", pad="0"))
-summary(gr2) # latest year is 2015
+  mutate(districtid=str_pad(district_cd, width=6, side="left", pad="0"),
+         cohortye=as.integer(cohortye),
+         subgroup=as.integer(subgroup),
+         outcome_yrs=as.numeric(outcome_yrs),
+         across(c(total, starts_with("gr_")), as.numeric))
+summary(grad2) # looks like -1 should be converted to NA
 
-# 641610   CAMBRIDGE CSD
-glimpse(gr2)
-count(gr2, districtid) %>% ht
-unique(gr2$districtid)
+grad3 <- grad2 %>% 
+  select(-district_cd) %>% 
+  pivot_longer(cols=-c(districtid, cohortye, srcyear, subgroup, outcome_yrs)) %>%
+  mutate(value=ifelse(value==-1, NA_real_, value)) %>%
+  filter(!is.na(value)) %>%
+  select(districtid, cohortye, srcyear, subgroup, outcome_yrs, name, value)
+summary(grad3) # latest year is 2015
+# cohortye is the year a student first entered 9th grade in NY public schools
+# so enter 9th in 2015 means grad in 2019 (generally)
+count(grad3, outcome_yrs)
+
+grad3 %>%
+  filter(cohortye==2015) %>%
+  count(srcyear) # 201906 for all, which happens to be the grad year for typical person
+
+graduation <- grad3
+
+saveRDS(graduation, here::here("data", "graduation.rds"))
+
+
+#.. regents ----
+
+
+#.. apm not sure what this is ----
+
+
+
+# get previously saved data -----------------------------------------------
+
+
+
+
+
+# play 1 --------------------------------------------------------------------
+
 
 gr2 %>%
   filter(districtid=="641610", subgroup==1, outcome_yrs==4) %>%
@@ -589,5 +544,116 @@ allboces %>%
 
 
 
-# libraries ---------------------------------------------------------------
+# play ---------------------------------------------------------------
 
+
+scores2 <- scores %>%
+  filter(!is.na(dname))
+
+ela8 <- scores2 %>%
+  filter(subject=="ELA", grade==8, subgroup==1)
+count(scores, year)
+
+
+count(scores2, subject, grade)
+
+comp <- ela8 %>%
+  filter(numtested >= 40) %>%
+  group_by(year) %>%
+  mutate(ndists=n(), prank=percent_rank(avgscore))
+
+comp %>%
+  filter(str_detect_any(dname, c("HASTINGS", "CAMBRIDGE"))) %>%
+  select(dname, year, avgscore,  prank) %>%
+  arrange(year, dname)
+
+tests <- scores2 %>%
+  filter(subject %in% c("ELA", "MATH"), 
+         grade %in% c(3, 8), 
+         subgroup==1, 
+         numtested >= 35) %>%
+  unite(type, subject, grade, remove=FALSE) %>%
+  group_by(year, type) %>%
+  mutate(ndists=n(), prank=percent_rank(avgscore)) %>%
+  ungroup
+
+count(scores, year)
+
+comp %>%
+  filter(str_detect(dname, "CAMBRIDGE")) %>%
+  ggplot(aes(year, prank)) +
+  geom_line()
+
+tests %>%
+  filter(str_detect(dname, "CAMBRIDGE")) %>%
+  ggplot(aes(year, prank, colour=type)) +
+  geom_line(size=1) +
+  geom_point(size=1) +
+  theme_bw()
+
+tests %>%
+  filter(str_detect_any(dname, c("GREENWICH", "CAMBRIDGE"))) %>%
+  ggplot(aes(year, prank, colour=type)) +
+  geom_line(size=1) +
+  geom_point(size=1) +
+  geom_hline(yintercept = .5) +
+  theme_bw() +
+  facet_wrap(~dname, ncol=2)
+
+tests %>%
+  filter(str_detect_any(dname, c("GREENWICH", "CAMBRIDGE", "SCHUYLERV")) |
+           dname=="SALEM CSD") %>%
+  ggplot(aes(year, prank, colour=dname)) +
+  geom_line(size=1) +
+  geom_point(size=1) +
+  geom_hline(yintercept = .5) +
+  theme_bw() +
+  facet_wrap(~type, ncol=2)
+
+
+emts <- scores2 %>%
+  filter(subject %in% c("ELA", "MATH"), 
+         subgroup==1, 
+         numtested >= 35) %>%
+  unite(type, subject, grade, remove=FALSE) %>%
+  group_by(year, type) %>%
+  mutate(ndists=n(), prank=percent_rank(avgscore)) %>%
+  ungroup
+
+# create cohorts
+emts %>%
+  filter(subject=="ELA", str_detect(dname, "CAMBRIDGE"), year==2005)
+
+cohorts <- emts %>%
+  group_by(dname, subject) %>%
+  mutate(cohortg3=year + 3 - grade,
+         # student in g3 in 2010 (2010-11) graduates in 2019-2020 (class=2020)
+         class=cohortg3 + 10) %>% 
+  select(cocode, bedscode, dname, subject, year, cohortg3, class, grade, numtested, prank) %>%
+  arrange(dname, subject, cohortg3, grade)
+
+count(cohorts, cohortg3)
+
+cohorts %>%
+  filter(class==2023, str_detect_any(dname, c("CAMBRIDGE", "GREENWICH"))) %>%
+  ggplot(aes(grade, prank, colour=subject)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~dname, nrow = 1)
+
+cohorts %>%
+  filter(cohortg3 %in% 2010:2013, str_detect_any(dname, c("CAMBRIDGE"))) %>%
+  ggplot(aes(grade, prank, colour=subject)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~cohortg3, nrow = 2)
+
+# 641610   CAMBRIDGE CSD
+
+cohorts %>%
+  # filter(cohortg3 %in% 2010:2013, str_detect_any(dname, c("CAMBRIDGE"))) %>%
+  filter(class %in% 2020:2023, str_detect_any(dname, c("CAMBRIDGE"))) %>%
+  ggplot(aes(grade, prank, colour=as.factor(class))) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~subject, nrow = 2)

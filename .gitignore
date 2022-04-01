@@ -6,4 +6,5 @@ data/
 documents/
 *.csv
 *.doc*
+*.htm*
 *.xl*
