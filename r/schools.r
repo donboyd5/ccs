@@ -7,6 +7,26 @@
 
 # links -------------------------------------------------------------------
 
+## NCES ----
+# https://nces.ed.gov/programs/edge/Geographic/SchoolLocations
+
+## NYSED ----
+# https://www.p12.nysed.gov/irs/schoolDirectory/
+# https://www.oms.nysed.gov//sedref/home.html
+# https://eservices.nysed.gov/sedreports/list?id=1
+# https://cognos.nysed.gov/ibmcognos/bi/v1/disp?b_action=cognosViewer&ui.tool=CognosViewer&ui.action=run&ui.object=storeID(%27iE2F9F18D05114622ABE308D0AA265CE9%27)&cv.header=false&cv.toolbar=false&run.outputFormat=HTML
+
+# https://data.nysed.gov/downloads.php
+# https://www.p12.nysed.gov/irs/statistics/enroll-n-staff/home.html
+# https://www.oms.nysed.gov//sedref/documents/GRADE-Organization-DESC.pdf
+# https://www.p12.nysed.gov/irs/pmf/
+# https://www.p12.nysed.gov/irs/pmf/PersonnelMasterFileStatisticalRuns2019-20.xlsx  has needs-resource codes
+
+# https://data.ny.gov/browse?q=state%20education%20department&sortBy=relevance
+# https://data.ny.gov/Government-Finance/New-York-State-School-Aid-Beginning-School-Year-19/9pb8-dg53
+
+
+## Cornell ----
 # https://pad.human.cornell.edu/
 # https://pad.human.cornell.edu/schools/datadownload.cfm 
 
@@ -25,7 +45,6 @@
 #   cohortye is the year a student first entered 9th grade in NY public schools
 
 
-
 # libraries ---------------------------------------------------------------
 
 source(here::here("r", "libraries.r"))
@@ -36,19 +55,6 @@ dschools <- path(dpad, "schools")
 dnysed <- r"(E:\data\nyschools\)"
 
 
-# constants ---------------------------------------------------------------
-
-
-
-# district identifiers ----------------------------------------------------
-
-ccsid <- "641610"
-gwid <- "640801"
-saraid <- "521800"
-schuyid <- "521701"
-locals <- c(ccsid, gwid, saraid, schuyid)
-
-
 # download files ----------------------------------------------------------
 
 # https://pad.human.cornell.edu/schools/datadownload.cfm 
@@ -56,19 +62,8 @@ locals <- c(ccsid, gwid, saraid, schuyid)
 # Please note that Year in the data files refers to the beginning year of the
 # school year. E.g. 2010 refers to 2010/2011 school year.
 
-# last download: 1/11/2022
+# last download: 7/20/2022
 # on left is the name Cornell associates with a file, on right is its url
-
-# BasicInfo.csv,           https://pad.human.cornell.edu/schools/BasicInfo_csv.cfm
-# Demographics_all.csv     https://pad.human.cornell.edu/schools/demogr_csv.cfm
-# Enrollments_all.csv      https://pad.human.cornell.edu/schools/enr_csv.cfm
-# ELAMATH_all.csv          https://pad.human.cornell.edu/schools/ELAMATH_csv.cfm
-# graduation_all.csv       https://pad.human.cornell.edu/schools/grad_csv.cfm
-# regents_all.csv          https://pad.human.cornell.edu/schools/regents_csv.cfm
-# apm_all.csv              https://pad.human.cornell.edu/schools/apm_csv.cfm
-# FARU_all.csv             https://pad.human.cornell.edu/schools/FARU_csv.cfm
-# Subgroups codes          https://pad.human.cornell.edu/schools/download/Subgroups.csv
-
 
 fnames <- read_csv("fname, url
 BasicInfo.csv,            https://pad.human.cornell.edu/schools/BasicInfo_csv.cfm
@@ -92,7 +87,21 @@ for(fnum in 8){
   print(fname)
   download.file(url, path(dschools, fname), mode="wb")
 }
-options(timeout=180)
+options(timeout=tout)
+
+
+# constants ---------------------------------------------------------------
+
+
+
+# district identifiers ----------------------------------------------------
+
+ccsid <- "641610"
+gwid <- "640801"
+saraid <- "521800"
+schuyid <- "521701"
+locals <- c(ccsid, gwid, saraid, schuyid)
+
 
 
 # mappings ----------------------------------------------------------------
@@ -120,15 +129,15 @@ options(timeout=180)
 
 
 # get data ---------------------------------------------------------------
-#.. rules ----
+## rules ----
 # districtid should be 6 chars leading zeros
 # dsb is 6 characters leading zeros
 # geoid is 7 characters leading zero
 # boces is 4 characters leading zeros
 # syear is year ENDING, integer
 
-#.. basic info ----
-basic1 <- vroom(path(dschools, "BasicInfo.csv"),
+### basic info ----
+basic1 <- vroom(path(dschools, "basicinfo.csv"),
                col_types = cols(.default = col_character()))
 glimpse(basic1)
 count(basic1, YEAR) # all data are from 2016-17
@@ -144,9 +153,9 @@ basic2 <- basic1 |>
 glimpse(basic2)
 
 # do we need dsb AND districtid?
-basic2 |> filter(districtid != dsb)
-basic2 |> filter(is.na(districtid))
-basic2 |> filter(is.na(dsb))
+basic2 |> filter(districtid != dsb) # none
+basic2 |> filter(is.na(districtid)) # none
+basic2 |> filter(is.na(dsb)) # about 8
 # no, we can drop dsb
 
 basic <- basic2 |>
@@ -162,42 +171,42 @@ glimpse(basic)
 saveRDS(basic, here::here("data", "basic.rds"))
 
 
-#.. subgroups ----
-subgroups <- vroom(path(dschools, "Subgroups.csv")) |>
+### subgroups ----
+subgroups <- vroom(path(dschools, "subgroups.csv")) |>
   lcnames() |> 
   mutate(subgroup=as.integer(subgroup))
 subgroups
 
+# subgroup description                     
+# <int> <chr>                           
+# 1        1 All Students                    
+# 2        2 Male                            
+# 3        3 Female                          
+# 4        4 White                           
+# 5        5 Black or African American       
+# 6        6 American Indian or Alaska Native
+# 7        7 Asian or Pacific Islander       
+# 8        8 Hispanic or Latino              
+# 9        9 Multiracial                     
+# 10       10 Small Group Total               
+# 11       11 Students with Disabilities      
+# 12      111 General Education               
+# 13       12 Limited English Proficient      
+# 14      112 English Proficient              
+# 15       13 Economically Disadvantaged      
+# 16      113 Not Economically Disadvantaged  
+# 17       14 Migrant                         
+# 18      114 Not Migrant   
+
 saveRDS(subgroups, here::here("data", "subgroups.rds"))
 
-# Subgroup,Description
-# 1,All Students
-# 2,Male
-# 3,Female
-# 4,White
-# 5,Black or African American
-# 6,American Indian or Alaska Native
-# 7,Asian or Pacific Islander
-# 8,Hispanic or Latino
-# 9,Multiracial
-# 10,Small Group Total
-# 11,Students with Disabilities
-# 111,General Education
-# 12,Limited English Proficient
-# 112,English Proficient
-# 13,Economically Disadvantaged
-# 113,Not Economically Disadvantaged
-# 14,Migrant
-# 114,Not Migrant
-
-
-#.. enrollment ----
-# Cornell (Jan Vink) source:
+### enrollment ----
+# Cornell (Jan Vink) source for the data is:
 #   https://www.p12.nysed.gov/irs/statistics/enroll-n-staff/ArchiveEnrollmentData.html
 #   Note that some of the web data are slightly updated vs Jan's data
 # Plus, he only has some subsets of the data, not the crosses (e.g., not white-female)
 
-enroll1 <- vroom(path(dschools, "Enrollments_all.csv"),
+enroll1 <- vroom(path(dschools, "enrollments_all.csv"),
               col_types = cols(.default = col_character()))
 glimpse(enroll1)
 
@@ -211,14 +220,16 @@ glimpse(enroll2)
 enroll <- enroll2 |>
   pivot_longer(cols=-c(districtid, year))
 
+ht(enroll)
+
 saveRDS(enroll, here::here("data", "enroll.rds"))
 
-#.... enrollwide ----
+#### enrollwide ----
 enrollwide <- enroll2
 saveRDS(enrollwide, here::here("data", "enrollwide.rds"))
 
 
-#.. demographics ----
+### demographics ----
 # Cornell (Jan Vink) source:
 #   https://www.p12.nysed.gov/irs/statistics/enroll-n-staff/ArchiveEnrollmentData.html
 #   Note that some of the web data are slightly updated vs Jan's data
