@@ -1,0 +1,108 @@
+---
+title: "Cambridge Central Schools"
+author: "Don Boyd"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+execute:
+  cache: true
+  eval: true
+  echo: false
+  output: false
+  warning: false
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    df_print: paged
+
+---
+
+## Quarto
+
+<!-- New opts: -->
+<!-- format: html -->
+<!-- editor: visual -->
+<!-- editor_options: -->
+<!--   chunk_output_type: inline -->
+
+
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r libraries}
+source(here::here("r", "libraries.r"))
+
+```
+
+
+```{r locations}
+dpad <- r"(E:\data\cornell_pad\)"
+dschools <- path(dpad, "schools")
+dnysed <- r"(E:\data\nyschools\)"
+
+```
+
+
+```{r districts}
+
+ccsid <- "641610"
+gwid <- "640801"
+saraid <- "521800"
+schuyid <- "521701"
+locals <- c(ccsid, gwid, saraid, schuyid)
+
+```
+
+
+
+```{r getdata}
+files <- c("basic", 
+           "demographics", "demowide",
+           "elamath",
+           "enroll", "enrollwide",
+           "finance", "finwide",
+           "finsedwide", "finsedvmap",
+           "graduation", "subgroups")
+for(file in files){
+  print(file)
+  assign(file, readRDS(here::here("data", paste0(file, ".rds"))))
+}
+
+check <- finsedwide |>
+  select(districtid, dname, syear, subtotexp, fbtchretire, fbemphealth, fbtotal, dcaadm) |> 
+  left_join(enrollwide |> 
+              mutate(syear=year + 1) |> 
+              select(districtid, syear, enroll=total),
+            by = c("districtid", "syear"))
+
+
+```
+
+
+```{r enrollment}
+#| output: true
+check |> 
+  filter(districtid==ccsid) |> 
+  pivot_longer(cols=c(dcaadm, enroll)) |> 
+  ggplot(aes(syear, value, colour=name)) +
+  geom_line() +
+  geom_point()
+```
+
+Expenditures per pupil
+
+```{r}
+#| label: test
+#| output: true
+
+check |> 
+  mutate(xfb=subtotexp - fbtotal,
+         across(c(xfb, starts_with("fb")),
+                ~ .x / enroll))
+
+```
+
