@@ -10,22 +10,6 @@
 ## NCES ----
 # https://nces.ed.gov/programs/edge/Geographic/SchoolLocations
 
-## NYSED ----
-# https://www.p12.nysed.gov/irs/schoolDirectory/
-# https://www.oms.nysed.gov//sedref/home.html
-# https://eservices.nysed.gov/sedreports/list?id=1
-# https://cognos.nysed.gov/ibmcognos/bi/v1/disp?b_action=cognosViewer&ui.tool=CognosViewer&ui.action=run&ui.object=storeID(%27iE2F9F18D05114622ABE308D0AA265CE9%27)&cv.header=false&cv.toolbar=false&run.outputFormat=HTML
-
-# https://data.nysed.gov/downloads.php
-# https://www.p12.nysed.gov/irs/statistics/enroll-n-staff/home.html
-# https://www.oms.nysed.gov//sedref/documents/GRADE-Organization-DESC.pdf
-# https://www.p12.nysed.gov/irs/pmf/
-# https://www.p12.nysed.gov/irs/pmf/PersonnelMasterFileStatisticalRuns2019-20.xlsx  has needs-resource codes
-
-# https://data.ny.gov/browse?q=state%20education%20department&sortBy=relevance
-# https://data.ny.gov/Government-Finance/New-York-State-School-Aid-Beginning-School-Year-19/9pb8-dg53
-
-
 ## Cornell ----
 # https://pad.human.cornell.edu/
 # https://pad.human.cornell.edu/schools/datadownload.cfm 
@@ -125,7 +109,6 @@ locals <- c(ccsid, gwid, saraid, schuyid)
 # 113,Not Economically Disadvantaged
 # 14,Migrant
 # 114,Not Migrant
-
 
 
 # get data ---------------------------------------------------------------
@@ -741,8 +724,6 @@ allboces |>
   geom_point() +
   geom_hline(yintercept = .5) +
   ggtitle(subj)
-
-
 
 
 # play ---------------------------------------------------------------
