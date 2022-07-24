@@ -36,7 +36,7 @@ source(here::here("r", "libraries.r"))
 # locations ---------------------------------------------------------------
 dpad <- r"(E:\data\cornell_pad\)"
 dschools <- path(dpad, "schools")
-dnysed <- r"(E:\data\nyschools\)"
+# dnysed <- r"(E:\data\nyschools\)"
 
 
 # download files ----------------------------------------------------------
