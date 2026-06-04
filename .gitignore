@@ -1,0 +1,19 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Data: large source CSVs and generated parquet (not tracked in git)
+data/*.csv
+data/*.parquet
+
+# Quarto
+/.quarto/
+/_book/
+/_site/
+
+# OS / editor
+.DS_Store
+.Rproj.user/
+.Rhistory

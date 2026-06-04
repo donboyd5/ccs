@@ -1,0 +1,499 @@
+---
+title: "New York School District Contingency Budgets: Revote Outcomes by Cap Status"
+subtitle: "Built from NYSED statewide budget-vote and revote/defeated files"
+author: "Prepared for Don Boyd"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: show
+    code-tools: true
+    df-print: paged
+    embed-resources: true
+    theme: cosmo
+params:
+  years: !expr 2012:2026     # tax-cap era; pre-2012 has no cap, so above/below-cap is undefined
+  cache_dir: "nysed_cache"
+  download: true             # set FALSE to re-run on already-cached files
+  levy_tol: 0.0005           # tolerance (in proportion units) when testing proposed levy > levy limit
+execute:
+  warning: true
+  message: true
+---
+
+```{r setup}
+#| label: setup
+#| include: true
+suppressPackageStartupMessages({
+  library(tidyverse)   # dplyr, tidyr, stringr, purrr, readr, ggplot2
+  library(readxl)      # reads BOTH .xls and .xlsx
+  library(janitor)     # clean_names()
+  library(gt)          # presentation tables
+})
+have_httr2 <- requireNamespace("httr2", quietly = TRUE)  # optional; download.file used if absent
+if (have_httr2) suppressPackageStartupMessages(library(httr2))
+
+options(timeout = 120)
+dir.create(params$cache_dir, showWarnings = FALSE, recursive = TRUE)
+```
+
+## 0. What this notebook does (and an honest caveat)
+
+NYSED posts two Excel files per year on its *Statewide School District Budget Voting
+Results* page (https://p12.nysed.gov/mgtserv/votingresults/):
+
+1. **Budget Vote Results** — the first (May) vote, all districts.
+2. **Budgets Defeated / Revotes** — the districts that failed the first vote, with their
+   June revote result (if they held one).
+
+A district operates on a **contingency budget** when it (a) fails the first vote and then
+fails the revote, **or** (b) fails the first vote and chooses to skip the revote and adopt
+contingency directly. The revote file is what lets us separate those cases.
+
+**Caveat that drives the design.** NYSED changes the column headers and even the file
+format (.xls vs .xlsx) from year to year, sometimes adding title rows above the table.
+Because these files are binary and weren't openable in the environment where this notebook
+was drafted, the column names below are matched by **keyword patterns**, not hard-coded
+names, and Section 3 **prints the raw top rows and detected headers for every file** so you
+can confirm/adjust before trusting the downstream tables. Treat Sections 4–7 as correct
+*conditional on* the keyword map in Section 4 resolving to the right columns — verify that
+once against the Section 3 output.
+
+## 1. File registry (exact NYSED URLs)
+
+```{r registry}
+#| label: registry
+# Exact URLs copied from the NYSED voting-results index. `skip` = number of title rows to
+# drop before the header row; default 0, override after inspecting Section 3.
+# Note: 2017 has no published revote file; pre-2012 omitted (no tax cap → no cap test).
+registry <- tribble(
+  ~year, ~kind,    ~url,                                                                                              ~skip,
+  2026,  "vote",   "https://p12.nysed.gov/mgtserv/votingresults/2025-26-budget-vote-results.xlsx",                     0,
+  2026,  "revote", "https://p12.nysed.gov/mgtserv/votingresults/2025-26-budget-revote-results.xlsx",                   0,
+  2025,  "vote",   "https://p12.nysed.gov/mgtserv/votingresults/2024-25-budget-vote-results-final.xlsx",               0,
+  2025,  "revote", "https://p12.nysed.gov/mgtserv/votingresults/2024-25-budget-revote-results-final.xlsx",             0,
+  2024,  "vote",   "https://p12.nysed.gov/mgtserv/votingresults/2023-24_Budget_Vote_Results_FINAL.xlsx",               0,
+  2024,  "revote", "https://p12.nysed.gov/mgtserv/votingresults/2023-24_Budget_Revote_Results_FINAL.xlsx",             0,
+  2023,  "vote",   "https://p12.nysed.gov/mgtserv/votingresults/docs/2022-23_Budget_Vote_Results_FINAL.xlsx",          0,
+  2023,  "revote", "https://p12.nysed.gov/mgtserv/votingresults/docs/2022-23-budget-revote-results.xlsx",              0,
+  2022,  "vote",   "https://p12.nysed.gov/mgtserv/documents/2021-22-budget-vote-results_final.xlsx",                   0,
+  2022,  "revote", "https://p12.nysed.gov/mgtserv/documents/2021-22-budget-revote-results_final.xlsx",                 0,
+  2021,  "vote",   "https://www.p12.nysed.gov/mgtserv/documents/2020-21-budget-vote-results_post.xlsx",                0,
+  2021,  "revote", "https://www.p12.nysed.gov/mgtserv/documents/2020-21_Budget_Re-Vote_Results_FINAL.xlsx",            0,
+  2020,  "vote",   "https://www.p12.nysed.gov/mgtserv/votingresults/2019-20BudgetVoteResults_POST_FFinal.xlsx",        0,
+  2020,  "revote", "https://www.p12.nysed.gov/mgtserv/votingresults/SCHOOLBUDGETRE-VOTE6-18-19.xlsx",                  0,
+  2019,  "vote",   "https://p12.nysed.gov/mgtserv/documents/2018SchoolBudgetVoteResults_POST.xls",                     0,
+  2019,  "revote", "https://p12.nysed.gov/mgtserv/votingresults/2018SchoolBudgetRevoteResults_Final.xlsx",             0,
+  2018,  "vote",   "https://p12.nysed.gov/mgtserv/documents/Copyof2017budgetvoteresults5-16-17.xls",                   0,
+  # 2018 revote: none published
+  2017,  "vote",   "https://p12.nysed.gov/mgtserv/documents/2016budgetvoteresultsmay17_POST_rjune29.xls",              0,
+  2017,  "revote", "https://p12.nysed.gov/mgtserv/documents/2016BudgetRevotes_Post_Final_R.xls",                       0,
+  2016,  "vote",   "https://p12.nysed.gov/mgtserv/votingresults/docs/2015budgetvoteresults.xls",                       0,
+  2016,  "revote", "https://p12.nysed.gov/mgtserv/votingresults/docs/2015-16budgetdefeat.xls",                         0,
+  2015,  "vote",   "https://p12.nysed.gov/mgtserv/votingresults/docs/2014budgetvoteresults.xls",                       0,
+  2015,  "revote", "https://p12.nysed.gov/mgtserv/votingresults/docs/2014-15budgetdefeat.xls",                         0,
+  2014,  "vote",   "https://p12.nysed.gov/mgtserv/votingresults/docs/2013budgetvoteresults.xls",                       0,
+  2014,  "revote", "https://p12.nysed.gov/mgtserv/votingresults/docs/2013-14budgetdefeat.xls",                         0,
+  2013,  "vote",   "https://p12.nysed.gov/mgtserv/votingresults/docs/2012budgetvoteresults.xls",                       0,
+  2013,  "revote", "https://p12.nysed.gov/mgtserv/votingresults/docs/2012budgetdefeat-1.xls",                          0
+) |>
+  # NB: NYSED labels files by *budget* year (e.g. "2024-25"); here `year` = the vote's calendar
+  # year (May 2024 → 2024). Adjust the mapping above if you prefer the budget-year convention.
+  filter(year %in% params$years)
+
+registry |> count(kind)
+```
+
+## 2. Download & cache
+
+```{r download}
+#| label: download
+fetch_one <- function(url, dest) {
+  if (file.exists(dest) && !params$download) return(dest)
+  ok <- TRUE
+  if (have_httr2) {
+    tryCatch(
+      {
+        req <- httr2::request(url) |> httr2::req_timeout(120) |>
+          httr2::req_user_agent("contingency-budget-analysis (educational; contact: you@example.org)")
+        resp <- httr2::req_perform(req)
+        writeBin(httr2::resp_body_raw(resp), dest)
+      },
+      error = function(e) {
+        tryCatch(
+          download.file(url, dest, mode = "wb", quiet = TRUE),
+          error = function(e2) { ok <<- FALSE; warning("FAILED: ", url, " :: ", conditionMessage(e2)) }
+        )
+      }
+    )
+  } else {
+    tryCatch(
+      download.file(url, dest, mode = "wb", quiet = TRUE),
+      error = function(e2) { ok <<- FALSE; warning("FAILED: ", url, " :: ", conditionMessage(e2)) }
+    )
+  }
+  if (!file.exists(dest) || file.size(dest) < 1000) {
+    ok <- FALSE
+    warning("Downloaded file looks empty/blocked: ", url)
+  }
+  if (ok) dest else NA_character_
+}
+
+registry <- registry |>
+  mutate(
+    ext  = if_else(str_detect(url, "\\.xlsx$"), ".xlsx", ".xls"),
+    dest = file.path(params$cache_dir, sprintf("%d_%s%s", year, kind, ext)),
+    dest = map2_chr(url, dest, fetch_one)
+  )
+
+registry |> select(year, kind, ext, dest) |> mutate(ok = !is.na(dest))
+```
+
+> If many rows show `ok = FALSE`, you're likely on a network that blocks `p12.nysed.gov`
+> (the drafting sandbox was). Run this where the site is reachable, or download the files
+> by hand into `params$cache_dir` using the naming `"<year>_<vote|revote>.<ext>"`.
+
+## 3. Inspect raw structure (DO THIS BEFORE trusting later sections)
+
+```{r inspect}
+#| label: inspect
+#| results: asis
+peek <- function(dest, year, kind) {
+  if (is.na(dest) || !file.exists(dest)) return(invisible(NULL))
+  cat(sprintf("\n\n### %d — %s\n\n", year, kind))
+  raw_head <- tryCatch(
+    read_excel(dest, col_names = FALSE, n_max = 6, .name_repair = "minimal"),
+    error = function(e) NULL
+  )
+  if (!is.null(raw_head)) { cat("**First 6 rows (no header assumed):**\n\n"); print(raw_head) }
+  this_skip <- registry$skip[registry$year == year & registry$kind == kind][1]
+  hdr <- tryCatch(
+    names(read_excel(dest, skip = this_skip, n_max = 1, .name_repair = "unique_quiet")),
+    error = function(e) character(0)
+  )
+  cat("\n**Detected header names (after `skip`):**\n\n")
+  cat(paste0("- `", janitor::make_clean_names(hdr), "`"), sep = "\n")
+}
+pwalk(list(registry$dest, registry$year, registry$kind), peek)
+```
+
+## 4. Keyword column map + harmonization
+
+Each file is reduced to a standard schema. Columns are located by **keyword regex** (tried
+in order) against `janitor::clean_names()` output. After reviewing Section 3, tweak the
+pattern vectors here if any `pick_col()` warning fires or resolves to the wrong field.
+
+```{r harmonize}
+#| label: harmonize
+# Find first column whose cleaned name matches any pattern (regex, case-insensitive).
+pick_col <- function(nms, patterns, label, file_id, required = FALSE) {
+  for (p in patterns) {
+    hit <- nms[str_detect(nms, regex(p, ignore_case = TRUE))]
+    if (length(hit) >= 1) return(hit[[1]])
+  }
+  if (required) warning(sprintf("[%s] No column for '%s' (patterns: %s)",
+                                 file_id, label, paste(patterns, collapse = " | ")))
+  NA_character_
+}
+
+# Coerce a vote-count or numeric field that may arrive as text ("1,248") or proportion.
+as_num <- function(x) suppressWarnings(readr::parse_number(as.character(x)))
+
+# Normalize a "levy change" field to PROPORTION units (0.042), handling values stored as
+# percent (4.2) or proportion (0.042). Heuristic: |median| > 1.5 → treat as percent.
+to_prop <- function(x) {
+  v <- as_num(x)
+  if (all(is.na(v))) return(v)
+  if (stats::median(abs(v), na.rm = TRUE) > 1.5) v / 100 else v
+}
+
+read_clean <- function(dest, skip) {
+  read_excel(dest, skip = skip, guess_max = 5000, .name_repair = "unique_quiet") |>
+    clean_names()
+}
+
+harmonize <- function(dest, year, kind, skip) {
+  if (is.na(dest) || !file.exists(dest)) return(NULL)
+  df  <- read_clean(dest, skip)
+  nms <- names(df)
+  fid <- sprintf("%d-%s", year, kind)
+
+  col_id     <- pick_col(nms, c("beds", "sed_code", "district_id", "lea"),               "district_id", fid)
+  col_name   <- pick_col(nms, c("district_name", "^district$", "school_district", "name"),"district",    fid, required = TRUE)
+  col_county <- pick_col(nms, c("county"),                                                "county",       fid)
+  col_yes    <- pick_col(nms, c("^yes$", "yes_vote", "votes_yes", "in_favor", "^for$"),   "yes",          fid, required = TRUE)
+  col_no     <- pick_col(nms, c("^no$", "no_vote", "votes_no", "against", "opposed"),     "no",           fid, required = TRUE)
+  # Proposed levy CHANGE (%) for this vote:
+  col_levy   <- pick_col(nms, c("proposed.*levy.*(change|increase|percent|pct)",
+                                "levy.*(change|increase).*percent", "tax_levy_increase",
+                                "percent_change.*levy", "levy_percent"),                  "proposed_levy_pct", fid)
+  # Tax levy LIMIT / cap (%): allowable growth — the legal override threshold driver.
+  col_limit  <- pick_col(nms, c("tax_levy_limit", "levy_limit", "allowable.*levy",
+                                "cap.*percent", "permissible.*levy"),                     "levy_limit_pct",    fid)
+  # Some files instead carry an explicit "supermajority/override required" flag:
+  col_over   <- pick_col(nms, c("super_?majority", "override", "60_percent", "threshold"),"override_flag",     fid)
+
+  tibble(
+    year, kind,
+    district_id   = if (!is.na(col_id))     as.character(df[[col_id]])     else NA_character_,
+    district      = as.character(df[[col_name]]),
+    county        = if (!is.na(col_county)) as.character(df[[col_county]]) else NA_character_,
+    yes           = as_num(df[[col_yes]]),
+    no            = as_num(df[[col_no]]),
+    levy_pct      = if (!is.na(col_levy))  to_prop(df[[col_levy]])  else NA_real_,
+    levy_limit_pct= if (!is.na(col_limit)) to_prop(df[[col_limit]]) else NA_real_,
+    override_flag = if (!is.na(col_over)) {
+                      f <- tolower(as.character(df[[col_over]]))
+                      str_detect(f, "y|true|1|over|super")
+                    } else NA
+  ) |>
+    mutate(
+      district = str_squish(district),
+      district_id = str_remove_all(district_id, "\\D")  # keep digits of BEDS code
+    ) |>
+    filter(!is.na(district), district != "", !is.na(yes) | !is.na(no))
+}
+
+clean_all <- registry |>
+  mutate(data = pmap(list(dest, year, kind, skip), harmonize))
+
+votes   <- clean_all |> filter(kind == "vote")   |> pull(data) |> compact() |> list_rbind()
+revotes <- clean_all |> filter(kind == "revote") |> pull(data) |> compact() |> list_rbind()
+
+glimpse(votes)
+glimpse(revotes)
+```
+
+## 5. Classify cap status and outcomes
+
+```{r classify}
+#| label: classify
+# Override (above cap) test: explicit flag if present, else proposed levy > levy limit.
+needs_override <- function(levy_pct, limit_pct, flag, tol = params$levy_tol) {
+  case_when(
+    !is.na(flag)                              ~ flag,
+    !is.na(levy_pct) & !is.na(limit_pct)      ~ levy_pct > (limit_pct + tol),
+    TRUE                                       ~ NA
+  )
+}
+# Pass test depends on threshold: override needs >=60% yes; otherwise simple majority.
+passed_vote <- function(yes, no, is_override) {
+  share <- yes / (yes + no)
+  thr   <- if_else(is_override %in% TRUE, 0.60, 0.50)
+  case_when(is.na(share) ~ NA, is_override %in% TRUE ~ share >= thr, TRUE ~ share > thr)
+}
+
+v1 <- votes |>
+  transmute(
+    year, district_id, district, county,
+    yes1 = yes, no1 = no, levy_pct1 = levy_pct,
+    levy_limit_pct1 = levy_limit_pct,
+    override1 = needs_override(levy_pct, levy_limit_pct, override_flag),
+    yes_share1 = yes / (yes + no),
+    passed1    = passed_vote(yes, no, override1)
+  )
+
+v2 <- revotes |>
+  transmute(
+    year, district_id, district, county,
+    yes2 = yes, no2 = no, levy_pct2 = levy_pct,
+    levy_limit_pct2 = levy_limit_pct,
+    override2 = needs_override(levy_pct, levy_limit_pct, override_flag),
+    yes_share2 = yes / (yes + no),
+    passed2    = passed_vote(yes, no, override2),
+    revote_held = !is.na(yes) & !is.na(no) & (yes + no) > 0
+  )
+
+# Join revote info onto the set of districts that failed the first vote.
+# Prefer BEDS id; fall back to (year, district) name match if ids are missing.
+join_keys <- if (mean(!is.na(v1$district_id)) > 0.9 && mean(!is.na(v2$district_id)) > 0.9) {
+  c("year", "district_id")
+} else {
+  c("year", "district")
+}
+message("Joining vote↔revote on: ", paste(join_keys, collapse = ", "))
+
+failed_first <- v1 |> filter(passed1 %in% FALSE)
+
+# Keep ONLY the join keys plus revote-specific measures, so we never drop a key we're
+# joining on and never collide with v1's district/county columns.
+v2_join <- v2 |>
+  select(all_of(join_keys),
+         yes2, no2, levy_pct2, levy_limit_pct2, override2, yes_share2, passed2, revote_held)
+
+panel <- failed_first |>
+  left_join(v2_join, by = join_keys) |>
+  mutate(
+    revote_held = coalesce(revote_held, FALSE),
+    # Cap status governing the SECOND event (what Don asked to split on):
+    #  - if a revote was held, use override2 (the revote budget's cap status)
+    #  - if no revote (direct contingency), fall back to override1
+    second_override = coalesce(override2, override1),
+    cap_status = case_when(
+      second_override %in% TRUE  ~ "Above cap (override / 60%)",
+      second_override %in% FALSE ~ "At/below cap (simple majority)",
+      TRUE                        ~ "Unknown cap status"
+    ),
+    outcome = case_when(
+      revote_held & passed2 %in% TRUE  ~ "Passed on revote",
+      revote_held & passed2 %in% FALSE ~ "Contingency (failed revote)",
+      !revote_held                      ~ "Contingency (no revote / direct)",
+      TRUE                              ~ "Unresolved (check data)"
+    ),
+    on_contingency = str_starts(outcome, "Contingency")
+  )
+
+glimpse(panel)
+```
+
+## 6. Summary tables
+
+### 6a. Contingency budgets per year
+
+```{r tbl-contingency-per-year}
+#| label: tbl-contingency-per-year
+per_year <- panel |>
+  group_by(year) |>
+  summarise(
+    failed_first_vote = n(),
+    held_revote       = sum(revote_held),
+    passed_on_revote  = sum(outcome == "Passed on revote"),
+    contingency_total = sum(on_contingency),
+    .groups = "drop"
+  ) |>
+  arrange(year)
+
+per_year |>
+  gt() |>
+  tab_header(title = "First-vote defeats, revotes, and contingency budgets by year",
+             subtitle = "Source: NYSED statewide vote & revote files (computed)") |>
+  cols_label(failed_first_vote = "Failed 1st vote", held_revote = "Held revote",
+             passed_on_revote = "Passed on revote", contingency_total = "On contingency") |>
+  grand_summary_rows(columns = c(failed_first_vote, held_revote, passed_on_revote, contingency_total),
+                     fns = list(Total ~ sum(.)))
+```
+
+### 6b. Revote outcomes by cap status — passed vs. contingency
+
+This is the core table you asked for: for second votes **above the cap** and **at/below the
+cap**, how many passed vs. went to contingency. (Faceted by year; collapse with the second
+chunk for an all-years view.)
+
+```{r tbl-cap-outcome}
+#| label: tbl-cap-outcome
+cap_outcome <- panel |>
+  mutate(outcome2 = if_else(on_contingency, "Went to contingency", "Passed on revote")) |>
+  count(year, cap_status, outcome2) |>
+  pivot_wider(names_from = outcome2, values_from = n, values_fill = 0) |>
+  arrange(year, cap_status)
+
+cap_outcome |>
+  gt(groupname_col = "year") |>
+  tab_header(title = "Revote outcomes by cap status, by year")
+
+# All-years pooled
+panel |>
+  mutate(outcome2 = if_else(on_contingency, "Went to contingency", "Passed on revote")) |>
+  count(cap_status, outcome2) |>
+  pivot_wider(names_from = outcome2, values_from = n, values_fill = 0) |>
+  gt() |>
+  tab_header(title = sprintf("Revote outcomes by cap status — pooled %d–%d",
+                             min(params$years), max(params$years)))
+```
+
+### 6c. Per-district revote detail
+
+Every district that failed its first vote, with the cap, both levy %s, both vote %s, and the
+outcome — sortable/paged.
+
+```{r tbl-district-detail}
+#| label: tbl-district-detail
+detail <- panel |>
+  transmute(
+    year, district, county,
+    cap_levy_limit_pct = levy_limit_pct1,
+    vote1_levy_pct = levy_pct1,
+    vote2_levy_pct = levy_pct2,
+    vote1_pct_for     = round(100 * yes_share1, 1),
+    vote1_pct_against = round(100 * (1 - yes_share1), 1),
+    vote2_pct_for     = round(100 * yes_share2, 1),
+    vote2_pct_against = round(100 * (1 - yes_share2), 1),
+    override_1st = override1, override_2nd = second_override,
+    outcome
+  ) |>
+  arrange(year, desc(str_starts(outcome, "Contingency")), district)
+
+# Show as an interactive paged frame; write a CSV for your own slicing.
+readr::write_csv(detail, file.path(params$cache_dir, "revote_district_detail.csv"))
+detail
+```
+
+## 7. Sanity checks against independently verified values
+
+Hard-coded facts from primary reporting (NYSED/OSC/NYSSBA/Empire Center and district
+clerks). After you run the pipeline, the computed numbers above should reproduce these. Any
+mismatch usually means a column was mapped wrong in Section 4 (re-check Section 3).
+
+```{r known-values}
+#| label: known-values
+known_year_level <- tribble(
+  ~year, ~fact,                                                                         ~value, ~source,
+  2012,  "Districts adopting contingency after 1st vote (first tax-cap year)",          0,      "NYSSBA Budget Defeats & Contingency Budgets 1992-2012",
+  2020,  "Districts on contingency (Rensselaer, Riverhead, Fort Edward + East Ramapo)", 4,      "OSC/DiNapoli 2020 budget-vote report",
+  2024,  "First-vote defeats",                                                          18,     "NYSSBA press release 2024-05-22",
+  2024,  "Override budgets sought / failed on 1st vote",                                 10,     "NYSSBA press release 2024-05-22 (10 of 32 failed)",
+  2025,  "First-vote defeats",                                                          23,     "NYSSBA press release 2025-05-21 (651 approved of 674)",
+  2025,  "Override budgets sought / failed on 1st vote",                                 17,     "NYSSBA press release 2025-05-21 (17 of 42 failed)",
+  2025,  "Revoting districts (override-failures / simple-majority-failures = 17 / 7)",   24,     "Empire Center 2025-06-16"
+)
+known_year_level |> gt() |> tab_header(title = "Known year-level checkpoints")
+
+# District-level checkpoints (fully specified worked examples) — verified from district clerks
+# and local reporting. Levy figures are % change in the tax LEVY (not spending).
+known_district <- tribble(
+  ~year, ~district,              ~cap_pct, ~v1_levy_pct, ~v2_levy_pct, ~v1_for, ~v1_ag, ~v2_for, ~v2_ag, ~v1_override, ~v2_override, ~outcome,
+  2025,  "Mahopac CSD",          NA,       0.010,        0.000,        48.8,    51.2,   71.0,    29.0,   FALSE,        FALSE,        "Passed on revote",
+  2025,  "Elwood UFSD",          0.0129,   0.0420,       0.0264,       54.2,    45.8,   71.6,    28.4,   TRUE,         TRUE,         "Passed on revote",
+  2025,  "Corning-Painted Post", NA,       NA,           NA,           40.3,    59.7,   58.1,    41.9,   TRUE,         FALSE,        "Passed on revote",
+  2024,  "Corning-Painted Post", NA,       0.049,        0.0297,       50.2,    49.8,   67.0,    33.0,   TRUE,         FALSE,        "Passed on revote",
+  2024,  "Ithaca CSD",           NA,       0.0842,       NA,           29.5,    70.5,   NA,      NA,     TRUE,         NA,           "Revote outcome not captured here",
+  2020,  "Riverhead CSD",        NA,       NA,           0.0027,       NA,      NA,     49.3,    50.7,   FALSE,        FALSE,        "Contingency (failed revote)"
+)
+known_district |>
+  gt() |>
+  tab_header(title = "Known district-level checkpoints (verified worked examples)",
+             subtitle = "Levy = % change in tax levy; blanks = not cleanly reported in public sources") |>
+  fmt_percent(columns = c(cap_pct, v1_levy_pct, v2_levy_pct), decimals = 2, drop_trailing_zeros = FALSE)
+```
+
+## 8. Notes, gotchas, and extensions
+
+- **"Above cap" ≠ "above 2%."** The legal test is *proposed levy > the district's tax levy
+  limit*, and that limit routinely exceeds 2% because of the formula's growth factor, PILOT
+  changes, and the capital/exclusion adjustments. Central Square (2025) lost a near-50/50
+  vote with a ~6.86% proposed levy — i.e., it was likely a *simple-majority* vote whose cap
+  was high — which is exactly why this notebook keys off the levy-limit column rather than a
+  flat 2% rule. Confirm the limit column resolves correctly in Section 4.
+- **Levy vs. spending.** Local reporting frequently quotes the *spending* % change; only the
+  *levy* % governs the cap and the contingency freeze. Section 4's `col_levy` patterns target
+  levy fields — verify they aren't catching a spending column.
+- **Direct-to-contingency districts** (failed once, skipped the revote) appear in `panel`
+  with `revote_held = FALSE`. East Ramapo (2020) is the canonical case. If a year's revote
+  file *excludes* such districts, they'll be missing entirely — cross-check `failed_first`
+  count against the NYSSBA defeat count for that year.
+- **2020 was atypical**: all-absentee voting, shifted June revote date; turnout and dynamics
+  aren't comparable to other years.
+- **Year convention**: this notebook indexes by the *vote's* calendar year. NYSED filenames
+  use the *budget* year ("2024-25"). Don't double-count when merging with other series.
+- **Pre-2012**: omitted because there was no tax cap, so the above/below-cap split is
+  undefined. The longer defeat/contingency *counts* (1992–2012) are available from NYSSBA's
+  "Budget Defeats and Adopted Contingency Budgets" table if you want to extend Section 6a
+  backward (no cap split).
+- **Reproducibility**: `embed-resources: true` self-contains the HTML; the per-district CSV
+  is written to `params$cache_dir`. Pin versions with `renv::snapshot()` if archiving.
+
+```{r session}
+#| label: session
+sessionInfo()
+```
