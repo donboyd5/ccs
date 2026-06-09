@@ -5,8 +5,11 @@ __pycache__/
 .ipynb_checkpoints/
 
 # Data: large source CSVs and generated parquet (not tracked in git)
+# (both loose in data/ and nested in subfolders like data/account_codes/)
 data/*.csv
 data/*.parquet
+data/**/*.csv
+data/**/*.parquet
 
 # Quarto
 /.quarto/
@@ -17,3 +20,5 @@ data/*.parquet
 .DS_Store
 .Rproj.user/
 .Rhistory
+
+**/*.quarto_ipynb

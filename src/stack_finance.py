@@ -1,6 +1,6 @@
 """Stack NY school district finance CSVs (2013-2025) into a single parquet file.
 
-The annual files in ``data/`` cover every NY school district. Years 2013-2025
+The annual files in ``data/account_codes/`` cover every NY school district. Years 2013-2025
 share a single schema (PERIOD_START/PERIOD_END/ACCOUNT_CODE_SECTION), so they
 can be concatenated without harmonization. 2026 (a near-empty placeholder) and
 the 1995-2012 files (a different, older schema) are intentionally excluded.
@@ -18,6 +18,7 @@ import polars as pl
 # --- configuration ---------------------------------------------------------
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
+ACCOUNT_CODES_DIR = DATA_DIR / "account_codes"
 OUT_PATH = DATA_DIR / "school_finance_2013_2025.parquet"
 
 YEARS = range(2013, 2026)  # 2013 through 2025 inclusive
@@ -34,7 +35,7 @@ SCHEMA_OVERRIDES = {
 def stack() -> pl.DataFrame:
     frames: list[pl.DataFrame] = []
     for year in YEARS:
-        path = DATA_DIR / f"{year}_SchoolDistrict.csv"
+        path = ACCOUNT_CODES_DIR / f"{year}_SchoolDistrict.csv"
         if not path.exists():
             raise FileNotFoundError(f"Expected file not found: {path}")
         df = pl.read_csv(path, schema_overrides=SCHEMA_OVERRIDES)
