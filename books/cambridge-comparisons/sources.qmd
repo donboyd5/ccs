@@ -1,6 +1,6 @@
 # Sources & references {.unnumbered}
 
-All figures in this book come from public data. This appendix documents each
+All figures on this website come from public data. This appendix documents each
 source, notes the main caveats, and lists full references (APA style) at the
 end. Citation keys are given in brackets so they can be reused in the text.
 
@@ -12,7 +12,7 @@ Department databases, both downloaded from
 Access files:
 
 - **Enrollment database** [@nysed_enrollment] — the `BEDS Day Enrollment`
-  table, which gives K-12 enrollment by district. Coverage in this book:
+  table, which gives K-12 enrollment by district. Coverage on this website:
   school years **2015–16 through 2024–25**. Enrollment is the BEDS-day count
   (first Wednesday of October).
 - **Student & Educator ("STUDED") database** [@nysed_studed] — the `Staff`
@@ -51,10 +51,10 @@ and the title *"Financial report."* They are the same series of district audits.
 
 ## Reader comments
 
-Each page of this book has a comment area at the bottom, powered by
+Each page of this website has a comment area at the bottom, powered by
 [Giscus](https://giscus.app/). To leave a comment or a reaction, sign in with a
 free [GitHub](https://github.com/signup) account; comments are stored as
-discussions in this book's [GitHub repository](https://github.com/donboyd5/ccs).
+discussions in this website's [GitHub repository](https://github.com/donboyd5/ccs).
 
 ## References
 

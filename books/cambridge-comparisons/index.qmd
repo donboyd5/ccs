@@ -8,8 +8,8 @@ put Cambridge's numbers in context rather than to view them in isolation.
 
 ## Comparison groups
 
-Different questions call for different peer sets, so the book uses two groups
-that can be adjusted as the work develops:
+Different questions call for different peer sets, so this website uses two
+groups that can be adjusted as the work develops:
 
 - **Graph group (5 districts)** — used for charts, where a short list keeps
   lines legible: **Cambridge, Greenwich, Salem** (all Washington County),
