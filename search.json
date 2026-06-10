@@ -1,0 +1,107 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Cambridge in Comparison",
+    "section": "",
+    "text": "Overview\nThis short book looks at the Cambridge Central School District (Cambridge CSD, Washington County, New York) alongside neighboring districts, using public data from the New York State Education Department (NYSED). It is one of several analyses in the ccs project; the aim is to put Cambridge’s numbers in context rather than to view them in isolation.",
+    "crumbs": [
+      "Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#comparison-groups",
+    "href": "index.html#comparison-groups",
+    "title": "Cambridge in Comparison",
+    "section": "Comparison groups",
+    "text": "Comparison groups\nDifferent questions call for different peer sets, so the book uses two groups that can be adjusted as the work develops:\n\nGraph group (5 districts) — used for charts, where a short list keeps lines legible: Cambridge, Greenwich, Salem (all Washington County), Schuylerville (Saratoga County), and Hoosick Falls (Rensselaer County). These are Cambridge’s closest small-district neighbors.\nTable group (12 districts) — used for tables, which can hold more rows: every Washington County K-12 district plus the two graph-group districts that sit just outside the county (Schuylerville and Hoosick Falls).\n\nThe table group is the broader set; the graph group is a readable subset of it. Putnam CSD is left out of the “Washington County K-12” set because it is a K-8 district that tuitions out its high-schoolers (zero students in grades 9–12), so it is not comparable on K-12 measures.\n\n\n\n\n\n\n\nGroup\nDistricts\n\n\n\n\nGraph (charts)\nCambridge, Greenwich, Salem, Schuylerville, Hoosick Falls\n\n\nTable (tables)\nThe graph group + Argyle, Fort Ann, Fort Edward, Granville, Hartford, Hudson Falls, Whitehall",
+    "crumbs": [
+      "Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#data-and-a-few-cautions",
+    "href": "index.html#data-and-a-few-cautions",
+    "title": "Cambridge in Comparison",
+    "section": "Data and a few cautions",
+    "text": "Data and a few cautions\nThe underlying numbers come from NYSED’s public downloads; each chapter and the Sources appendix give the specifics. A few things to keep in mind throughout:\n\nYear labels are school-year-ending years. “2025” means the 2024–25 school year. Enrollment is the BEDS-day count (first Wednesday of October).\nTeacher counts begin in 2017–18. So time series that depend on teachers (such as students per teacher) start at school-year-ending 2018, even though enrollment runs back to 2015–16.\nStudents per teacher is an approximation, not official class size. It divides K-12 enrollment by a district-wide teacher headcount (all grades, not full-time-equivalents). It is useful for comparison across districts and over time, but it is not NYSED’s official pupil-teacher or average-class-size figure. See the Sources appendix for detail.\nCharter schools are excluded — they have no district-total row in the source data — so these are district-operated figures.",
+    "crumbs": [
+      "Overview"
+    ]
+  },
+  {
+    "objectID": "class-sizes.html",
+    "href": "class-sizes.html",
+    "title": "1  Class sizes and staffing",
+    "section": "",
+    "text": "1.1 Students per teacher, over time\nHow many students does each teacher serve, and how has that changed? This chapter starts with the broadest staffing measure available across districts — K-12 students per teacher — and compares Cambridge with its neighbors over time. Later sections will add related measures (and, where NYSED publishes it, official average class size).\nA reminder from the Overview: this ratio divides K-12 enrollment by a district-wide teacher headcount, so it is an approximate comparison measure, not an official class-size statistic. Lower values mean fewer students per teacher.\nThe chart below tracks the graph group from school-year-ending 2018 (the first year teacher counts exist) through 2025.\nCode\ng = cc.panel_for(cc.GRAPH_GROUP)  # 5 districts, 2018+\n\npdf = (\n    g.select(\"district\", \"year_end\", \"k12_students_per_teacher\")\n    .drop_nulls()\n    .to_pandas()\n)\npdf[\"district\"] = pd.Categorical(\n    pdf[\"district\"], categories=cc.district_order(cc.GRAPH_GROUP), ordered=True\n)\ncambridge = pdf[pdf[\"district\"] == cc.FOCUS]\n\n(\n    ggplot(pdf, aes(\"year_end\", \"k12_students_per_teacher\", color=\"district\"))\n    + geom_line(size=1)\n    + geom_point(size=1.8)\n    + geom_line(cambridge, size=2.4)  # emphasize the focus district\n    + scale_color_manual(values=cc.PALETTE, name=\"\")\n    + scale_x_continuous(breaks=list(range(2018, 2026)))\n    + labs(\n        x=\"School year ending\",\n        y=\"K–12 students per teacher\",\n        title=\"Cambridge now has the fewest students per teacher of the group\",\n        subtitle=\"District K-12 enrollment ÷ teacher headcount, 2017–18 to 2024–25\",\n    )\n    + cc.theme_ccs()\n)\n\n\n\n\n\n\n\n\nFigure 1.1: K–12 students per teacher by school year ending, 2018 (2017–18) through 2025 (2024–25). Lower means fewer students per teacher. Source: NYSED Enrollment and Student & Educator databases.\nIn 2017–18 only Salem had a lower ratio than Cambridge. Cambridge’s ratio then drifted down — its K-12 enrollment fell about 15% (from 869 to 741) while its teacher headcount stayed roughly flat — and by the two most recent years Cambridge has the lowest students-per-teacher ratio of the five. A jump in reported teachers in 2023–24 pushed its 2024 figure especially low (8.2). Schuylerville and Greenwich actually fell more over the full period (about 2.0 and 1.9, versus Cambridge’s 1.5), but from much higher starting points, so they remain above Cambridge.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Class sizes and staffing</span>"
+    ]
+  },
+  {
+    "objectID": "class-sizes.html#the-full-comparison-group",
+    "href": "class-sizes.html#the-full-comparison-group",
+    "title": "1  Class sizes and staffing",
+    "section": "1.2 The full comparison group",
+    "text": "1.2 The full comparison group\nThe table widens the lens to all twelve table-group districts. Columns are school-years-ending; the final column is the change from 2018 to 2025 (a negative value means fewer students per teacher than in 2018). Cambridge is highlighted.\n\n\nCode\nt = cc.panel_for(cc.TABLE_GROUP)\n\n# Long -&gt; wide (years become columns), Washington County districts first,\n# then alphabetical within each region.\nwide = (\n    t.select(\"region\", \"district\", \"year_end\", \"k12_students_per_teacher\")\n    .with_columns(\n        pl.when(pl.col(\"region\") == \"Washington County\")\n        .then(0)\n        .otherwise(1)\n        .alias(\"_rank\")\n    )\n    .pivot(\n        values=\"k12_students_per_teacher\",\n        index=[\"_rank\", \"region\", \"district\"],\n        on=\"year_end\",\n    )\n    .sort([\"_rank\", \"district\"])\n    .drop(\"_rank\")\n)\n\nyear_cols = [c for c in wide.columns if c.isdigit()]\nwide = wide.with_columns(\n    (pl.col(\"2025\") - pl.col(\"2018\")).alias(\"chg\")\n)\n\n(\n    GT(wide, rowname_col=\"district\", groupname_col=\"region\")\n    .tab_header(\n        title=\"K–12 students per teacher\",\n        subtitle=\"School-year-ending 2018 (2017–18) through 2025 (2024–25)\",\n    )\n    .fmt_number(columns=year_cols + [\"chg\"], decimals=1)\n    .tab_spanner(label=\"School year ending\", columns=year_cols)\n    .cols_label(chg=md(\"Change&lt;br&gt;2018→2025\"))\n    .sub_missing(missing_text=\"—\")\n    .tab_style(\n        style=[style.fill(color=\"#FCEFB4\"), style.text(weight=\"bold\")],\n        locations=[\n            loc.body(rows=pl.col(\"district\") == cc.FOCUS),\n            loc.stub(rows=pl.col(\"district\") == cc.FOCUS),\n        ],\n    )\n    .tab_source_note(\n        md(\n            \"**Source:** NYSED Enrollment database (K-12 enrollment) and \"\n            \"Student &amp; Educator database (teacher counts). \"\n            \"Ratio = district K-12 enrollment ÷ teacher headcount; an \"\n            \"approximate comparison measure, not official class size. \"\n            \"Year = school-year-ending (2025 = 2024–25).\"\n        )\n    )\n)\n\n\n\n\nTable 1.1: K–12 students per teacher by district and school year ending.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nK–12 students per teacher\n\n\nSchool-year-ending 2018 (2017–18) through 2025 (2024–25)\n\n\n\nSchool year ending\nChange\n2018→2025\n\n\n2018\n2019\n2020\n2021\n2022\n2023\n2024\n2025\n\n\n\n\nWashington County\n\n\nArgyle\n10.5\n9.8\n9.8\n8.6\n8.8\n8.8\n9.5\n9.3\n−1.2\n\n\nCambridge\n10.2\n10.4\n10.0\n10.0\n10.6\n9.9\n8.2\n8.7\n−1.5\n\n\nFort Ann\n9.7\n10.2\n10.5\n10.0\n9.2\n9.8\n9.1\n10.1\n0.3\n\n\nFort Edward\n10.8\n9.9\n10.1\n11.1\n8.3\n8.2\n8.0\n7.8\n−3.0\n\n\nGranville\n9.6\n10.0\n9.0\n10.7\n9.4\n9.6\n11.2\n10.5\n1.0\n\n\nGreenwich\n11.8\n11.4\n11.7\n10.9\n10.5\n10.3\n10.1\n9.9\n−1.9\n\n\nHartford\n7.7\n8.3\n8.7\n7.8\n7.6\n7.1\n7.1\n7.9\n0.2\n\n\nHudson Falls\n12.2\n12.8\n12.5\n12.6\n11.6\n11.1\n11.4\n10.9\n−1.2\n\n\nSalem\n9.4\n11.2\n9.4\n10.1\n8.8\n9.4\n9.5\n9.2\n−0.2\n\n\nWhitehall\n8.8\n10.1\n9.2\n8.6\n8.9\n8.2\n8.4\n8.1\n−0.8\n\n\nOther comparison districts\n\n\nHoosick Falls\n11.7\n11.9\n11.6\n12.3\n11.1\n10.5\n10.6\n11.4\n−0.3\n\n\nSchuylerville\n12.5\n12.8\n12.8\n11.0\n10.5\n10.5\n10.6\n10.5\n−2.0\n\n\n\nSource: NYSED Enrollment database (K-12 enrollment) and Student & Educator database (teacher counts). Ratio = district K-12 enrollment ÷ teacher headcount; an approximate comparison measure, not official class size. Year = school-year-ending (2025 = 2024–25).\n\n\n\n\n\n\n\n\n\n\n\n\nAcross the wider group, Cambridge ends among the lowest ratios — close to Salem — while the rest of Washington County’s K-12 districts span a wider range. The table is also a reminder that these districts differ greatly in size (compare small districts like Fort Edward with larger ones like Hudson Falls and Granville), which shapes how much a single hire or a small enrollment swing moves the ratio.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Class sizes and staffing</span>"
+    ]
+  },
+  {
+    "objectID": "sources.html",
+    "href": "sources.html",
+    "title": "Sources & references",
+    "section": "",
+    "text": "NYSED data files\nAll figures in this book come from public data. This appendix documents each source, notes the main caveats, and lists full references (APA style) at the end. Citation keys are given in brackets so they can be reused in the text.\nThe enrollment and staffing numbers are built from two New York State Education Department databases, both downloaded from https://data.nysed.gov/downloads.php and distributed as annual Microsoft Access files:\nThese were stacked into a district-by-year panel by src/build_enrollment_teachers.py; the dataset’s own README records the build in full.\nCaveats worth repeating. num_teachers is a district-wide headcount (all grades, not full-time-equivalents), while k12_enrollment is K-12 only. The derived students-per-teacher ratio is therefore an approximate measure for comparison across districts and over time — not NYSED’s official pupil-teacher ratio or average class size. Charter schools are excluded (they have no district-total row), and a small number of districts reorganized within the window (statewide, not in this comparison group).",
+    "crumbs": [
+      "Appendices",
+      "Sources & references"
+    ]
+  },
+  {
+    "objectID": "sources.html#nysed-data-files",
+    "href": "sources.html#nysed-data-files",
+    "title": "Sources & references",
+    "section": "",
+    "text": "Enrollment database (New York State Education Department, 2025a) — the BEDS Day Enrollment table, which gives K-12 enrollment by district. Coverage in this book: school years 2015–16 through 2024–25. Enrollment is the BEDS-day count (first Wednesday of October).\nStudent & Educator (“STUDED”) database (New York State Education Department, 2025b) — the Staff table, which gives teacher, principal, counselor, and social-worker counts plus teacher attendance and turnover. Coverage: school years 2017–18 through 2024–25. Because teacher counts start in 2017–18, any measure that uses teachers (such as students per teacher) begins at school-year-ending",
+    "crumbs": [
+      "Appendices",
+      "Sources & references"
+    ]
+  },
+  {
+    "objectID": "sources.html#cambridge-csd-annual-financial-reports",
+    "href": "sources.html#cambridge-csd-annual-financial-reports",
+    "title": "Sources & references",
+    "section": "Cambridge CSD annual financial reports",
+    "text": "Cambridge CSD annual financial reports\nCambridge’s audited annual financial statements, for fiscal years ended June 30, 2020 through June 30, 2025, were retrieved from the Federal Audit Clearinghouse (https://app.fac.gov/). The clearinghouse was operated by the U.S. Census Bureau through about 2022 and by the U.S. General Services Administration from 2023 onward — which is why the earlier files (FY2020–FY2022) carry a CENSUS tag and bear the title “Financial statements and independent auditor’s report,” while the later files (FY2023–FY2025) carry a GSAFAC tag and the title “Financial report.” They are the same series of district audits.\n\nFY2020 (Cambridge Central School District, 2020), FY2021 (Cambridge Central School District, 2021), FY2022 (Cambridge Central School District, 2022)\nFY2023 (Cambridge Central School District, 2023), FY2024 (Cambridge Central School District, 2024), FY2025 (Cambridge Central School District, 2025)",
+    "crumbs": [
+      "Appendices",
+      "Sources & references"
+    ]
+  },
+  {
+    "objectID": "sources.html#reader-comments",
+    "href": "sources.html#reader-comments",
+    "title": "Sources & references",
+    "section": "Reader comments",
+    "text": "Reader comments\nEach page of this book has a comment area at the bottom, powered by Giscus. To leave a comment or a reaction, sign in with a free GitHub account; comments are stored as discussions in this book’s GitHub repository.",
+    "crumbs": [
+      "Appendices",
+      "Sources & references"
+    ]
+  },
+  {
+    "objectID": "sources.html#references",
+    "href": "sources.html#references",
+    "title": "Sources & references",
+    "section": "References",
+    "text": "References\n\n\nCambridge Central School District. (2020). Financial statements and\nindependent auditor’s report: June 30, 2020 [Audited financial\nreport]. Federal Audit Clearinghouse. https://app.fac.gov/\n\n\nCambridge Central School District. (2021). Financial statements and\nindependent auditor’s report: June 30, 2021 [Audited financial\nreport]. Federal Audit Clearinghouse. https://app.fac.gov/\n\n\nCambridge Central School District. (2022). Financial statements and\nindependent auditor’s report: June 30, 2022 [Audited financial\nreport]. Federal Audit Clearinghouse. https://app.fac.gov/\n\n\nCambridge Central School District. (2023). Financial report: June\n30, 2023 [Audited financial report]. Federal Audit Clearinghouse.\nhttps://app.fac.gov/\n\n\nCambridge Central School District. (2024). Financial report: June\n30, 2024 [Audited financial report]. Federal Audit Clearinghouse.\nhttps://app.fac.gov/\n\n\nCambridge Central School District. (2025). Financial report: June\n30, 2025 [Audited financial report]. Federal Audit Clearinghouse.\nhttps://app.fac.gov/\n\n\nNew York State Education Department. (2025a). Enrollment data\n[Dataset]. New York State Education Department, Information and\nReporting Services. https://data.nysed.gov/downloads.php\n\n\nNew York State Education Department. (2025b). Student and educator\ndata [Dataset]. New York State Education Department,\nInformation and Reporting Services. https://data.nysed.gov/downloads.php",
+    "crumbs": [
+      "Appendices",
+      "Sources & references"
+    ]
+  }
+]
