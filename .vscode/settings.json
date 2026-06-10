@@ -1,0 +1,11 @@
+{
+  // Prose is authored one paragraph per line; let the editor wrap it visually
+  // instead of hard-wrapping in the file (source line breaks don't affect the
+  // rendered Quarto output).
+  "[quarto]": {
+    "editor.wordWrap": "on"
+  },
+  "[markdown]": {
+    "editor.wordWrap": "on"
+  }
+}

@@ -1,8 +1,8 @@
 # Overview {.unnumbered}
 
-This short book looks at the **Cambridge Central School District** (Cambridge
-CSD, Washington County, New York) alongside neighboring districts, using public
-data from the New York State Education Department (NYSED). It is one of several
+This website looks at the **Cambridge Central School District** (Cambridge
+CSD, Washington County, New York) alongside nearby districts, using public
+data from the New York State Education Department (NYSED) and selected other sources. It is one of several
 analyses in the [`ccs`](https://github.com/donboyd5/ccs) project; the aim is to
 put Cambridge's numbers in context rather than to view them in isolation.
 
@@ -21,17 +21,16 @@ that can be adjusted as the work develops:
 
 The table group is the broader set; the graph group is a readable subset of it.
 **Putnam CSD** is left out of the "Washington County K-12" set because it is a
-K-8 district that tuitions out its high-schoolers (zero students in grades
-9–12), so it is not comparable on K-12 measures.
+K-8 district -- it has no high school of its own and pays to send its high-school students elsewhere, so it is not comparable on K-12 measures.
 
 | Group | Districts |
 |---|---|
-| **Graph** (charts) | Cambridge, Greenwich, Salem, Schuylerville, Hoosick Falls |
+| **Graph** (charts) | Cambridge, Greenwich, Hoosick Falls, Salem, Schuylerville |
 | **Table** (tables) | The graph group **+** Argyle, Fort Ann, Fort Edward, Granville, Hartford, Hudson Falls, Whitehall |
 
 ## Data and a few cautions
 
-The underlying numbers come from NYSED's public downloads; each chapter and the
+The underlying numbers come from NYSED's public downloads and other reputable sources; each chapter and the
 [Sources](sources.qmd) appendix give the specifics. A few things to keep in mind
 throughout:
 

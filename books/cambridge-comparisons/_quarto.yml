@@ -18,7 +18,7 @@ book:
   repo-actions: [source, issue]
   search: true
   page-footer:
-    left: "Cambridge in Comparison"
+    left: "Cambridge School District in Comparison"
     right: "Built with [Quarto](https://quarto.org/)."
 
   # ---------------------------------------------------------------------------
