@@ -63,7 +63,9 @@ def build() -> pl.DataFrame:
             pl.col("nysed_district_cd")
             .replace_strict(cc.TABLE_GROUP, default=None)
             .alias("short_name"),
-            pl.lit(None, dtype=pl.String).alias("nces_leaid"),
+            pl.col("nysed_district_cd")
+            .replace_strict(cc.NCES_LEAID, default=None)
+            .alias("nces_leaid"),
             pl.col("nysed_district_cd").is_in(graph_cds).alias("in_graph_group"),
             pl.col("nysed_district_cd").is_in(table_cds).alias("in_table_group"),
         )
@@ -98,7 +100,8 @@ def main() -> None:
     n_graph = xwalk.filter(pl.col("in_graph_group")).height
     print(f"Wrote {n_total} districts to {csv_path.relative_to(REPO_ROOT)}")
     print(f"  comparison groups: {n_graph} graph, {n_table} table")
-    print("  NCES LEAIDs not yet populated (nces_leaid column is empty).")
+    n_nces = xwalk.filter(pl.col("nces_leaid").is_not_null()).height
+    print(f"  NCES LEAIDs populated for {n_nces} comparison districts.")
 
 
 if __name__ == "__main__":

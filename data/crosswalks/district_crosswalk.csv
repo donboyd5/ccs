@@ -462,7 +462,7 @@ short_name,district_name,county_name,county_cd,nysed_district_cd,beds_entity_cd,
 ,BRUNSWICK CSD (BRITTONKILL),Rensselaer,49,49020204,490202040000,,5,Average Need,false,false
 ,EAST GREENBUSH CSD,Rensselaer,49,49030106,490301060000,,5,Average Need,false,false
 ,HOOSIC VALLEY CSD,Rensselaer,49,49140104,491401040000,,5,Average Need,false,false
-Hoosick Falls,HOOSICK FALLS CSD,Rensselaer,49,49050106,490501060000,,5,Average Need,true,true
+Hoosick Falls,HOOSICK FALLS CSD,Rensselaer,49,49050106,490501060000,3614760,5,Average Need,true,true
 ,LANSINGBURGH CSD,Rensselaer,49,49060106,490601060000,,3,High Need: Urban-Suburban,false,false
 ,NORTH GREENBUSH COMN SD (WILLIAMS),Rensselaer,49,49080108,490801080000,,5,Average Need,false,false
 ,RENSSELAER CITY SD,Rensselaer,49,49120001,491200010000,,3,High Need: Urban-Suburban,false,false
@@ -502,7 +502,7 @@ Hoosick Falls,HOOSICK FALLS CSD,Rensselaer,49,49050106,490501060000,,5,Average N
 ,GALWAY CSD,Saratoga,52,52070104,520701040000,,5,Average Need,false,false
 ,MECHANICVILLE CITY SD,Saratoga,52,52120005,521200050000,,5,Average Need,false,false
 ,SARATOGA SPRINGS CITY SD,Saratoga,52,52180001,521800010000,,5,Average Need,false,false
-Schuylerville,SCHUYLERVILLE CSD,Saratoga,52,52170104,521701040000,,5,Average Need,true,true
+Schuylerville,SCHUYLERVILLE CSD,Saratoga,52,52170104,521701040000,3626160,5,Average Need,true,true
 ,SHENENDEHOWA CSD,Saratoga,52,52030206,520302060000,,5,Average Need,false,false
 ,SOUTH GLENS FALLS CSD,Saratoga,52,52140104,521401040000,,5,Average Need,false,false
 ,STILLWATER CSD,Saratoga,52,52200104,522001040000,,5,Average Need,false,false
@@ -647,17 +647,17 @@ Schuylerville,SCHUYLERVILLE CSD,Saratoga,52,52170104,521701040000,,5,Average Nee
 ,NORTH WARREN CSD,Warren,63,63020204,630202040000,,5,Average Need,false,false
 ,QUEENSBURY UFSD,Warren,63,63090203,630902030000,,5,Average Need,false,false
 ,WARRENSBURG CSD,Warren,63,63120104,631201040000,,5,Average Need,false,false
-Argyle,ARGYLE CSD,Washington,64,64010104,640101040000,,5,Average Need,false,true
-Cambridge,CAMBRIDGE CSD,Washington,64,64161004,641610040000,,5,Average Need,true,true
-Fort Ann,FORT ANN CSD,Washington,64,64050204,640502040000,,5,Average Need,false,true
-Fort Edward,FORT EDWARD UFSD,Washington,64,64060102,640601020000,,5,Average Need,false,true
-Granville,GRANVILLE CSD,Washington,64,64070104,640701040000,,4,High Need: Rural,false,true
-Greenwich,GREENWICH CSD,Washington,64,64080104,640801040000,,5,Average Need,true,true
-Hartford,HARTFORD CSD,Washington,64,64100104,641001040000,,5,Average Need,false,true
-Hudson Falls,HUDSON FALLS CSD,Washington,64,64130106,641301060000,,4,High Need: Rural,false,true
+Argyle,ARGYLE CSD,Washington,64,64010104,640101040000,3603210,5,Average Need,false,true
+Cambridge,CAMBRIDGE CSD,Washington,64,64161004,641610040000,3606210,5,Average Need,true,true
+Fort Ann,FORT ANN CSD,Washington,64,64050204,640502040000,3611280,5,Average Need,false,true
+Fort Edward,FORT EDWARD UFSD,Washington,64,64060102,640601020000,3611310,5,Average Need,false,true
+Granville,GRANVILLE CSD,Washington,64,64070104,640701040000,3612450,4,High Need: Rural,false,true
+Greenwich,GREENWICH CSD,Washington,64,64080104,640801040000,3612900,5,Average Need,true,true
+Hartford,HARTFORD CSD,Washington,64,64100104,641001040000,3613830,5,Average Need,false,true
+Hudson Falls,HUDSON FALLS CSD,Washington,64,64130106,641301060000,3614970,4,High Need: Rural,false,true
 ,PUTNAM CSD,Washington,64,64140104,641401040000,,4,High Need: Rural,false,false
-Salem,SALEM CSD,Washington,64,64150104,641501040000,,5,Average Need,true,true
-Whitehall,WHITEHALL CSD,Washington,64,64170106,641701060000,,4,High Need: Rural,false,true
+Salem,SALEM CSD,Washington,64,64150104,641501040000,3625470,5,Average Need,true,true
+Whitehall,WHITEHALL CSD,Washington,64,64170106,641701060000,3631290,4,High Need: Rural,false,true
 ,CLYDE-SAVANNAH CSD,Wayne,65,65030104,650301040000,,4,High Need: Rural,false,false
 ,GANANDA CSD,Wayne,65,65090204,650902040000,,5,Average Need,false,false
 ,LYONS CSD,Wayne,65,65050104,650501040000,,4,High Need: Rural,false,false

@@ -35,6 +35,7 @@ def _find_repo_root() -> Path:
 REPO_ROOT = _find_repo_root()
 DATA_DIR = REPO_ROOT / "data"
 PANEL_PATH = DATA_DIR / "enrollment_staff" / "district_enrollment_teachers_panel.parquet"
+CCD_PATH = DATA_DIR / "enrollment_staff" / "ccd_pupil_teacher_ny.parquet"
 
 
 # ---------------------------------------------------------------------------
@@ -54,8 +55,8 @@ GRAPH_GROUP: dict[str, str] = {
 }
 
 #: All Washington County K-12 districts. Putnam CSD (64140104) is excluded: it
-#: is a K-8 district that tuitions out its high-schoolers (0 students in grades
-#: 9-12), so it is not comparable on K-12 measures.
+#: has no high school of its own (0 students in grades 9-12), so it is not
+#: comparable on K-12 measures.
 WASHINGTON_K12: dict[str, str] = {
     "64010104": "Argyle",
     "64161004": "Cambridge",
@@ -75,6 +76,27 @@ TABLE_GROUP: dict[str, str] = {
     **WASHINGTON_K12,
     "52170104": "Schuylerville",  # Saratoga
     "49050106": "Hoosick Falls",  # Rensselaer
+}
+
+#: NCES district IDs (LEAIDs) for the comparison districts, used to join the
+#: federal Common Core of Data (CCD) FTE-based pupil-teacher ratio. Keys are the
+#: NYSED district codes (the project's stable key). Verified by name, county and
+#: grade range against the CCD directory; note Fort Edward is a Union Free (UFSD)
+#: district, not a "Central" district, and our Salem is Washington County's, not
+#: the same-named district in Westchester.
+NCES_LEAID: dict[str, str] = {
+    "64010104": "3603210",  # Argyle
+    "64161004": "3606210",  # Cambridge
+    "64050204": "3611280",  # Fort Ann
+    "64060102": "3611310",  # Fort Edward (UFSD)
+    "64070104": "3612450",  # Granville
+    "64080104": "3612900",  # Greenwich
+    "64100104": "3613830",  # Hartford
+    "64130106": "3614970",  # Hudson Falls
+    "64150104": "3625470",  # Salem
+    "64170106": "3631290",  # Whitehall
+    "52170104": "3626160",  # Schuylerville
+    "49050106": "3614760",  # Hoosick Falls
 }
 
 #: Colour palette for the graph group: Cambridge gets the one bold colour and
@@ -117,6 +139,40 @@ def district_order(group: dict[str, str]) -> list[str]:
     """Focus district first, then the rest alphabetically (orders chart legends)."""
     rest = sorted(name for name in group.values() if name != FOCUS)
     return [FOCUS, *rest]
+
+
+def load_ccd() -> pl.DataFrame:
+    """Read the cached NCES Common Core of Data pupil-teacher table.
+
+    Built by ``src/build_ccd_pupil_teacher.py`` from the Urban Institute's
+    mirror of NCES CCD. ``year_end`` is already shifted to the NYSED
+    school-year-ending convention: CCD labels a year by its fall term, so
+    ``year_end = ccd_year + 1`` (e.g. CCD 2024 is the 2024-25 school year).
+    The FTE-based ratio is ``enrollment / teachers_total_fte``.
+    """
+    return pl.read_parquet(CCD_PATH)
+
+
+def ccd_ratio_for(group: dict[str, str]) -> pl.DataFrame:
+    """NCES/CCD FTE-based students-per-teacher for `group`, labelled like the
+    NYSED panel: columns ``district``, ``region``, ``year_end`` and
+    ``ccd_students_per_teacher`` (only districts with a known LEAID appear).
+    """
+    name_by_leaid = {
+        NCES_LEAID[cd]: name for cd, name in group.items() if cd in NCES_LEAID
+    }
+    region_by_name = {
+        name: ("Washington County" if cd in WASHINGTON_K12 else "Other comparison districts")
+        for cd, name in group.items()
+    }
+    return (
+        load_ccd()
+        .filter(pl.col("leaid").is_in(list(name_by_leaid)))
+        .with_columns(pl.col("leaid").replace_strict(name_by_leaid).alias("district"))
+        .with_columns(pl.col("district").replace_strict(region_by_name).alias("region"))
+        .select("district", "region", "year_end", "ccd_students_per_teacher")
+        .sort("district", "year_end")
+    )
 
 
 def theme_ccs():

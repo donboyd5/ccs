@@ -1,15 +1,21 @@
-# Class sizes and staffing
+# Students per teacher
 
-How many students does each teacher serve, and how has that changed? This
-chapter starts with the broadest staffing measure available across districts —
-**K-12 students per teacher** — and compares Cambridge with its neighbors over
-time. Later sections will add related measures (and, where NYSED publishes it,
-official average class size).
+A natural question is how crowded Cambridge's classrooms are compared with
+nearby districts. The measure most people picture is **class size** — the number
+of students in a typical classroom — but NYSED does not publish class size by
+district in the data used here. The closest available measure is **K-12 students
+per teacher**: a district's K-12 enrollment divided by its number of teachers.
 
-A reminder from the [Overview](index.qmd): this ratio divides K-12 enrollment by
-a district-wide teacher *headcount*, so it is an approximate comparison measure,
-not an official class-size statistic. Lower values mean fewer students per
-teacher.
+Students per teacher is a useful staffing comparison, but it is **not** class
+size, and it is always lower than class size — because it counts *every* teacher
+(including part-time teachers and specialists who don't lead a regular class),
+not just the teachers standing in front of a full classroom. Read it as a
+staffing ratio, not a count of children in a room.
+
+A reminder from the [Overview](index.qmd): the teacher figure is a district-wide
+*headcount* (all grades, not full-time-equivalents), so this is an approximate
+measure for comparing districts and tracking change over time. Lower means fewer
+students per teacher.
 
 ```{python}
 #| label: setup
@@ -20,7 +26,6 @@ import sys
 # Make the shared helper importable regardless of Quarto's working directory.
 sys.path.insert(0, os.getcwd())
 
-import pandas as pd
 import polars as pl
 from plotnine import (
     aes,
@@ -46,24 +51,21 @@ year teacher counts exist) through 2025.
 ```{python}
 #| label: fig-students-per-teacher
 #| fig-cap: "K–12 students per teacher by school year ending, 2018 (2017–18) through 2025 (2024–25). Lower means fewer students per teacher. Source: NYSED Enrollment and Student & Educator databases."
-g = cc.panel_for(cc.GRAPH_GROUP)  # 5 districts, 2018+
-
-pdf = (
-    g.select("district", "year_end", "k12_students_per_teacher")
+g = (
+    cc.panel_for(cc.GRAPH_GROUP)  # 5 districts, 2018+
+    .select("district", "year_end", "k12_students_per_teacher")
     .drop_nulls()
-    .to_pandas()
 )
-pdf["district"] = pd.Categorical(
-    pdf["district"], categories=cc.district_order(cc.GRAPH_GROUP), ordered=True
-)
-cambridge = pdf[pdf["district"] == cc.FOCUS]
+cambridge = g.filter(pl.col("district") == cc.FOCUS)
 
 (
-    ggplot(pdf, aes("year_end", "k12_students_per_teacher", color="district"))
+    ggplot(g, aes("year_end", "k12_students_per_teacher", color="district"))
     + geom_line(size=1)
     + geom_point(size=1.8)
     + geom_line(cambridge, size=2.4)  # emphasize the focus district
-    + scale_color_manual(values=cc.PALETTE, name="")
+    + scale_color_manual(
+        values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
+    )
     + scale_x_continuous(breaks=list(range(2018, 2026)))
     + labs(
         x="School year ending",
@@ -156,3 +158,159 @@ table is also a reminder that these districts differ greatly in size (compare
 small districts like Fort Edward with larger ones like Hudson Falls and
 Granville), which shapes how much a single hire or a small enrollment swing
 moves the ratio.
+
+## A national cross-check: NCES teacher FTE
+
+The ratio above has two limitations worth testing. NYSED reports a teacher
+*headcount*, whereas the standard pupil-teacher ratio — the one NCES, the OECD
+and most cross-state comparisons use — divides enrollment by teacher
+*full-time-equivalents (FTE)*. And it comes from a single state source. The
+federal **Common Core of Data (CCD)** offers an independent check: it reports
+teacher FTE and enrollment for every district. (CCD labels a school year by its
+fall term, so its years are shifted here to match NYSED's school-year-ending
+labels.)
+
+First the diagnostic question — do the two measures agree for Cambridge?
+
+**The two measures never differ by more than about two-thirds of a student per teacher, and both fall sharply in 2023–24.**
+
+```{python}
+#| label: fig-cambridge-sources
+#| fig-cap: "Cambridge students per teacher: NYSED (teacher headcount) vs. NCES Common Core of Data (teacher FTE), by school year ending. Sources: NYSED Enrollment and Student & Educator databases; NCES CCD via the Urban Institute Education Data Portal."
+ny = (
+    cc.panel_for(cc.GRAPH_GROUP)
+    .filter(pl.col("district") == cc.FOCUS)
+    .select("year_end", pl.col("k12_students_per_teacher").alias("ratio"))
+    .drop_nulls()
+    .with_columns(pl.lit("NYSED (teacher headcount)").alias("source"))
+)
+ccd_cam = (
+    cc.ccd_ratio_for(cc.GRAPH_GROUP)
+    .filter((pl.col("district") == cc.FOCUS) & (pl.col("year_end") >= 2018))
+    .select("year_end", pl.col("ccd_students_per_teacher").alias("ratio"))
+    .drop_nulls()
+    .with_columns(pl.lit("NCES (teacher FTE)").alias("source"))
+)
+both = pl.concat(
+    [
+        ny.with_columns(pl.col("year_end").cast(pl.Int64)),
+        ccd_cam.with_columns(pl.col("year_end").cast(pl.Int64)),
+    ]
+)
+source_colors = {
+    "NYSED (teacher headcount)": "#C8102E",
+    "NCES (teacher FTE)": "#2C6E9B",
+}
+
+(
+    ggplot(both, aes("year_end", "ratio", color="source"))
+    + geom_line(size=1.2)
+    + geom_point(size=2)
+    + scale_color_manual(values=source_colors, name="")
+    + scale_x_continuous(breaks=list(range(2018, 2026)))
+    + labs(
+        x="School year ending",
+        y="Students per teacher",
+        title="Cambridge students per teacher: headcount vs. FTE",
+    )
+    + cc.theme_ccs()
+)
+```
+
+The two lines stay close because, in small districts, a teacher headcount and its
+full-time-equivalent are nearly the same — there are few part-timers. More
+important, the independent FTE measure shows the **same sharp decline in
+2023–24**, so that turning point is not an artifact of how NYSED counts teachers.
+
+Having confirmed the two agree, the next chart and table repeat the earlier views
+using the NCES FTE-based ratio — the version directly comparable to other states
+and to national figures.
+
+**On the NCES measure too, Cambridge has the lowest ratio of the group in the two most recent years.**
+
+```{python}
+#| label: fig-students-per-teacher-ccd
+#| fig-cap: "NCES (CCD) FTE-based students per teacher by school year ending. Source: NCES Common Core of Data via the Urban Institute Education Data Portal."
+gc = (
+    cc.ccd_ratio_for(cc.GRAPH_GROUP)
+    .filter(pl.col("year_end") >= 2018)
+    .select("district", "year_end", pl.col("ccd_students_per_teacher").alias("ratio"))
+    .drop_nulls()
+)
+cambridge_ccd = gc.filter(pl.col("district") == cc.FOCUS)
+
+(
+    ggplot(gc, aes("year_end", "ratio", color="district"))
+    + geom_line(size=1)
+    + geom_point(size=1.8)
+    + geom_line(cambridge_ccd, size=2.4)  # emphasize the focus district
+    + scale_color_manual(
+        values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
+    )
+    + scale_x_continuous(breaks=list(range(2018, 2026)))
+    + labs(
+        x="School year ending",
+        y="Students per teacher (NCES FTE)",
+        title="District enrollment ÷ teacher FTE (NCES CCD), 2017–18 to 2024–25",
+    )
+    + cc.theme_ccs()
+)
+```
+
+```{python}
+#| label: tbl-students-per-teacher-ccd
+#| tbl-cap: "NCES (CCD) FTE-based students per teacher by district and school year ending."
+tc = cc.ccd_ratio_for(cc.TABLE_GROUP).filter(pl.col("year_end").is_between(2018, 2025))
+
+wide_c = (
+    tc.with_columns(
+        pl.when(pl.col("region") == "Washington County")
+        .then(0)
+        .otherwise(1)
+        .alias("_rank")
+    )
+    .pivot(
+        values="ccd_students_per_teacher",
+        index=["_rank", "region", "district"],
+        on="year_end",
+    )
+    .sort(["_rank", "district"])
+    .drop("_rank")
+)
+
+year_cols_c = [c for c in wide_c.columns if c.isdigit()]
+wide_c = wide_c.with_columns((pl.col("2025") - pl.col("2018")).alias("chg"))
+
+(
+    GT(wide_c, rowname_col="district", groupname_col="region")
+    .tab_header(
+        title="Students per teacher (NCES FTE basis)",
+        subtitle="School-year-ending 2018 (2017–18) through 2025 (2024–25)",
+    )
+    .fmt_number(columns=year_cols_c + ["chg"], decimals=1)
+    .tab_spanner(label="School year ending", columns=year_cols_c)
+    .cols_label(chg=md("Change<br>2018→2025"))
+    .sub_missing(missing_text="—")
+    .tab_style(
+        style=[style.fill(color="#FCEFB4"), style.text(weight="bold")],
+        locations=[
+            loc.body(rows=pl.col("district") == cc.FOCUS),
+            loc.stub(rows=pl.col("district") == cc.FOCUS),
+        ],
+    )
+    .tab_source_note(
+        md(
+            "**Source:** NCES Common Core of Data (teacher FTE and enrollment), "
+            "via the Urban Institute Education Data Portal. Ratio = district "
+            "enrollment ÷ teacher full-time-equivalents — the nationally "
+            "standard pupil-teacher ratio. CCD years are shifted to "
+            "school-year-ending (2025 = 2024–25)."
+        )
+    )
+)
+```
+
+One difference to keep in mind: the NCES ratio divides *total* district enrollment
+(which includes pre-K) by teacher FTE, while the NYSED ratio earlier uses K-12
+enrollment and a headcount. The two therefore differ slightly in level, but they
+agree on the pattern — which is what the comparison turns on.
