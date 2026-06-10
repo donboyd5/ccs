@@ -1,0 +1,724 @@
+short_name,district_name,county_name,county_cd,nysed_district_cd,beds_entity_cd,nces_leaid,needs_rc_category,needs_rc_description,in_graph_group,in_table_group
+,ALBANY CITY SD,Albany,01,01010001,010100010000,,3,High Need: Urban-Suburban,false,false
+,BERNE-KNOX-WESTERLO CSD,Albany,01,01020104,010201040000,,5,Average Need,false,false
+,BETHLEHEM CSD,Albany,01,01030606,010306060000,,6,Low Need,false,false
+,COHOES CITY SD,Albany,01,01050001,010500010000,,3,High Need: Urban-Suburban,false,false
+,GREEN ISLAND UFSD,Albany,01,01070103,010701030000,,3,High Need: Urban-Suburban,false,false
+,GUILDERLAND CSD,Albany,01,01080206,010802060000,,6,Low Need,false,false
+,MENANDS UFSD,Albany,01,01061502,010615020000,,5,Average Need,false,false
+,NORTH COLONIE CSD,Albany,01,01062306,010623060000,,6,Low Need,false,false
+,RAVENA-COEYMANS-SELKIRK CSD,Albany,01,01040206,010402060000,,5,Average Need,false,false
+,SOUTH COLONIE CSD,Albany,01,01060106,010601060000,,5,Average Need,false,false
+,VOORHEESVILLE CSD,Albany,01,01100306,011003060000,,6,Low Need,false,false
+,WATERVLIET CITY SD,Albany,01,01120001,011200010000,,3,High Need: Urban-Suburban,false,false
+,ALFRED-ALMOND CSD,Allegany,02,02010104,020101040000,,5,Average Need,false,false
+,ANDOVER CSD,Allegany,02,02060104,020601040000,,4,High Need: Rural,false,false
+,BELFAST CSD,Allegany,02,02080104,020801040000,,4,High Need: Rural,false,false
+,BOLIVAR-RICHBURG CSD,Allegany,02,02290204,022902040000,,4,High Need: Rural,false,false
+,CANASERAGA CSD,Allegany,02,02110204,021102040000,,4,High Need: Rural,false,false
+,CUBA-RUSHFORD CSD,Allegany,02,02230204,022302040000,,4,High Need: Rural,false,false
+,FILLMORE CSD,Allegany,02,02200104,022001040000,,4,High Need: Rural,false,false
+,FRIENDSHIP CSD,Allegany,02,02160104,021601040000,,4,High Need: Rural,false,false
+,GENESEE VALLEY CSD,Allegany,02,02070204,020702040000,,4,High Need: Rural,false,false
+,SCIO CSD,Allegany,02,02240104,022401040000,,4,High Need: Rural,false,false
+,WELLSVILLE CSD,Allegany,02,02260106,022601060000,,4,High Need: Rural,false,false
+,WHITESVILLE CSD,Allegany,02,02210104,022101040000,,4,High Need: Rural,false,false
+,NYC GEOG DIST # 7 - BRONX,Bronx,32,32070001,320700010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST # 8 - BRONX,Bronx,32,32080001,320800010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST # 9 - BRONX,Bronx,32,32090001,320900010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #10 - BRONX,Bronx,32,32100001,321000010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #11 - BRONX,Bronx,32,32110001,321100010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #12 - BRONX,Bronx,32,32120001,321200010000,,1,High Need: NYC,false,false
+,,Broome,03,03020108,030201080000,,,,false,false
+,BINGHAMTON CITY SD,Broome,03,03020001,030200010000,,3,High Need: Urban-Suburban,false,false
+,CHENANGO FORKS CSD,Broome,03,03010106,030101060000,,5,Average Need,false,false
+,CHENANGO VALLEY CSD,Broome,03,03070106,030701060000,,4,High Need: Rural,false,false
+,DEPOSIT CSD,Broome,03,03130104,031301040000,,4,High Need: Rural,false,false
+,HARPURSVILLE CSD,Broome,03,03050104,030501040000,,4,High Need: Rural,false,false
+,JOHNSON CITY CSD,Broome,03,03150206,031502060000,,3,High Need: Urban-Suburban,false,false
+,MAINE-ENDWELL CSD,Broome,03,03110106,031101060000,,5,Average Need,false,false
+,SUSQUEHANNA VALLEY CSD,Broome,03,03060106,030601060000,,5,Average Need,false,false
+,UNION-ENDICOTT CSD,Broome,03,03150106,031501060000,,5,Average Need,false,false
+,VESTAL CSD,Broome,03,03160106,031601060000,,5,Average Need,false,false
+,WHITNEY POINT CSD,Broome,03,03140106,031401060000,,4,High Need: Rural,false,false
+,WINDSOR CSD,Broome,03,03170106,031701060000,,5,Average Need,false,false
+,ALLEGANY-LIMESTONE CSD,Cattaraugus,04,04030206,040302060000,,5,Average Need,false,false
+,CATTARAUGUS-LITTLE VALLEY CSD,Cattaraugus,04,04230204,042302040000,,5,Average Need,false,false
+,ELLICOTTVILLE CSD,Cattaraugus,04,04090104,040901040000,,5,Average Need,false,false
+,FRANKLINVILLE CSD,Cattaraugus,04,04110104,041101040000,,4,High Need: Rural,false,false
+,GOWANDA CSD,Cattaraugus,04,04280106,042801060000,,4,High Need: Rural,false,false
+,HINSDALE CSD,Cattaraugus,04,04140104,041401040000,,4,High Need: Rural,false,false
+,OLEAN CITY SD,Cattaraugus,04,04240001,042400010000,,3,High Need: Urban-Suburban,false,false
+,PORTVILLE CSD,Cattaraugus,04,04290104,042901040000,,5,Average Need,false,false
+,RANDOLPH ACAD UFSD,Cattaraugus,04,04301102,043011020000,,5,Average Need,false,false
+,RANDOLPH CSD,Cattaraugus,04,04300104,043001040000,,4,High Need: Rural,false,false
+,SALAMANCA CITY SD,Cattaraugus,04,04320005,043200050000,,4,High Need: Rural,false,false
+,WEST VALLEY CSD,Cattaraugus,04,04020404,040204040000,,5,Average Need,false,false
+,YORKSHIRE-PIONEER CSD,Cattaraugus,04,04350106,043501060000,,4,High Need: Rural,false,false
+,AUBURN CITY SD,Cayuga,05,05010001,050100010000,,3,High Need: Urban-Suburban,false,false
+,CATO-MERIDIAN CSD,Cayuga,05,05040104,050401040000,,5,Average Need,false,false
+,MORAVIA CSD,Cayuga,05,05130104,051301040000,,5,Average Need,false,false
+,PORT BYRON CSD,Cayuga,05,05110104,051101040000,,5,Average Need,false,false
+,SOUTHERN CAYUGA CSD,Cayuga,05,05070104,050701040000,,5,Average Need,false,false
+,UNION SPRINGS CSD,Cayuga,05,05190104,051901040000,,5,Average Need,false,false
+,WEEDSPORT CSD,Cayuga,05,05030104,050301040000,,5,Average Need,false,false
+,BEMUS POINT CSD,Chautauqua,06,06100104,061001040000,,5,Average Need,false,false
+,BROCTON CSD,Chautauqua,06,06230104,062301040000,,4,High Need: Rural,false,false
+,CASSADAGA VALLEY CSD,Chautauqua,06,06040104,060401040000,,4,High Need: Rural,false,false
+,CHAUTAUQUA LAKE CSD,Chautauqua,06,06050304,060503040000,,5,Average Need,false,false
+,CLYMER CSD,Chautauqua,06,06070104,060701040000,,5,Average Need,false,false
+,DUNKIRK CITY SD,Chautauqua,06,06080001,060800010000,,3,High Need: Urban-Suburban,false,false
+,FALCONER CSD,Chautauqua,06,06110104,061101040000,,5,Average Need,false,false
+,FORESTVILLE CSD,Chautauqua,06,06150304,061503040000,,5,Average Need,false,false
+,FREDONIA CSD,Chautauqua,06,06220106,062201060000,,5,Average Need,false,false
+,FREWSBURG CSD,Chautauqua,06,06030104,060301040000,,5,Average Need,false,false
+,JAMESTOWN CITY SD,Chautauqua,06,06170001,061700010000,,3,High Need: Urban-Suburban,false,false
+,PANAMA CSD,Chautauqua,06,06160104,061601040000,,5,Average Need,false,false
+,PINE VALLEY CSD (SOUTH DAYTON),Chautauqua,06,06060104,060601040000,,4,High Need: Rural,false,false
+,RIPLEY CSD,Chautauqua,06,06240104,062401040000,,4,High Need: Rural,false,false
+,SHERMAN CSD,Chautauqua,06,06260104,062601040000,,4,High Need: Rural,false,false
+,SILVER CREEK CSD,Chautauqua,06,06150104,061501040000,,4,High Need: Rural,false,false
+,SOUTHWESTERN CSD AT JAMESTOWN,Chautauqua,06,06020106,060201060000,,5,Average Need,false,false
+,WESTFIELD CSD,Chautauqua,06,06290104,062901040000,,4,High Need: Rural,false,false
+,ELMIRA CITY SD,Chemung,07,07060001,070600010000,,3,High Need: Urban-Suburban,false,false
+,ELMIRA HEIGHTS CSD,Chemung,07,07090206,070902060000,,5,Average Need,false,false
+,HORSEHEADS CSD,Chemung,07,07090106,070901060000,,5,Average Need,false,false
+,AFTON CSD,Chenango,08,08010104,080101040000,,4,High Need: Rural,false,false
+,BAINBRIDGE-GUILFORD CSD,Chenango,08,08020104,080201040000,,5,Average Need,false,false
+,GREENE CSD,Chenango,08,08060104,080601040000,,4,High Need: Rural,false,false
+,NORWICH CITY SD,Chenango,08,08120005,081200050000,,4,High Need: Rural,false,false
+,OTSELIC VALLEY CSD,Chenango,08,08140104,081401040000,,4,High Need: Rural,false,false
+,OXFORD ACADEMY & CSD,Chenango,08,08150104,081501040000,,4,High Need: Rural,false,false
+,SHERBURNE-EARLVILLE CSD,Chenango,08,08200104,082001040000,,4,High Need: Rural,false,false
+,UNADILLA VALLEY CSD,Chenango,08,08100304,081003040000,,4,High Need: Rural,false,false
+,AUSABLE VALLEY CSD,Clinton,09,09020104,090201040000,,5,Average Need,false,false
+,BEEKMANTOWN CSD,Clinton,09,09030106,090301060000,,5,Average Need,false,false
+,CHAZY UFSD,Clinton,09,09060102,090601020000,,5,Average Need,false,false
+,NORTHEASTERN CLINTON CSD,Clinton,09,09050104,090501040000,,5,Average Need,false,false
+,NORTHERN ADIRONDACK CSD,Clinton,09,09090104,090901040000,,4,High Need: Rural,false,false
+,PERU CSD,Clinton,09,09110106,091101060000,,5,Average Need,false,false
+,PLATTSBURGH CITY SD,Clinton,09,09120001,091200010000,,3,High Need: Urban-Suburban,false,false
+,SARANAC CSD,Clinton,09,09140206,091402060000,,5,Average Need,false,false
+,BERKSHIRE UFSD,Columbia,10,10030802,100308020000,,5,Average Need,false,false
+,CHATHAM CSD,Columbia,10,10100104,101001040000,,5,Average Need,false,false
+,GERMANTOWN CSD,Columbia,10,10090204,100902040000,,5,Average Need,false,false
+,HUDSON CITY SD,Columbia,10,10130001,101300010000,,4,High Need: Rural,false,false
+,KINDERHOOK CSD,Columbia,10,10140104,101401040000,,5,Average Need,false,false
+,NEW LEBANON CSD,Columbia,10,10160104,101601040000,,5,Average Need,false,false
+,TACONIC HILLS CSD,Columbia,10,10050104,100501040000,,5,Average Need,false,false
+,ANDES CSD,Delaware,12,12010204,120102040000,,5,Average Need,false,false
+,CHARLOTTE VALLEY CSD,Delaware,12,12040104,120401040000,,4,High Need: Rural,false,false
+,DELAWARE ACADEMY CSD AT DELHI,Delaware,12,12050104,120501040000,,5,Average Need,false,false
+,DOWNSVILLE CSD,Delaware,12,12030104,120301040000,,4,High Need: Rural,false,false
+,FRANKLIN CSD,Delaware,12,12070104,120701040000,,4,High Need: Rural,false,false
+,HANCOCK CSD,Delaware,12,12090604,120906040000,,4,High Need: Rural,false,false
+,MARGARETVILLE CSD,Delaware,12,12140104,121401040000,,4,High Need: Rural,false,false
+,ROXBURY CSD,Delaware,12,12150204,121502040000,,5,Average Need,false,false
+,SIDNEY CSD,Delaware,12,12160106,121601060000,,4,High Need: Rural,false,false
+,SOUTH KORTRIGHT CSD,Delaware,12,12170204,121702040000,,5,Average Need,false,false
+,STAMFORD CSD,Delaware,12,12170104,121701040000,,4,High Need: Rural,false,false
+,WALTON CSD,Delaware,12,12190104,121901040000,,4,High Need: Rural,false,false
+,ARLINGTON CSD,Dutchess,13,13160106,131601060000,,5,Average Need,false,false
+,BEACON CITY SD,Dutchess,13,13020001,130200010000,,5,Average Need,false,false
+,DOVER UFSD,Dutchess,13,13050202,130502020000,,5,Average Need,false,false
+,HYDE PARK CSD,Dutchess,13,13080106,130801060000,,5,Average Need,false,false
+,MILLBROOK CSD,Dutchess,13,13220104,132201040000,,6,Low Need,false,false
+,NORTHEAST CSD,Dutchess,13,13110104,131101040000,,5,Average Need,false,false
+,PAWLING CSD,Dutchess,13,13120104,131201040000,,6,Low Need,false,false
+,PINE PLAINS CSD,Dutchess,13,13130104,131301040000,,5,Average Need,false,false
+,POUGHKEEPSIE CITY SD,Dutchess,13,13150001,131500010000,,3,High Need: Urban-Suburban,false,false
+,RED HOOK CSD,Dutchess,13,13170106,131701060000,,5,Average Need,false,false
+,RHINEBECK CSD,Dutchess,13,13180104,131801040000,,6,Low Need,false,false
+,SPACKENKILL UFSD,Dutchess,13,13160202,131602020000,,5,Average Need,false,false
+,WAPPINGERS CSD,Dutchess,13,13210106,132101060000,,5,Average Need,false,false
+,,Erie,14,14160302,141603020000,,,,false,false
+,AKRON CSD,Erie,14,14210104,142101040000,,5,Average Need,false,false
+,ALDEN CSD,Erie,14,14010106,140101060000,,5,Average Need,false,false
+,AMHERST CSD,Erie,14,14020106,140201060000,,5,Average Need,false,false
+,BUFFALO CITY SD,Erie,14,14060001,140600010000,,2,High Need: Large City (Buffalo/Rochester/Syracuse/Yonkers),false,false
+,CHEEKTOWAGA CSD,Erie,14,14070106,140701060000,,5,Average Need,false,false
+,CHEEKTOWAGA-MARYVALE UFSD,Erie,14,14070203,140702030000,,5,Average Need,false,false
+,CHEEKTOWAGA-SLOAN UFSD,Erie,14,14070903,140709030000,,3,High Need: Urban-Suburban,false,false
+,CLARENCE CSD,Erie,14,14080106,140801060000,,6,Low Need,false,false
+,CLEVELAND HILL UFSD,Erie,14,14070302,140703020000,,5,Average Need,false,false
+,DEPEW UFSD,Erie,14,14070703,140707030000,,5,Average Need,false,false
+,EAST AURORA UFSD,Erie,14,14030103,140301030000,,6,Low Need,false,false
+,EDEN CSD,Erie,14,14120106,141201060000,,5,Average Need,false,false
+,EVANS-BRANT CSD (LAKE SHORE),Erie,14,14140106,141401060000,,5,Average Need,false,false
+,FRONTIER CSD,Erie,14,14160406,141604060000,,5,Average Need,false,false
+,GRAND ISLAND CSD,Erie,14,14150106,141501060000,,5,Average Need,false,false
+,HAMBURG CSD,Erie,14,14160106,141601060000,,5,Average Need,false,false
+,HOLLAND CSD,Erie,14,14170104,141701040000,,5,Average Need,false,false
+,IROQUOIS CSD,Erie,14,14130106,141301060000,,5,Average Need,false,false
+,KENMORE-TONAWANDA UFSD,Erie,14,14260103,142601030000,,5,Average Need,false,false
+,LACKAWANNA CITY SD,Erie,14,14180001,141800010000,,3,High Need: Urban-Suburban,false,false
+,LANCASTER CSD,Erie,14,14190106,141901060000,,5,Average Need,false,false
+,NORTH COLLINS CSD,Erie,14,14220104,142201040000,,5,Average Need,false,false
+,ORCHARD PARK CSD,Erie,14,14230106,142301060000,,6,Low Need,false,false
+,SPRINGVILLE-GRIFFITH INST CSD,Erie,14,14110106,141101060000,,5,Average Need,false,false
+,SWEET HOME CSD,Erie,14,14020706,140207060000,,5,Average Need,false,false
+,TONAWANDA CITY SD,Erie,14,14250001,142500010000,,5,Average Need,false,false
+,WEST SENECA CSD,Erie,14,14280106,142801060000,,5,Average Need,false,false
+,WILLIAMSVILLE CSD,Erie,14,14020306,140203060000,,5,Average Need,false,false
+,BOQUET VALLEY CSD,Essex,15,15180104,151801040000,,5,Average Need,false,false
+,CROWN POINT CSD,Essex,15,15020304,150203040000,,4,High Need: Rural,false,false
+,ELIZABETHTOWN-LEWIS CENTRAL SCHOOL DISTRICT,Essex,15,15030104,150301040000,,4,High Need: Rural,false,false
+,KEENE CSD,Essex,15,15060104,150601040000,,6,Low Need,false,false
+,LAKE PLACID CSD,Essex,15,15110204,151102040000,,5,Average Need,false,false
+,MINERVA CSD,Essex,15,15080104,150801040000,,5,Average Need,false,false
+,MORIAH CSD,Essex,15,15090104,150901040000,,4,High Need: Rural,false,false
+,NEWCOMB CSD,Essex,15,15100104,151001040000,,6,Low Need,false,false
+,SCHROON LAKE CSD,Essex,15,15140104,151401040000,,5,Average Need,false,false
+,TICONDEROGA CSD,Essex,15,15150106,151501060000,,4,High Need: Rural,false,false
+,WESTPORT CENTRAL SCHOOL DISTRICT,Essex,15,15160104,151601040000,,5,Average Need,false,false
+,WILLSBORO CSD,Essex,15,15170104,151701040000,,5,Average Need,false,false
+,BRUSHTON-MOIRA CSD,Franklin,16,16160104,161601040000,,4,High Need: Rural,false,false
+,CHATEAUGAY CSD,Franklin,16,16080104,160801040000,,4,High Need: Rural,false,false
+,MALONE CSD,Franklin,16,16150106,161501060000,,4,High Need: Rural,false,false
+,SALMON RIVER CSD,Franklin,16,16120104,161201040000,,4,High Need: Rural,false,false
+,SARANAC LAKE CSD,Franklin,16,16140106,161401060000,,5,Average Need,false,false
+,ST REGIS FALLS CSD,Franklin,16,16180104,161801040000,,4,High Need: Rural,false,false
+,TUPPER LAKE CSD,Franklin,16,16010106,160101060000,,5,Average Need,false,false
+,BROADALBIN-PERTH CSD,Fulton,17,17110204,171102040000,,5,Average Need,false,false
+,GLOVERSVILLE CITY SD,Fulton,17,17050001,170500010000,,4,High Need: Rural,false,false
+,JOHNSTOWN CITY SD,Fulton,17,17060001,170600010000,,5,Average Need,false,false
+,MAYFIELD CSD,Fulton,17,17080104,170801040000,,5,Average Need,false,false
+,NORTHVILLE CSD,Fulton,17,17090104,170901040000,,5,Average Need,false,false
+,WHEELERVILLE UFSD,Fulton,17,17030102,170301020000,,5,Average Need,false,false
+,ALEXANDER CSD,Genesee,18,18020204,180202040000,,5,Average Need,false,false
+,BATAVIA CITY SD,Genesee,18,18030001,180300010000,,4,High Need: Rural,false,false
+,BYRON-BERGEN CSD,Genesee,18,18070104,180701040000,,5,Average Need,false,false
+,ELBA CSD,Genesee,18,18090104,180901040000,,5,Average Need,false,false
+,LE ROY CSD,Genesee,18,18100106,181001060000,,5,Average Need,false,false
+,OAKFIELD-ALABAMA CSD,Genesee,18,18110104,181101040000,,5,Average Need,false,false
+,PAVILION CSD,Genesee,18,18120104,181201040000,,5,Average Need,false,false
+,PEMBROKE CSD,Genesee,18,18130204,181302040000,,5,Average Need,false,false
+,CAIRO-DURHAM CSD,Greene,19,19030104,190301040000,,5,Average Need,false,false
+,CATSKILL CSD,Greene,19,19040106,190401060000,,5,Average Need,false,false
+,COXSACKIE-ATHENS CSD,Greene,19,19050104,190501040000,,5,Average Need,false,false
+,GREENVILLE CSD,Greene,19,19070104,190701040000,,5,Average Need,false,false
+,HUNTER-TANNERSVILLE CSD,Greene,19,19090104,190901040000,,5,Average Need,false,false
+,WINDHAM-ASHLAND-JEWETT CSD,Greene,19,19140104,191401040000,,5,Average Need,false,false
+,INDIAN LAKE CSD,Hamilton,20,20040104,200401040000,,5,Average Need,false,false
+,INLET COMN SD,Hamilton,20,20050108,200501080000,,5,Average Need,false,false
+,LAKE PLEASANT CSD,Hamilton,20,20060104,200601040000,,5,Average Need,false,false
+,LONG LAKE CSD,Hamilton,20,20070104,200701040000,,6,Low Need,false,false
+,PISECO COMN SD,Hamilton,20,20010108,200101080000,,,,false,false
+,RAQUETTE LAKE UFSD,Hamilton,20,20070202,200702020000,,,,false,false
+,WELLS CSD,Hamilton,20,20090104,200901040000,,5,Average Need,false,false
+,CENTRAL VALLEY CSD AT ILION-MOHAWK,Herkimer,21,21210104,212101040000,,4,High Need: Rural,false,false
+,DOLGEVILLE CSD,Herkimer,21,21100304,211003040000,,4,High Need: Rural,false,false
+,FRANKFORT-SCHUYLER CSD,Herkimer,21,21040206,210402060000,,5,Average Need,false,false
+,HERKIMER CSD,Herkimer,21,21060106,210601060000,,4,High Need: Rural,false,false
+,LITTLE FALLS CITY SD,Herkimer,21,21080005,210800050000,,4,High Need: Rural,false,false
+,MOUNT MARKHAM CSD,Herkimer,21,21200104,212001040000,,4,High Need: Rural,false,false
+,POLAND CSD,Herkimer,21,21110304,211103040000,,4,High Need: Rural,false,false
+,TOWN OF WEBB UFSD,Herkimer,21,21190102,211901020000,,6,Low Need,false,false
+,VAN HORNESVILLE-OWEN D YOUNG CSD,Herkimer,21,21170104,211701040000,,4,High Need: Rural,false,false
+,WEST CANADA VALLEY CSD,Herkimer,21,21030204,210302040000,,5,Average Need,false,false
+,ALEXANDRIA CSD,Jefferson,22,22020204,220202040000,,5,Average Need,false,false
+,BELLEVILLE-HENDERSON CSD,Jefferson,22,22090904,220909040000,,4,High Need: Rural,false,false
+,CARTHAGE CSD,Jefferson,22,22220106,222201060000,,4,High Need: Rural,false,false
+,GENERAL BROWN CSD,Jefferson,22,22040104,220401040000,,5,Average Need,false,false
+,INDIAN RIVER CSD,Jefferson,22,22030106,220301060000,,4,High Need: Rural,false,false
+,LA FARGEVILLE CSD,Jefferson,22,22140104,221401040000,,4,High Need: Rural,false,false
+,LYME CSD,Jefferson,22,22130104,221301040000,,4,High Need: Rural,false,false
+,SACKETS HARBOR CSD,Jefferson,22,22100104,221001040000,,5,Average Need,false,false
+,SOUTH JEFFERSON CSD,Jefferson,22,22010104,220101040000,,5,Average Need,false,false
+,THOUSAND ISLANDS CSD,Jefferson,22,22070104,220701040000,,5,Average Need,false,false
+,WATERTOWN CITY SD,Jefferson,22,22200001,222000010000,,3,High Need: Urban-Suburban,false,false
+,NYC GEOG DIST #13 - BROOKLYN,Kings,33,33130001,331300010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #14 - BROOKLYN,Kings,33,33140001,331400010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #15 - BROOKLYN,Kings,33,33150001,331500010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #16 - BROOKLYN,Kings,33,33160001,331600010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #17 - BROOKLYN,Kings,33,33170001,331700010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #18 - BROOKLYN,Kings,33,33180001,331800010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #19 - BROOKLYN,Kings,33,33190001,331900010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #20 - BROOKLYN,Kings,33,33200001,332000010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #21 - BROOKLYN,Kings,33,33210001,332100010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #22 - BROOKLYN,Kings,33,33220001,332200010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #23 - BROOKLYN,Kings,33,33230001,332300010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #32 - BROOKLYN,Kings,33,33320001,333200010000,,1,High Need: NYC,false,false
+,BEAVER RIVER CSD,Lewis,23,23130104,231301040000,,4,High Need: Rural,false,false
+,COPENHAGEN CSD,Lewis,23,23020104,230201040000,,4,High Need: Rural,false,false
+,HARRISVILLE CSD,Lewis,23,23030104,230301040000,,5,Average Need,false,false
+,LOWVILLE ACADEMY & CSD,Lewis,23,23090104,230901040000,,4,High Need: Rural,false,false
+,SOUTH LEWIS CSD,Lewis,23,23110104,231101040000,,4,High Need: Rural,false,false
+,AVON CSD,Livingston,24,24010104,240101040000,,5,Average Need,false,false
+,CALEDONIA-MUMFORD CSD,Livingston,24,24020104,240201040000,,5,Average Need,false,false
+,DALTON-NUNDA CSD (KESHEQUA),Livingston,24,24110104,241101040000,,5,Average Need,false,false
+,DANSVILLE CSD,Livingston,24,24100106,241001060000,,4,High Need: Rural,false,false
+,GENESEO CSD,Livingston,24,24040104,240401040000,,5,Average Need,false,false
+,LIVONIA CSD,Livingston,24,24080106,240801060000,,5,Average Need,false,false
+,MT MORRIS CSD,Livingston,24,24090104,240901040000,,4,High Need: Rural,false,false
+,YORK CSD,Livingston,24,24170104,241701040000,,5,Average Need,false,false
+,BROOKFIELD CSD,Madison,25,25010904,250109040000,,4,High Need: Rural,false,false
+,CANASTOTA CSD,Madison,25,25090106,250901060000,,5,Average Need,false,false
+,CAZENOVIA CSD,Madison,25,25020106,250201060000,,5,Average Need,false,false
+,CHITTENANGO CSD,Madison,25,25160106,251601060000,,5,Average Need,false,false
+,DERUYTER CSD,Madison,25,25030104,250301040000,,4,High Need: Rural,false,false
+,HAMILTON CSD,Madison,25,25070104,250701040000,,5,Average Need,false,false
+,MADISON CSD,Madison,25,25110104,251101040000,,4,High Need: Rural,false,false
+,MORRISVILLE-EATON CSD,Madison,25,25040104,250401040000,,4,High Need: Rural,false,false
+,ONEIDA CITY SD,Madison,25,25140001,251400010000,,5,Average Need,false,false
+,STOCKBRIDGE VALLEY CSD,Madison,25,25150104,251501040000,,5,Average Need,false,false
+,BRIGHTON CSD,Monroe,26,26010106,260101060000,,6,Low Need,false,false
+,BROCKPORT CSD,Monroe,26,26180106,261801060000,,5,Average Need,false,false
+,CHURCHVILLE-CHILI CSD,Monroe,26,26150106,261501060000,,5,Average Need,false,false
+,EAST IRONDEQUOIT CSD,Monroe,26,26080106,260801060000,,5,Average Need,false,false
+,EAST ROCHESTER UFSD,Monroe,26,26131303,261313030000,,5,Average Need,false,false
+,FAIRPORT CSD,Monroe,26,26130106,261301060000,,5,Average Need,false,false
+,GATES CHILI CSD,Monroe,26,26040106,260401060000,,5,Average Need,false,false
+,GREECE CSD,Monroe,26,26050106,260501060000,,5,Average Need,false,false
+,HILTON CSD,Monroe,26,26110106,261101060000,,5,Average Need,false,false
+,HONEOYE FALLS-LIMA CSD,Monroe,26,26090106,260901060000,,5,Average Need,false,false
+,PENFIELD CSD,Monroe,26,26120106,261201060000,,5,Average Need,false,false
+,PITTSFORD CSD,Monroe,26,26140106,261401060000,,6,Low Need,false,false
+,ROCHESTER CITY SD,Monroe,26,26160001,261600010000,,2,High Need: Large City (Buffalo/Rochester/Syracuse/Yonkers),false,false
+,RUSH-HENRIETTA CSD,Monroe,26,26170106,261701060000,,5,Average Need,false,false
+,SPENCERPORT CSD,Monroe,26,26100106,261001060000,,5,Average Need,false,false
+,WEBSTER CSD,Monroe,26,26190106,261901060000,,5,Average Need,false,false
+,WEST IRONDEQUOIT CSD,Monroe,26,26080306,260803060000,,5,Average Need,false,false
+,WHEATLAND-CHILI CSD,Monroe,26,26200104,262001040000,,5,Average Need,false,false
+,AMSTERDAM CITY SD,Montgomery,27,27010001,270100010000,,4,High Need: Rural,false,false
+,CANAJOHARIE CSD,Montgomery,27,27030104,270301040000,,4,High Need: Rural,false,false
+,FONDA-FULTONVILLE CSD,Montgomery,27,27060104,270601040000,,5,Average Need,false,false
+,FORT PLAIN CSD,Montgomery,27,27070104,270701040000,,4,High Need: Rural,false,false
+,OPPENHEIM-EPHRATAH-ST. JOHNSVILLE CS,Montgomery,27,27120104,271201040000,,4,High Need: Rural,false,false
+,BALDWIN UFSD,Nassau,28,28021003,280210030000,,6,Low Need,false,false
+,BELLMORE UFSD,Nassau,28,28020702,280207020000,,6,Low Need,false,false
+,BELLMORE-MERRICK CENTRAL HS DISTRICT,Nassau,28,28025307,280253070000,,6,Low Need,false,false
+,BETHPAGE UFSD,Nassau,28,28052103,280521030000,,6,Low Need,false,false
+,CARLE PLACE UFSD,Nassau,28,28041103,280411030000,,6,Low Need,false,false
+,EAST MEADOW UFSD,Nassau,28,28020303,280203030000,,6,Low Need,false,false
+,EAST ROCKAWAY UFSD,Nassau,28,28021903,280219030000,,5,Average Need,false,false
+,EAST WILLISTON UFSD,Nassau,28,28040203,280402030000,,6,Low Need,false,false
+,ELMONT UFSD,Nassau,28,28021602,280216020000,,5,Average Need,false,false
+,FARMINGDALE UFSD,Nassau,28,28052203,280522030000,,5,Average Need,false,false
+,FLORAL PARK-BELLEROSE UFSD,Nassau,28,28022202,280222020000,,6,Low Need,false,false
+,FRANKLIN SQUARE UFSD,Nassau,28,28021702,280217020000,,6,Low Need,false,false
+,FREEPORT UFSD,Nassau,28,28020903,280209030000,,3,High Need: Urban-Suburban,false,false
+,GARDEN CITY UFSD,Nassau,28,28021803,280218030000,,6,Low Need,false,false
+,GLEN COVE CITY SD,Nassau,28,28010001,280100010000,,5,Average Need,false,false
+,GREAT NECK UFSD,Nassau,28,28040703,280407030000,,6,Low Need,false,false
+,HEMPSTEAD UFSD,Nassau,28,28020103,280201030000,,3,High Need: Urban-Suburban,false,false
+,HERRICKS UFSD,Nassau,28,28040903,280409030000,,6,Low Need,false,false
+,HEWLETT-WOODMERE UFSD,Nassau,28,28021403,280214030000,,6,Low Need,false,false
+,HICKSVILLE UFSD,Nassau,28,28051703,280517030000,,5,Average Need,false,false
+,ISLAND PARK UFSD,Nassau,28,28023102,280231020000,,5,Average Need,false,false
+,ISLAND TREES UFSD,Nassau,28,28022603,280226030000,,5,Average Need,false,false
+,JERICHO UFSD,Nassau,28,28051503,280515030000,,6,Low Need,false,false
+,LAWRENCE UFSD,Nassau,28,28021503,280215030000,,5,Average Need,false,false
+,LEVITTOWN UFSD,Nassau,28,28020503,280205030000,,5,Average Need,false,false
+,LOCUST VALLEY CSD,Nassau,28,28050306,280503060000,,6,Low Need,false,false
+,LONG BEACH CITY SD,Nassau,28,28030001,280300010000,,5,Average Need,false,false
+,LYNBROOK UFSD,Nassau,28,28022003,280220030000,,6,Low Need,false,false
+,MALVERNE UFSD,Nassau,28,28021203,280212030000,,5,Average Need,false,false
+,MANHASSET UFSD,Nassau,28,28040603,280406030000,,6,Low Need,false,false
+,MASSAPEQUA UFSD,Nassau,28,28052303,280523030000,,6,Low Need,false,false
+,MERRICK UFSD,Nassau,28,28022502,280225020000,,6,Low Need,false,false
+,MINEOLA UFSD,Nassau,28,28041003,280410030000,,6,Low Need,false,false
+,NEW HYDE PARK-GARDEN CITY PARK UFSD,Nassau,28,28040502,280405020000,,6,Low Need,false,false
+,NORTH BELLMORE UFSD,Nassau,28,28020402,280204020000,,6,Low Need,false,false
+,NORTH MERRICK UFSD,Nassau,28,28022902,280229020000,,6,Low Need,false,false
+,NORTH SHORE CSD,Nassau,28,28050106,280501060000,,6,Low Need,false,false
+,OCEANSIDE UFSD,Nassau,28,28021103,280211030000,,6,Low Need,false,false
+,OYSTER BAY-EAST NORWICH CSD,Nassau,28,28050606,280506060000,,6,Low Need,false,false
+,PLAINEDGE UFSD,Nassau,28,28051803,280518030000,,6,Low Need,false,false
+,PLAINVIEW-OLD BETHPAGE CSD,Nassau,28,28050406,280504060000,,6,Low Need,false,false
+,PORT WASHINGTON UFSD,Nassau,28,28040403,280404030000,,6,Low Need,false,false
+,ROCKVILLE CENTRE UFSD,Nassau,28,28022103,280221030000,,6,Low Need,false,false
+,ROOSEVELT UFSD,Nassau,28,28020803,280208030000,,3,High Need: Urban-Suburban,false,false
+,ROSLYN UFSD,Nassau,28,28040303,280403030000,,6,Low Need,false,false
+,SEAFORD UFSD,Nassau,28,28020603,280206030000,,6,Low Need,false,false
+,SEWANHAKA CENTRAL HS DISTRICT,Nassau,28,28025207,280252070000,,6,Low Need,false,false
+,SYOSSET CSD,Nassau,28,28050206,280502060000,,6,Low Need,false,false
+,UNIONDALE UFSD,Nassau,28,28020203,280202030000,,3,High Need: Urban-Suburban,false,false
+,VALLEY STREAM 13 UFSD,Nassau,28,28021302,280213020000,,5,Average Need,false,false
+,VALLEY STREAM 24 UFSD,Nassau,28,28022402,280224020000,,5,Average Need,false,false
+,VALLEY STREAM 30 UFSD,Nassau,28,28023002,280230020000,,5,Average Need,false,false
+,VALLEY STREAM CENTRAL HS DISTRICT,Nassau,28,28025107,280251070000,,6,Low Need,false,false
+,WANTAGH UFSD,Nassau,28,28022303,280223030000,,6,Low Need,false,false
+,WEST HEMPSTEAD UFSD,Nassau,28,28022703,280227030000,,5,Average Need,false,false
+,WESTBURY UFSD,Nassau,28,28040103,280401030000,,3,High Need: Urban-Suburban,false,false
+,NYC GEOG DIST # 1 - MANHATTAN,New York,31,31010001,310100010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST # 2 - MANHATTAN,New York,31,31020001,310200010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST # 3 - MANHATTAN,New York,31,31030001,310300010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST # 4 - MANHATTAN,New York,31,31040001,310400010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST # 5 - MANHATTAN,New York,31,31050001,310500010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST # 6 - MANHATTAN,New York,31,31060001,310600010000,,1,High Need: NYC,false,false
+,BARKER CSD,Niagara,40,40130104,401301040000,,5,Average Need,false,false
+,LEWISTON-PORTER CSD,Niagara,40,40030106,400301060000,,5,Average Need,false,false
+,LOCKPORT CITY SD,Niagara,40,40040001,400400010000,,5,Average Need,false,false
+,NEWFANE CSD,Niagara,40,40060106,400601060000,,5,Average Need,false,false
+,NIAGARA FALLS CITY SD,Niagara,40,40080001,400800010000,,3,High Need: Urban-Suburban,false,false
+,NIAGARA-WHEATFIELD CSD,Niagara,40,40070106,400701060000,,5,Average Need,false,false
+,NORTH TONAWANDA CITY SD,Niagara,40,40090001,400900010000,,5,Average Need,false,false
+,ROYALTON-HARTLAND CSD,Niagara,40,40120106,401201060000,,5,Average Need,false,false
+,STARPOINT CSD,Niagara,40,40100106,401001060000,,5,Average Need,false,false
+,WILSON CSD,Niagara,40,40150106,401501060000,,5,Average Need,false,false
+,NYC SPEC SCHOOLS - DIST 75,Nyc Central Office,30,30750001,307500010000,,1,High Need: NYC,false,false
+,NYC-CHANCELLOR'S OFFICE,Nyc Central Office,30,30000001,300000010000,,1,High Need: NYC,false,false
+,ADIRONDACK CSD,Oneida,41,41040106,410401060000,,4,High Need: Rural,false,false
+,CAMDEN CSD,Oneida,41,41060104,410601040000,,4,High Need: Rural,false,false
+,CLINTON CSD,Oneida,41,41110106,411101060000,,5,Average Need,false,false
+,HOLLAND PATENT CSD,Oneida,41,41220106,412201060000,,5,Average Need,false,false
+,NEW HARTFORD CSD,Oneida,41,41150106,411501060000,,6,Low Need,false,false
+,NY MILLS UFSD,Oneida,41,41150402,411504020000,,5,Average Need,false,false
+,ORISKANY CSD,Oneida,41,41290104,412901040000,,5,Average Need,false,false
+,REMSEN CSD,Oneida,41,41170104,411701040000,,4,High Need: Rural,false,false
+,ROME CITY SD,Oneida,41,41180001,411800010000,,3,High Need: Urban-Suburban,false,false
+,SAUQUOIT VALLEY CSD,Oneida,41,41160304,411603040000,,5,Average Need,false,false
+,SHERRILL CITY SD,Oneida,41,41200005,412000050000,,5,Average Need,false,false
+,UTICA CITY SD,Oneida,41,41230001,412300010000,,3,High Need: Urban-Suburban,false,false
+,WATERVILLE CSD,Oneida,41,41190204,411902040000,,5,Average Need,false,false
+,WESTMORELAND CSD,Oneida,41,41280104,412801040000,,5,Average Need,false,false
+,WHITESBORO CSD,Oneida,41,41290206,412902060000,,5,Average Need,false,false
+,BALDWINSVILLE CSD,Onondaga,42,42090106,420901060000,,5,Average Need,false,false
+,EAST SYRACUSE MINOA CSD,Onondaga,42,42040106,420401060000,,5,Average Need,false,false
+,FABIUS-POMPEY CSD,Onondaga,42,42060104,420601040000,,5,Average Need,false,false
+,FAYETTEVILLE-MANLIUS CSD,Onondaga,42,42100106,421001060000,,6,Low Need,false,false
+,JAMESVILLE-DEWITT CSD,Onondaga,42,42041106,420411060000,,5,Average Need,false,false
+,JORDAN-ELBRIDGE CSD,Onondaga,42,42050106,420501060000,,5,Average Need,false,false
+,LAFAYETTE CSD,Onondaga,42,42080704,420807040000,,5,Average Need,false,false
+,LIVERPOOL CSD,Onondaga,42,42150106,421501060000,,5,Average Need,false,false
+,LYNCOURT UFSD,Onondaga,42,42150402,421504020000,,5,Average Need,false,false
+,MARCELLUS CSD,Onondaga,42,42110106,421101060000,,5,Average Need,false,false
+,NORTH SYRACUSE CSD,Onondaga,42,42030306,420303060000,,5,Average Need,false,false
+,ONONDAGA CSD,Onondaga,42,42120104,421201040000,,5,Average Need,false,false
+,SKANEATELES CSD,Onondaga,42,42160106,421601060000,,6,Low Need,false,false
+,SOLVAY UFSD,Onondaga,42,42070203,420702030000,,3,High Need: Urban-Suburban,false,false
+,SYRACUSE CITY SD,Onondaga,42,42180001,421800010000,,2,High Need: Large City (Buffalo/Rochester/Syracuse/Yonkers),false,false
+,TULLY CSD,Onondaga,42,42190204,421902040000,,5,Average Need,false,false
+,WEST GENESEE CSD,Onondaga,42,42010106,420101060000,,5,Average Need,false,false
+,WESTHILL CSD,Onondaga,42,42070106,420701060000,,5,Average Need,false,false
+,CANANDAIGUA CITY SD,Ontario,43,43030005,430300050000,,5,Average Need,false,false
+,EAST BLOOMFIELD CSD,Ontario,43,43050104,430501040000,,5,Average Need,false,false
+,GENEVA CITY SD,Ontario,43,43070001,430700010000,,4,High Need: Rural,false,false
+,GORHAM-MIDDLESEX CSD (MARCUS WHITMAN,Ontario,43,43090106,430901060000,,5,Average Need,false,false
+,HONEOYE CSD,Ontario,43,43140104,431401040000,,5,Average Need,false,false
+,MANCHESTER-SHORTSVILLE CSD (RED JACK,Ontario,43,43110104,431101040000,,5,Average Need,false,false
+,NAPLES CSD,Ontario,43,43120104,431201040000,,5,Average Need,false,false
+,PHELPS-CLIFTON SPRINGS CSD,Ontario,43,43130106,431301060000,,5,Average Need,false,false
+,VICTOR CSD,Ontario,43,43170106,431701060000,,5,Average Need,false,false
+,CHESTER UFSD,Orange,44,44020102,440201020000,,5,Average Need,false,false
+,CORNWALL CSD,Orange,44,44030106,440301060000,,5,Average Need,false,false
+,FLORIDA UFSD,Orange,44,44211502,442115020000,,5,Average Need,false,false
+,GOSHEN CSD,Orange,44,44060104,440601040000,,5,Average Need,false,false
+,GREENWOOD LAKE UFSD,Orange,44,44211102,442111020000,,5,Average Need,false,false
+,HIGHLAND FALLS CSD,Orange,44,44090104,440901040000,,5,Average Need,false,false
+,KIRYAS JOEL VILLAGE UFSD,Orange,44,44120202,441202020000,,3,High Need: Urban-Suburban,false,false
+,MIDDLETOWN CITY SD,Orange,44,44100001,441000010000,,3,High Need: Urban-Suburban,false,false
+,MINISINK VALLEY CSD,Orange,44,44110104,441101040000,,5,Average Need,false,false
+,MONROE-WOODBURY CSD,Orange,44,44120106,441201060000,,5,Average Need,false,false
+,NEWBURGH CITY SD,Orange,44,44160001,441600010000,,3,High Need: Urban-Suburban,false,false
+,PINE BUSH CSD,Orange,44,44040106,440401060000,,5,Average Need,false,false
+,PORT JERVIS CITY SD,Orange,44,44180005,441800050000,,4,High Need: Rural,false,false
+,TUXEDO UFSD,Orange,44,44190302,441903020000,,6,Low Need,false,false
+,VALLEY CSD (MONTGOMERY),Orange,44,44130106,441301060000,,5,Average Need,false,false
+,WARWICK VALLEY CSD,Orange,44,44210106,442101060000,,6,Low Need,false,false
+,WASHINGTONVILLE CSD,Orange,44,44010206,440102060000,,5,Average Need,false,false
+,ALBION CSD,Orleans,45,45010106,450101060000,,4,High Need: Rural,false,false
+,HOLLEY CSD,Orleans,45,45070404,450704040000,,5,Average Need,false,false
+,KENDALL CSD,Orleans,45,45060704,450607040000,,5,Average Need,false,false
+,LYNDONVILLE CSD,Orleans,45,45100104,451001040000,,5,Average Need,false,false
+,MEDINA CSD,Orleans,45,45080106,450801060000,,4,High Need: Rural,false,false
+,ALTMAR-PARISH-WILLIAMSTOWN CSD,Oswego,46,46010204,460102040000,,4,High Need: Rural,false,false
+,CENTRAL SQUARE CSD,Oswego,46,46080106,460801060000,,5,Average Need,false,false
+,FULTON CITY SD,Oswego,46,46050001,460500010000,,3,High Need: Urban-Suburban,false,false
+,HANNIBAL CSD,Oswego,46,46070104,460701040000,,4,High Need: Rural,false,false
+,MEXICO CSD,Oswego,46,46090106,460901060000,,5,Average Need,false,false
+,OSWEGO CITY SD,Oswego,46,46130001,461300010000,,5,Average Need,false,false
+,PHOENIX CSD,Oswego,46,46200106,462001060000,,5,Average Need,false,false
+,PULASKI CSD,Oswego,46,46180104,461801040000,,4,High Need: Rural,false,false
+,SANDY CREEK CSD,Oswego,46,46190104,461901040000,,4,High Need: Rural,false,false
+,CHERRY VALLEY-SPRINGFIELD CSD,Otsego,47,47220204,472202040000,,5,Average Need,false,false
+,COOPERSTOWN CSD,Otsego,47,47170104,471701040000,,5,Average Need,false,false
+,EDMESTON CSD,Otsego,47,47050104,470501040000,,4,High Need: Rural,false,false
+,GILBERTSVILLE-MOUNT UPTON CSD,Otsego,47,47020204,470202040000,,4,High Need: Rural,false,false
+,LAURENS CSD,Otsego,47,47080104,470801040000,,4,High Need: Rural,false,false
+,MILFORD CSD,Otsego,47,47110104,471101040000,,4,High Need: Rural,false,false
+,MORRIS CSD,Otsego,47,47120104,471201040000,,4,High Need: Rural,false,false
+,ONEONTA CITY SD,Otsego,47,47140001,471400010000,,5,Average Need,false,false
+,OTEGO-UNADILLA CSD,Otsego,47,47160104,471601040000,,4,High Need: Rural,false,false
+,RICHFIELD SPRINGS CSD,Otsego,47,47200104,472001040000,,4,High Need: Rural,false,false
+,SCHENEVUS CSD,Otsego,47,47090104,470901040000,,5,Average Need,false,false
+,WORCESTER CSD,Otsego,47,47250604,472506040000,,5,Average Need,false,false
+,BREWSTER CSD,Putnam,48,48060106,480601060000,,6,Low Need,false,false
+,CARMEL CSD,Putnam,48,48010206,480102060000,,5,Average Need,false,false
+,GARRISON UFSD,Putnam,48,48040402,480404020000,,6,Low Need,false,false
+,HALDANE CSD,Putnam,48,48040104,480401040000,,6,Low Need,false,false
+,MAHOPAC CSD,Putnam,48,48010106,480101060000,,6,Low Need,false,false
+,PUTNAM VALLEY CSD,Putnam,48,48050304,480503040000,,6,Low Need,false,false
+,NYC GEOG DIST #24 - QUEENS,Queens,34,34240001,342400010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #25 - QUEENS,Queens,34,34250001,342500010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #26 - QUEENS,Queens,34,34260001,342600010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #27 - QUEENS,Queens,34,34270001,342700010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #28 - QUEENS,Queens,34,34280001,342800010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #29 - QUEENS,Queens,34,34290001,342900010000,,1,High Need: NYC,false,false
+,NYC GEOG DIST #30 - QUEENS,Queens,34,34300001,343000010000,,1,High Need: NYC,false,false
+,AVERILL PARK CSD,Rensselaer,49,49130206,491302060000,,5,Average Need,false,false
+,BERLIN CSD,Rensselaer,49,49010104,490101040000,,5,Average Need,false,false
+,BRUNSWICK CSD (BRITTONKILL),Rensselaer,49,49020204,490202040000,,5,Average Need,false,false
+,EAST GREENBUSH CSD,Rensselaer,49,49030106,490301060000,,5,Average Need,false,false
+,HOOSIC VALLEY CSD,Rensselaer,49,49140104,491401040000,,5,Average Need,false,false
+Hoosick Falls,HOOSICK FALLS CSD,Rensselaer,49,49050106,490501060000,,5,Average Need,true,true
+,LANSINGBURGH CSD,Rensselaer,49,49060106,490601060000,,3,High Need: Urban-Suburban,false,false
+,NORTH GREENBUSH COMN SD (WILLIAMS),Rensselaer,49,49080108,490801080000,,5,Average Need,false,false
+,RENSSELAER CITY SD,Rensselaer,49,49120001,491200010000,,3,High Need: Urban-Suburban,false,false
+,SCHODACK CSD,Rensselaer,49,49150104,491501040000,,5,Average Need,false,false
+,TROY CITY SD,Rensselaer,49,49170001,491700010000,,3,High Need: Urban-Suburban,false,false
+,WYNANTSKILL UFSD,Rensselaer,49,49080402,490804020000,,5,Average Need,false,false
+,NYC GEOG DIST #31 - STATEN ISLAND,Richmond,35,35310001,353100010000,,1,High Need: NYC,false,false
+,CLARKSTOWN CSD,Rockland,50,50010106,500101060000,,6,Low Need,false,false
+,EAST RAMAPO CSD (SPRING VALLEY),Rockland,50,50040206,500402060000,,3,High Need: Urban-Suburban,false,false
+,HAVERSTRAW-STONY POINT CSD (NORTH RO,Rockland,50,50020106,500201060000,,5,Average Need,false,false
+,NANUET UFSD,Rockland,50,50010803,500108030000,,6,Low Need,false,false
+,NYACK UFSD,Rockland,50,50030403,500304030000,,5,Average Need,false,false
+,PEARL RIVER UFSD,Rockland,50,50030803,500308030000,,6,Low Need,false,false
+,SOUTH ORANGETOWN CSD,Rockland,50,50030106,500301060000,,6,Low Need,false,false
+,SUFFERN CSD,Rockland,50,50040106,500401060000,,6,Low Need,false,false
+,BRASHER FALLS CSD,Saint Lawrence,51,51010104,510101040000,,4,High Need: Rural,false,false
+,CANTON CSD,Saint Lawrence,51,51020106,510201060000,,5,Average Need,false,false
+,CLIFTON-FINE CSD,Saint Lawrence,51,51040104,510401040000,,4,High Need: Rural,false,false
+,COLTON-PIERREPONT CSD,Saint Lawrence,51,51050104,510501040000,,5,Average Need,false,false
+,EDWARDS-KNOX CSD,Saint Lawrence,51,51310204,513102040000,,4,High Need: Rural,false,false
+,GOUVERNEUR CSD,Saint Lawrence,51,51110106,511101060000,,4,High Need: Rural,false,false
+,HAMMOND CSD,Saint Lawrence,51,51120104,511201040000,,4,High Need: Rural,false,false
+,HERMON-DEKALB CSD,Saint Lawrence,51,51130104,511301040000,,4,High Need: Rural,false,false
+,HEUVELTON CSD,Saint Lawrence,51,51240404,512404040000,,4,High Need: Rural,false,false
+,LISBON CSD,Saint Lawrence,51,51160204,511602040000,,4,High Need: Rural,false,false
+,MADRID-WADDINGTON CSD,Saint Lawrence,51,51190104,511901040000,,5,Average Need,false,false
+,MASSENA CSD,Saint Lawrence,51,51200106,512001060000,,4,High Need: Rural,false,false
+,MORRISTOWN CSD,Saint Lawrence,51,51210104,512101040000,,4,High Need: Rural,false,false
+,NORWOOD-NORFOLK CSD,Saint Lawrence,51,51220104,512201040000,,4,High Need: Rural,false,false
+,OGDENSBURG CITY SD,Saint Lawrence,51,51230001,512300010000,,4,High Need: Rural,false,false
+,PARISHVILLE-HOPKINTON CSD,Saint Lawrence,51,51250104,512501040000,,4,High Need: Rural,false,false
+,POTSDAM CSD,Saint Lawrence,51,51290206,512902060000,,5,Average Need,false,false
+,BALLSTON SPA CSD,Saratoga,52,52130106,521301060000,,5,Average Need,false,false
+,BURNT HILLS-BALLSTON LAKE CSD,Saratoga,52,52010106,520101060000,,6,Low Need,false,false
+,CORINTH CSD,Saratoga,52,52040104,520401040000,,5,Average Need,false,false
+,EDINBURG COMMON SD,Saratoga,52,52060108,520601080000,,5,Average Need,false,false
+,GALWAY CSD,Saratoga,52,52070104,520701040000,,5,Average Need,false,false
+,MECHANICVILLE CITY SD,Saratoga,52,52120005,521200050000,,5,Average Need,false,false
+,SARATOGA SPRINGS CITY SD,Saratoga,52,52180001,521800010000,,5,Average Need,false,false
+Schuylerville,SCHUYLERVILLE CSD,Saratoga,52,52170104,521701040000,,5,Average Need,true,true
+,SHENENDEHOWA CSD,Saratoga,52,52030206,520302060000,,5,Average Need,false,false
+,SOUTH GLENS FALLS CSD,Saratoga,52,52140104,521401040000,,5,Average Need,false,false
+,STILLWATER CSD,Saratoga,52,52200104,522001040000,,5,Average Need,false,false
+,WATERFORD-HALFMOON UFSD,Saratoga,52,52210103,522101030000,,5,Average Need,false,false
+,DUANESBURG CSD,Schenectady,53,53010104,530101040000,,5,Average Need,false,false
+,NISKAYUNA CSD,Schenectady,53,53030106,530301060000,,6,Low Need,false,false
+,ROTTERDAM-MOHONASEN CSD,Schenectady,53,53051506,530515060000,,5,Average Need,false,false
+,SCHALMONT CSD,Schenectady,53,53050106,530501060000,,5,Average Need,false,false
+,SCHENECTADY CITY SD,Schenectady,53,53060001,530600010000,,3,High Need: Urban-Suburban,false,false
+,SCOTIA-GLENVILLE CSD,Schenectady,53,53020206,530202060000,,5,Average Need,false,false
+,COBLESKILL-RICHMONDVILLE CSD,Schoharie,54,54110206,541102060000,,5,Average Need,false,false
+,GILBOA-CONESVILLE CSD,Schoharie,54,54080104,540801040000,,5,Average Need,false,false
+,JEFFERSON CSD,Schoharie,54,54090104,540901040000,,4,High Need: Rural,false,false
+,MIDDLEBURGH CSD,Schoharie,54,54100104,541001040000,,5,Average Need,false,false
+,SCHOHARIE CSD,Schoharie,54,54120104,541201040000,,5,Average Need,false,false
+,SHARON SPRINGS CSD,Schoharie,54,54140104,541401040000,,5,Average Need,false,false
+,ODESSA-MONTOUR CSD,Schuyler,55,55010104,550101040000,,4,High Need: Rural,false,false
+,WATKINS GLEN CSD,Schuyler,55,55030106,550301060000,,5,Average Need,false,false
+,ROMULUS CSD,Seneca,56,56060304,560603040000,,4,High Need: Rural,false,false
+,SENECA FALLS CSD,Seneca,56,56070106,560701060000,,5,Average Need,false,false
+,SOUTH SENECA CSD,Seneca,56,56050104,560501040000,,4,High Need: Rural,false,false
+,WATERLOO CSD,Seneca,56,56100606,561006060000,,4,High Need: Rural,false,false
+,ADDISON CSD,Steuben,57,57010104,570101040000,,4,High Need: Rural,false,false
+,ARKPORT CSD,Steuben,57,57190104,571901040000,,5,Average Need,false,false
+,AVOCA CSD,Steuben,57,57020104,570201040000,,4,High Need: Rural,false,false
+,BATH CSD,Steuben,57,57030206,570302060000,,4,High Need: Rural,false,false
+,BRADFORD CSD,Steuben,57,57040104,570401040000,,4,High Need: Rural,false,false
+,CAMPBELL-SAVONA CSD,Steuben,57,57060304,570603040000,,4,High Need: Rural,false,false
+,CANISTEO-GREENWOOD CSD,Steuben,57,57150206,571502060000,,4,High Need: Rural,false,false
+,CORNING CITY SD,Steuben,57,57100001,571000010000,,5,Average Need,false,false
+,HAMMONDSPORT CSD,Steuben,57,57290104,572901040000,,5,Average Need,false,false
+,HORNELL CITY SD,Steuben,57,57180001,571800010000,,4,High Need: Rural,false,false
+,JASPER-TROUPSBURG CSD,Steuben,57,57270204,572702040000,,4,High Need: Rural,false,false
+,PRATTSBURGH CSD,Steuben,57,57230104,572301040000,,4,High Need: Rural,false,false
+,WAYLAND-COHOCTON CSD,Steuben,57,57300204,573002040000,,4,High Need: Rural,false,false
+,AMAGANSETT UFSD,Suffolk,58,58030302,580303020000,,6,Low Need,false,false
+,AMITYVILLE UFSD,Suffolk,58,58010603,580106030000,,3,High Need: Urban-Suburban,false,false
+,BABYLON UFSD,Suffolk,58,58010103,580101030000,,6,Low Need,false,false
+,BAY SHORE UFSD,Suffolk,58,58050103,580501030000,,5,Average Need,false,false
+,BAYPORT-BLUE POINT UFSD,Suffolk,58,58050502,580505020000,,6,Low Need,false,false
+,BRENTWOOD UFSD,Suffolk,58,58051203,580512030000,,3,High Need: Urban-Suburban,false,false
+,BRIDGEHAMPTON UFSD,Suffolk,58,58090902,580909020000,,6,Low Need,false,false
+,BROOKHAVEN-COMSEWOGUE UFSD,Suffolk,58,58020302,580203020000,,5,Average Need,false,false
+,CENTER MORICHES UFSD,Suffolk,58,58023302,580233020000,,5,Average Need,false,false
+,CENTRAL ISLIP UFSD,Suffolk,58,58051303,580513030000,,3,High Need: Urban-Suburban,false,false
+,COLD SPRING HARBOR CSD,Suffolk,58,58040206,580402060000,,6,Low Need,false,false
+,COMMACK UFSD,Suffolk,58,58041003,580410030000,,6,Low Need,false,false
+,CONNETQUOT CSD,Suffolk,58,58050706,580507060000,,5,Average Need,false,false
+,COPIAGUE UFSD,Suffolk,58,58010503,580105030000,,3,High Need: Urban-Suburban,false,false
+,DEER PARK UFSD,Suffolk,58,58010703,580107030000,,5,Average Need,false,false
+,EAST HAMPTON UFSD,Suffolk,58,58030102,580301020000,,6,Low Need,false,false
+,EAST ISLIP UFSD,Suffolk,58,58050303,580503030000,,5,Average Need,false,false
+,EAST MORICHES UFSD,Suffolk,58,58023402,580234020000,,6,Low Need,false,false
+,EAST QUOGUE UFSD,Suffolk,58,58091702,580917020000,,6,Low Need,false,false
+,EASTPORT-SOUTH MANOR CSD,Suffolk,58,58091206,580912060000,,6,Low Need,false,false
+,ELWOOD UFSD,Suffolk,58,58040102,580401020000,,5,Average Need,false,false
+,FIRE ISLAND UFSD,Suffolk,58,58051402,580514020000,,6,Low Need,false,false
+,FISHERS ISLAND UFSD,Suffolk,58,58100402,581004020000,,6,Low Need,false,false
+,GREENPORT UFSD,Suffolk,58,58101002,581010020000,,5,Average Need,false,false
+,HALF HOLLOW HILLS CSD,Suffolk,58,58040506,580405060000,,6,Low Need,false,false
+,HAMPTON BAYS UFSD,Suffolk,58,58090502,580905020000,,5,Average Need,false,false
+,HARBORFIELDS CSD,Suffolk,58,58040606,580406060000,,6,Low Need,false,false
+,HAUPPAUGE UFSD,Suffolk,58,58050603,580506030000,,6,Low Need,false,false
+,HUNTINGTON UFSD,Suffolk,58,58040303,580403030000,,5,Average Need,false,false
+,ISLIP UFSD,Suffolk,58,58050202,580502020000,,5,Average Need,false,false
+,KINGS PARK CSD,Suffolk,58,58080506,580805060000,,6,Low Need,false,false
+,LINDENHURST UFSD,Suffolk,58,58010403,580104030000,,5,Average Need,false,false
+,LITTLE FLOWER UFSD,Suffolk,58,58060302,580603020000,,5,Average Need,false,false
+,LONGWOOD CSD,Suffolk,58,58021206,580212060000,,5,Average Need,false,false
+,MATTITUCK-CUTCHOGUE UFSD,Suffolk,58,58101202,581012020000,,6,Low Need,false,false
+,MIDDLE COUNTRY CSD,Suffolk,58,58021106,580211060000,,5,Average Need,false,false
+,MILLER PLACE UFSD,Suffolk,58,58020802,580208020000,,6,Low Need,false,false
+,MONTAUK UFSD,Suffolk,58,58030602,580306020000,,6,Low Need,false,false
+,MT SINAI UFSD,Suffolk,58,58020702,580207020000,,6,Low Need,false,false
+,NEW SUFFOLK COMN SD,Suffolk,58,58101508,581015080000,,5,Average Need,false,false
+,NORTH BABYLON UFSD,Suffolk,58,58010303,580103030000,,5,Average Need,false,false
+,NORTHPORT-EAST NORTHPORT UFSD,Suffolk,58,58040403,580404030000,,6,Low Need,false,false
+,OYSTERPONDS UFSD,Suffolk,58,58100202,581002020000,,6,Low Need,false,false
+,PATCHOGUE-MEDFORD UFSD,Suffolk,58,58022403,580224030000,,5,Average Need,false,false
+,PORT JEFFERSON UFSD,Suffolk,58,58020602,580206020000,,6,Low Need,false,false
+,QUOGUE UFSD,Suffolk,58,58090302,580903020000,,6,Low Need,false,false
+,REMSENBURG-SPEONK UFSD,Suffolk,58,58090102,580901020000,,6,Low Need,false,false
+,RIVERHEAD CSD,Suffolk,58,58060204,580602040000,,5,Average Need,false,false
+,ROCKY POINT UFSD,Suffolk,58,58020902,580209020000,,5,Average Need,false,false
+,SACHEM CSD,Suffolk,58,58020506,580205060000,,5,Average Need,false,false
+,SAG HARBOR UFSD,Suffolk,58,58030502,580305020000,,6,Low Need,false,false
+,SAGAPONACK COMN SD,Suffolk,58,58091008,580910080000,,5,Average Need,false,false
+,SAYVILLE UFSD,Suffolk,58,58050403,580504030000,,6,Low Need,false,false
+,SHELTER ISLAND UFSD,Suffolk,58,58070102,580701020000,,6,Low Need,false,false
+,SHOREHAM-WADING RIVER CSD,Suffolk,58,58060104,580601040000,,6,Low Need,false,false
+,SMITHTOWN CSD,Suffolk,58,58080106,580801060000,,6,Low Need,false,false
+,SOUTH COUNTRY CSD,Suffolk,58,58023506,580235060000,,5,Average Need,false,false
+,SOUTH HUNTINGTON UFSD,Suffolk,58,58041303,580413030000,,5,Average Need,false,false
+,SOUTHAMPTON UFSD,Suffolk,58,58090603,580906030000,,6,Low Need,false,false
+,SOUTHOLD UFSD,Suffolk,58,58100502,581005020000,,6,Low Need,false,false
+,SPRINGS UFSD,Suffolk,58,58030402,580304020000,,5,Average Need,false,false
+,THREE VILLAGE CSD,Suffolk,58,58020106,580201060000,,6,Low Need,false,false
+,TUCKAHOE COMMON SD,Suffolk,58,58091308,580913080000,,6,Low Need,false,false
+,WAINSCOTT COMN SD,Suffolk,58,58030208,580302080000,,5,Average Need,false,false
+,WEST BABYLON UFSD,Suffolk,58,58010203,580102030000,,5,Average Need,false,false
+,WEST ISLIP UFSD,Suffolk,58,58050903,580509030000,,6,Low Need,false,false
+,WESTHAMPTON BEACH UFSD,Suffolk,58,58090202,580902020000,,6,Low Need,false,false
+,WILLIAM FLOYD UFSD,Suffolk,58,58023203,580232030000,,5,Average Need,false,false
+,WYANDANCH UFSD,Suffolk,58,58010902,580109020000,,3,High Need: Urban-Suburban,false,false
+,ELDRED CSD,Sullivan,59,59080104,590801040000,,5,Average Need,false,false
+,FALLSBURG CSD,Sullivan,59,59050106,590501060000,,4,High Need: Rural,false,false
+,LIBERTY CSD,Sullivan,59,59090106,590901060000,,4,High Need: Rural,false,false
+,LIVINGSTON MANOR CSD,Sullivan,59,59130204,591302040000,,4,High Need: Rural,false,false
+,MONTICELLO CSD,Sullivan,59,59140106,591401060000,,4,High Need: Rural,false,false
+,ROSCOE CSD,Sullivan,59,59130104,591301040000,,5,Average Need,false,false
+,SULLIVAN WEST CSD,Sullivan,59,59150204,591502040000,,5,Average Need,false,false
+,TRI-VALLEY CSD,Sullivan,59,59120104,591201040000,,5,Average Need,false,false
+,CANDOR CSD,Tioga,60,60030104,600301040000,,4,High Need: Rural,false,false
+,NEWARK VALLEY CSD,Tioga,60,60040204,600402040000,,5,Average Need,false,false
+,OWEGO-APALACHIN CSD,Tioga,60,60060106,600601060000,,5,Average Need,false,false
+,SPENCER-VAN ETTEN CSD,Tioga,60,60080104,600801040000,,4,High Need: Rural,false,false
+,TIOGA CSD,Tioga,60,60090304,600903040000,,4,High Need: Rural,false,false
+,WAVERLY CSD,Tioga,60,60010106,600101060000,,4,High Need: Rural,false,false
+,DRYDEN CSD,Tompkins,61,61030106,610301060000,,5,Average Need,false,false
+,GEORGE JUNIOR REPUBLIC UFSD,Tompkins,61,61032702,610327020000,,5,Average Need,false,false
+,GROTON CSD,Tompkins,61,61050104,610501040000,,5,Average Need,false,false
+,ITHACA CITY SD,Tompkins,61,61060001,610600010000,,5,Average Need,false,false
+,LANSING CSD,Tompkins,61,61080104,610801040000,,5,Average Need,false,false
+,NEWFIELD CSD,Tompkins,61,61090104,610901040000,,4,High Need: Rural,false,false
+,TRUMANSBURG CSD,Tompkins,61,61100104,611001040000,,5,Average Need,false,false
+,,Ulster,62,62020202,620202020000,,5,Average Need,false,false
+,ELLENVILLE CSD,Ulster,62,62200206,622002060000,,4,High Need: Rural,false,false
+,HIGHLAND CSD,Ulster,62,62080304,620803040000,,5,Average Need,false,false
+,KINGSTON CITY SD,Ulster,62,62060001,620600010000,,5,Average Need,false,false
+,MARLBORO CSD,Ulster,62,62100106,621001060000,,5,Average Need,false,false
+,NEW PALTZ CSD,Ulster,62,62110106,621101060000,,5,Average Need,false,false
+,ONTEORA CSD,Ulster,62,62120106,621201060000,,5,Average Need,false,false
+,RONDOUT VALLEY CSD,Ulster,62,62090106,620901060000,,5,Average Need,false,false
+,SAUGERTIES CSD,Ulster,62,62160106,621601060000,,5,Average Need,false,false
+,WALLKILL CSD,Ulster,62,62180106,621801060000,,5,Average Need,false,false
+,BOLTON CSD,Warren,63,63010104,630101040000,,6,Low Need,false,false
+,GLENS FALLS CITY SD,Warren,63,63030001,630300010000,,5,Average Need,false,false
+,GLENS FALLS COMN SD,Warren,63,63091808,630918080000,,3,High Need: Urban-Suburban,false,false
+,HADLEY-LUZERNE CSD,Warren,63,63080104,630801040000,,4,High Need: Rural,false,false
+,JOHNSBURG CSD,Warren,63,63060104,630601040000,,5,Average Need,false,false
+,LAKE GEORGE CSD,Warren,63,63070104,630701040000,,5,Average Need,false,false
+,NORTH WARREN CSD,Warren,63,63020204,630202040000,,5,Average Need,false,false
+,QUEENSBURY UFSD,Warren,63,63090203,630902030000,,5,Average Need,false,false
+,WARRENSBURG CSD,Warren,63,63120104,631201040000,,5,Average Need,false,false
+Argyle,ARGYLE CSD,Washington,64,64010104,640101040000,,5,Average Need,false,true
+Cambridge,CAMBRIDGE CSD,Washington,64,64161004,641610040000,,5,Average Need,true,true
+Fort Ann,FORT ANN CSD,Washington,64,64050204,640502040000,,5,Average Need,false,true
+Fort Edward,FORT EDWARD UFSD,Washington,64,64060102,640601020000,,5,Average Need,false,true
+Granville,GRANVILLE CSD,Washington,64,64070104,640701040000,,4,High Need: Rural,false,true
+Greenwich,GREENWICH CSD,Washington,64,64080104,640801040000,,5,Average Need,true,true
+Hartford,HARTFORD CSD,Washington,64,64100104,641001040000,,5,Average Need,false,true
+Hudson Falls,HUDSON FALLS CSD,Washington,64,64130106,641301060000,,4,High Need: Rural,false,true
+,PUTNAM CSD,Washington,64,64140104,641401040000,,4,High Need: Rural,false,false
+Salem,SALEM CSD,Washington,64,64150104,641501040000,,5,Average Need,true,true
+Whitehall,WHITEHALL CSD,Washington,64,64170106,641701060000,,4,High Need: Rural,false,true
+,CLYDE-SAVANNAH CSD,Wayne,65,65030104,650301040000,,4,High Need: Rural,false,false
+,GANANDA CSD,Wayne,65,65090204,650902040000,,5,Average Need,false,false
+,LYONS CSD,Wayne,65,65050104,650501040000,,4,High Need: Rural,false,false
+,MARION CSD,Wayne,65,65070104,650701040000,,5,Average Need,false,false
+,NEWARK CSD,Wayne,65,65010106,650101060000,,4,High Need: Rural,false,false
+,NORTH ROSE-WOLCOTT CSD,Wayne,65,65150106,651501060000,,4,High Need: Rural,false,false
+,PALMYRA-MACEDON CSD,Wayne,65,65090106,650901060000,,5,Average Need,false,false
+,RED CREEK CSD,Wayne,65,65150304,651503040000,,4,High Need: Rural,false,false
+,SODUS CSD,Wayne,65,65120106,651201060000,,4,High Need: Rural,false,false
+,WAYNE CSD,Wayne,65,65080106,650801060000,,5,Average Need,false,false
+,WILLIAMSON CSD,Wayne,65,65140204,651402040000,,5,Average Need,false,false
+,ARDSLEY UFSD,Westchester,66,66040503,660405030000,,6,Low Need,false,false
+,BEDFORD CSD,Westchester,66,66010206,660102060000,,6,Low Need,false,false
+,BLIND BROOK-RYE UFSD,Westchester,66,66190502,661905020000,,6,Low Need,false,false
+,BRIARCLIFF MANOR UFSD,Westchester,66,66140202,661402020000,,6,Low Need,false,false
+,BRONXVILLE UFSD,Westchester,66,66030303,660303030000,,6,Low Need,false,false
+,BYRAM HILLS CSD,Westchester,66,66120106,661201060000,,6,Low Need,false,false
+,CHAPPAQUA CSD,Westchester,66,66100406,661004060000,,6,Low Need,false,false
+,CROTON-HARMON UFSD,Westchester,66,66020203,660202030000,,6,Low Need,false,false
+,DOBBS FERRY UFSD,Westchester,66,66040303,660403030000,,6,Low Need,false,false
+,EASTCHESTER UFSD,Westchester,66,66030103,660301030000,,6,Low Need,false,false
+,EDGEMONT UFSD,Westchester,66,66040603,660406030000,,6,Low Need,false,false
+,ELMSFORD UFSD,Westchester,66,66040902,660409020000,,5,Average Need,false,false
+,GREENBURGH CSD,Westchester,66,66040706,660407060000,,5,Average Need,false,false
+,GREENBURGH ELEVEN UFSD,Westchester,66,66041102,660411020000,,5,Average Need,false,false
+,GREENBURGH-GRAHAM UFSD,Westchester,66,66041002,660410020000,,5,Average Need,false,false
+,GREENBURGH-NORTH CASTLE UFSD,Westchester,66,66041202,660412020000,,5,Average Need,false,false
+,HARRISON CSD,Westchester,66,66050106,660501060000,,6,Low Need,false,false
+,HASTINGS-ON-HUDSON UFSD,Westchester,66,66040403,660404030000,,6,Low Need,false,false
+,HAWTHORNE-CEDAR KNOLLS UFSD,Westchester,66,66080302,660803020000,,5,Average Need,false,false
+,HENDRICK HUDSON CSD,Westchester,66,66020306,660203060000,,6,Low Need,false,false
+,IRVINGTON UFSD,Westchester,66,66040202,660402020000,,6,Low Need,false,false
+,KATONAH-LEWISBORO UFSD,Westchester,66,66010103,660101030000,,6,Low Need,false,false
+,LAKELAND CSD,Westchester,66,66240106,662401060000,,5,Average Need,false,false
+,MAMARONECK UFSD,Westchester,66,66070103,660701030000,,6,Low Need,false,false
+,MT PLEASANT CSD,Westchester,66,66080106,660801060000,,6,Low Need,false,false
+,MT PLEASANT-BLYTHEDALE UFSD,Westchester,66,66080602,660806020000,,5,Average Need,false,false
+,MT PLEASANT-COTTAGE UFSD,Westchester,66,66080402,660804020000,,5,Average Need,false,false
+,MT VERNON SCHOOL DISTRICT,Westchester,66,66090001,660900010000,,3,High Need: Urban-Suburban,false,false
+,NEW ROCHELLE CITY SD,Westchester,66,66110001,661100010000,,5,Average Need,false,false
+,NORTH SALEM CSD,Westchester,66,66130104,661301040000,,6,Low Need,false,false
+,OSSINING UFSD,Westchester,66,66140103,661401030000,,5,Average Need,false,false
+,PEEKSKILL CITY SD,Westchester,66,66150001,661500010000,,3,High Need: Urban-Suburban,false,false
+,PELHAM UFSD,Westchester,66,66160103,661601030000,,6,Low Need,false,false
+,PLEASANTVILLE UFSD,Westchester,66,66080903,660809030000,,6,Low Need,false,false
+,POCANTICO HILLS CSD,Westchester,66,66080204,660802040000,,6,Low Need,false,false
+,PORT CHESTER-RYE UFSD,Westchester,66,66190403,661904030000,,3,High Need: Urban-Suburban,false,false
+,RYE CITY SD,Westchester,66,66180001,661800010000,,6,Low Need,false,false
+,RYE NECK UFSD,Westchester,66,66190103,661901030000,,6,Low Need,false,false
+,SCARSDALE UFSD,Westchester,66,66200103,662001030000,,6,Low Need,false,false
+,SOMERS CSD,Westchester,66,66210106,662101060000,,6,Low Need,false,false
+,TUCKAHOE UFSD,Westchester,66,66030203,660302030000,,6,Low Need,false,false
+,UFSD-TARRYTOWNS,Westchester,66,66040103,660401030000,,5,Average Need,false,false
+,VALHALLA UFSD,Westchester,66,66080503,660805030000,,6,Low Need,false,false
+,WHITE PLAINS CITY SD,Westchester,66,66220001,662200010000,,5,Average Need,false,false
+,YONKERS CITY SD,Westchester,66,66230001,662300010000,,2,High Need: Large City (Buffalo/Rochester/Syracuse/Yonkers),false,false
+,YORKTOWN CSD,Westchester,66,66240206,662402060000,,6,Low Need,false,false
+,ATTICA CSD,Wyoming,67,67020106,670201060000,,5,Average Need,false,false
+,LETCHWORTH CSD,Wyoming,67,67040104,670401040000,,5,Average Need,false,false
+,PERRY CSD,Wyoming,67,67120106,671201060000,,5,Average Need,false,false
+,WARSAW CSD,Wyoming,67,67150104,671501040000,,5,Average Need,false,false
+,WYOMING CSD,Wyoming,67,67100204,671002040000,,5,Average Need,false,false
+,DUNDEE CSD,Yates,68,68080104,680801040000,,4,High Need: Rural,false,false
+,PENN YAN CSD,Yates,68,68060106,680601060000,,4,High Need: Rural,false,false

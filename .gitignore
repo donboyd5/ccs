@@ -11,6 +11,11 @@ data/*.parquet
 data/**/*.csv
 data/**/*.parquet
 
+# Exception: track curated, hand-maintainable crosswalks (small + diffable).
+# The generated parquet stays ignored; the CSV is the tracked source of truth.
+!data/crosswalks/
+!data/crosswalks/*.csv
+
 # Raw downloaded source archives / MS-Access databases (large, reproducible)
 data/**/*.zip
 data/**/*.mdb
@@ -31,6 +36,7 @@ data/**/*.pdf
 # rendered books & quarto caches live in each book dir (e.g. books/*/_book/)
 **/_book/
 **/.quarto/
+**/_freeze/
 # standalone rendered HTML at repo root (e.g. nys_contingency_budgets.html)
 /*.html
 

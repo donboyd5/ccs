@@ -1,0 +1,57 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "Cambridge in Comparison"
+  subtitle: "How Cambridge CSD compares with neighboring New York school districts"
+  author: "Don Boyd"
+  date: today
+  chapters:
+    - index.qmd
+    - class-sizes.qmd
+  appendices:
+    - sources.qmd
+  repo-url: https://github.com/donboyd5/ccs
+  repo-subdir: books/cambridge-comparisons
+  repo-branch: main
+  repo-actions: [source, issue]
+  search: true
+  page-footer:
+    left: "Cambridge in Comparison"
+    right: "Built with [Quarto](https://quarto.org/)."
+
+  # ---------------------------------------------------------------------------
+  # Reader comments (Giscus, backed by this repo's GitHub Discussions).
+  # Disabled until two one-time GitHub steps are done (see sources.qmd / README):
+  #   1. Enable Discussions on github.com/donboyd5/ccs
+  #   2. Install the giscus app and copy the repo-id + category-id below.
+  # Then un-comment this block and re-render.
+  # comments:
+  #   giscus:
+  #     repo: donboyd5/ccs
+  #     repo-id: "PASTE_FROM_GISCUS_APP"
+  #     category: "General"
+  #     category-id: "PASTE_FROM_GISCUS_APP"
+  #     mapping: pathname
+  #     reactions-enabled: true
+
+bibliography: references.bib
+csl: apa.csl
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 2
+    code-fold: true
+    code-tools: true
+    fig-align: center
+    tbl-cap-location: top
+
+execute:
+  echo: true
+  warning: false
+  message: false
+
+jupyter: python3

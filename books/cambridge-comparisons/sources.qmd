@@ -1,0 +1,63 @@
+# Sources & references {.unnumbered}
+
+All figures in this book come from public data. This appendix documents each
+source, notes the main caveats, and lists full references (APA style) at the
+end. Citation keys are given in brackets so they can be reused in the text.
+
+## NYSED data files
+
+The enrollment and staffing numbers are built from two New York State Education
+Department databases, both downloaded from
+<https://data.nysed.gov/downloads.php> and distributed as annual Microsoft
+Access files:
+
+- **Enrollment database** [@nysed_enrollment] — the `BEDS Day Enrollment`
+  table, which gives K-12 enrollment by district. Coverage in this book:
+  school years **2015–16 through 2024–25**. Enrollment is the BEDS-day count
+  (first Wednesday of October).
+- **Student & Educator ("STUDED") database** [@nysed_studed] — the `Staff`
+  table, which gives teacher, principal, counselor, and social-worker counts
+  plus teacher attendance and turnover. Coverage: school years **2017–18
+  through 2024–25**. Because teacher counts start in 2017–18, any measure that
+  uses teachers (such as students per teacher) begins at school-year-ending
+  2018.
+
+These were stacked into a district-by-year panel by
+[`src/build_enrollment_teachers.py`](https://github.com/donboyd5/ccs/blob/main/src/build_enrollment_teachers.py);
+the dataset's own [README](https://github.com/donboyd5/ccs/blob/main/data/enrollment_staff/README.md)
+records the build in full.
+
+**Caveats worth repeating.** `num_teachers` is a district-wide *headcount*
+(all grades, not full-time-equivalents), while `k12_enrollment` is K-12 only.
+The derived **students-per-teacher** ratio is therefore an approximate measure
+for comparison across districts and over time — **not** NYSED's official
+pupil-teacher ratio or average class size. Charter schools are excluded (they
+have no district-total row), and a small number of districts reorganized within
+the window (statewide, not in this comparison group).
+
+## Cambridge CSD annual financial reports
+
+Cambridge's audited annual financial statements, for fiscal years ended
+**June 30, 2020 through June 30, 2025**, were retrieved from the **Federal Audit
+Clearinghouse** (<https://app.fac.gov/>). The clearinghouse was operated by the
+U.S. Census Bureau through about 2022 and by the U.S. General Services
+Administration from 2023 onward — which is why the earlier files (FY2020–FY2022)
+carry a `CENSUS` tag and bear the title *"Financial statements and independent
+auditor's report,"* while the later files (FY2023–FY2025) carry a `GSAFAC` tag
+and the title *"Financial report."* They are the same series of district audits.
+
+- FY2020 [@ccsd_fin_2020], FY2021 [@ccsd_fin_2021], FY2022 [@ccsd_fin_2022]
+- FY2023 [@ccsd_fin_2023], FY2024 [@ccsd_fin_2024], FY2025 [@ccsd_fin_2025]
+
+## Reader comments
+
+This book is set up to support reader comments via
+[Giscus](https://giscus.app/) (GitHub Discussions). Comments are turned off
+until two one-time steps are done on the [GitHub repo](https://github.com/donboyd5/ccs):
+enable **Discussions**, then install the **giscus app** and paste the resulting
+`repo-id` and `category-id` into `books/cambridge-comparisons/_quarto.yml`.
+
+## References
+
+::: {#refs}
+:::

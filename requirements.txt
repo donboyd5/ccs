@@ -10,3 +10,4 @@ great-tables>=0.14  # publication-quality HTML tables (the gt equivalent)
 ipykernel>=6
 nbclient>=0.10
 nbformat>=5
+pyyaml>=6  # required by Quarto's jupyter runner

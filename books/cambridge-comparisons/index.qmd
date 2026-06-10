@@ -1,0 +1,49 @@
+# Overview {.unnumbered}
+
+This short book looks at the **Cambridge Central School District** (Cambridge
+CSD, Washington County, New York) alongside neighboring districts, using public
+data from the New York State Education Department (NYSED). It is one of several
+analyses in the [`ccs`](https://github.com/donboyd5/ccs) project; the aim is to
+put Cambridge's numbers in context rather than to view them in isolation.
+
+## Comparison groups
+
+Different questions call for different peer sets, so the book uses two groups
+that can be adjusted as the work develops:
+
+- **Graph group (5 districts)** — used for charts, where a short list keeps
+  lines legible: **Cambridge, Greenwich, Salem** (all Washington County),
+  **Schuylerville** (Saratoga County), and **Hoosick Falls** (Rensselaer
+  County). These are Cambridge's closest small-district neighbors.
+- **Table group (12 districts)** — used for tables, which can hold more rows:
+  **every Washington County K-12 district** plus the two graph-group districts
+  that sit just outside the county (Schuylerville and Hoosick Falls).
+
+The table group is the broader set; the graph group is a readable subset of it.
+**Putnam CSD** is left out of the "Washington County K-12" set because it is a
+K-8 district that tuitions out its high-schoolers (zero students in grades
+9–12), so it is not comparable on K-12 measures.
+
+| Group | Districts |
+|---|---|
+| **Graph** (charts) | Cambridge, Greenwich, Salem, Schuylerville, Hoosick Falls |
+| **Table** (tables) | The graph group **+** Argyle, Fort Ann, Fort Edward, Granville, Hartford, Hudson Falls, Whitehall |
+
+## Data and a few cautions
+
+The underlying numbers come from NYSED's public downloads; each chapter and the
+[Sources](sources.qmd) appendix give the specifics. A few things to keep in mind
+throughout:
+
+- **Year labels are school-year-ending years.** "2025" means the **2024–25**
+  school year. Enrollment is the BEDS-day count (first Wednesday of October).
+- **Teacher counts begin in 2017–18.** So time series that depend on teachers
+  (such as students per teacher) start at school-year-ending **2018**, even
+  though enrollment runs back to 2015–16.
+- **Students per teacher is an approximation, not official class size.** It
+  divides K-12 enrollment by a district-wide teacher *headcount* (all grades,
+  not full-time-equivalents). It is useful for comparison across districts and
+  over time, but it is not NYSED's official pupil-teacher or average-class-size
+  figure. See the [Sources](sources.qmd) appendix for detail.
+- **Charter schools are excluded** — they have no district-total row in the
+  source data — so these are district-operated figures.

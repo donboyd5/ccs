@@ -1,0 +1,155 @@
+# Class sizes and staffing
+
+How many students does each teacher serve, and how has that changed? This
+chapter starts with the broadest staffing measure available across districts —
+**K-12 students per teacher** — and compares Cambridge with its neighbors over
+time. Later sections will add related measures (and, where NYSED publishes it,
+official average class size).
+
+A reminder from the [Overview](index.qmd): this ratio divides K-12 enrollment by
+a district-wide teacher *headcount*, so it is an approximate comparison measure,
+not an official class-size statistic. Lower values mean fewer students per
+teacher.
+
+```{python}
+#| label: setup
+#| include: false
+import os
+import sys
+
+# Make the shared helper importable regardless of Quarto's working directory.
+sys.path.insert(0, os.getcwd())
+
+import pandas as pd
+import polars as pl
+from plotnine import (
+    aes,
+    geom_line,
+    geom_point,
+    ggplot,
+    labs,
+    scale_color_manual,
+    scale_x_continuous,
+)
+from great_tables import GT, loc, md, style
+
+import comparisons as cc
+```
+
+## Students per teacher, over time
+
+The chart below tracks the graph group from school-year-ending 2018 (the first
+year teacher counts exist) through 2025.
+
+```{python}
+#| label: fig-students-per-teacher
+#| fig-cap: "K–12 students per teacher by school year ending, 2018 (2017–18) through 2025 (2024–25). Lower means fewer students per teacher. Source: NYSED Enrollment and Student & Educator databases."
+g = cc.panel_for(cc.GRAPH_GROUP)  # 5 districts, 2018+
+
+pdf = (
+    g.select("district", "year_end", "k12_students_per_teacher")
+    .drop_nulls()
+    .to_pandas()
+)
+pdf["district"] = pd.Categorical(
+    pdf["district"], categories=cc.district_order(cc.GRAPH_GROUP), ordered=True
+)
+cambridge = pdf[pdf["district"] == cc.FOCUS]
+
+(
+    ggplot(pdf, aes("year_end", "k12_students_per_teacher", color="district"))
+    + geom_line(size=1)
+    + geom_point(size=1.8)
+    + geom_line(cambridge, size=2.4)  # emphasize the focus district
+    + scale_color_manual(values=cc.PALETTE, name="")
+    + scale_x_continuous(breaks=list(range(2018, 2026)))
+    + labs(
+        x="School year ending",
+        y="K–12 students per teacher",
+        title="Cambridge now has the fewest students per teacher of the group",
+        subtitle="District K-12 enrollment ÷ teacher headcount, 2017–18 to 2024–25",
+    )
+    + cc.theme_ccs()
+)
+```
+
+In 2017–18 only Salem had a lower ratio than Cambridge. Cambridge's ratio then
+drifted down — its K-12 enrollment fell about 15% (from 869 to 741) while its
+teacher headcount stayed roughly flat — and by the two most recent years
+Cambridge has the **lowest** students-per-teacher ratio of the five. A jump in
+reported teachers in 2023–24 pushed its 2024 figure especially low (8.2).
+Schuylerville and Greenwich actually fell *more* over the full period (about
+2.0 and 1.9, versus Cambridge's 1.5), but from much higher starting points, so
+they remain above Cambridge.
+
+## The full comparison group
+
+The table widens the lens to all twelve table-group districts. Columns are
+school-years-ending; the final column is the change from 2018 to 2025 (a
+negative value means *fewer* students per teacher than in 2018). Cambridge is
+highlighted.
+
+```{python}
+#| label: tbl-students-per-teacher
+#| tbl-cap: "K–12 students per teacher by district and school year ending."
+t = cc.panel_for(cc.TABLE_GROUP)
+
+# Long -> wide (years become columns), Washington County districts first,
+# then alphabetical within each region.
+wide = (
+    t.select("region", "district", "year_end", "k12_students_per_teacher")
+    .with_columns(
+        pl.when(pl.col("region") == "Washington County")
+        .then(0)
+        .otherwise(1)
+        .alias("_rank")
+    )
+    .pivot(
+        values="k12_students_per_teacher",
+        index=["_rank", "region", "district"],
+        on="year_end",
+    )
+    .sort(["_rank", "district"])
+    .drop("_rank")
+)
+
+year_cols = [c for c in wide.columns if c.isdigit()]
+wide = wide.with_columns(
+    (pl.col("2025") - pl.col("2018")).alias("chg")
+)
+
+(
+    GT(wide, rowname_col="district", groupname_col="region")
+    .tab_header(
+        title="K–12 students per teacher",
+        subtitle="School-year-ending 2018 (2017–18) through 2025 (2024–25)",
+    )
+    .fmt_number(columns=year_cols + ["chg"], decimals=1)
+    .tab_spanner(label="School year ending", columns=year_cols)
+    .cols_label(chg=md("Change<br>2018→2025"))
+    .sub_missing(missing_text="—")
+    .tab_style(
+        style=[style.fill(color="#FCEFB4"), style.text(weight="bold")],
+        locations=[
+            loc.body(rows=pl.col("district") == cc.FOCUS),
+            loc.stub(rows=pl.col("district") == cc.FOCUS),
+        ],
+    )
+    .tab_source_note(
+        md(
+            "**Source:** NYSED Enrollment database (K-12 enrollment) and "
+            "Student &amp; Educator database (teacher counts). "
+            "Ratio = district K-12 enrollment ÷ teacher headcount; an "
+            "approximate comparison measure, not official class size. "
+            "Year = school-year-ending (2025 = 2024–25)."
+        )
+    )
+)
+```
+
+Across the wider group, Cambridge ends among the lowest ratios — close to Salem
+— while the rest of Washington County's K-12 districts span a wider range. The
+table is also a reminder that these districts differ greatly in size (compare
+small districts like Fort Edward with larger ones like Hudson Falls and
+Granville), which shapes how much a single hire or a small enrollment swing
+moves the ratio.
