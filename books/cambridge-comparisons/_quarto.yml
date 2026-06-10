@@ -23,18 +23,19 @@ book:
 
   # ---------------------------------------------------------------------------
   # Reader comments (Giscus, backed by this repo's GitHub Discussions).
-  # Disabled until two one-time GitHub steps are done (see sources.qmd / README):
-  #   1. Enable Discussions on github.com/donboyd5/ccs
-  #   2. Install the giscus app and copy the repo-id + category-id below.
-  # Then un-comment this block and re-render.
-  # comments:
-  #   giscus:
-  #     repo: donboyd5/ccs
-  #     repo-id: "PASTE_FROM_GISCUS_APP"
-  #     category: "General"
-  #     category-id: "PASTE_FROM_GISCUS_APP"
-  #     mapping: pathname
-  #     reactions-enabled: true
+  # Requires Discussions enabled + the giscus app installed on donboyd5/ccs
+  # (both done). repo-id / category-id are this repo's GraphQL node IDs.
+  comments:
+    giscus:
+      repo: donboyd5/ccs
+      repo-id: "R_kgDOS2yCEg"
+      category: "Announcements"          # maintainer-only threads; giscus posts them
+      category-id: "DIC_kwDOS2yCEs4C-51c"
+      mapping: pathname                  # one discussion thread per chapter URL
+      reactions-enabled: true
+      input-position: bottom
+      theme: light
+      loading: lazy
 
 bibliography: references.bib
 csl: apa.csl

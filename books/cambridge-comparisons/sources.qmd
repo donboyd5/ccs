@@ -51,11 +51,10 @@ and the title *"Financial report."* They are the same series of district audits.
 
 ## Reader comments
 
-This book is set up to support reader comments via
-[Giscus](https://giscus.app/) (GitHub Discussions). Comments are turned off
-until two one-time steps are done on the [GitHub repo](https://github.com/donboyd5/ccs):
-enable **Discussions**, then install the **giscus app** and paste the resulting
-`repo-id` and `category-id` into `books/cambridge-comparisons/_quarto.yml`.
+Each page of this book has a comment area at the bottom, powered by
+[Giscus](https://giscus.app/). To leave a comment or a reaction, sign in with a
+free [GitHub](https://github.com/signup) account; comments are stored as
+discussions in this book's [GitHub repository](https://github.com/donboyd5/ccs).
 
 ## References
 
