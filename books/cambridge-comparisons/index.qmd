@@ -14,7 +14,7 @@ that can be adjusted as the work develops:
 - **Graph group (5 districts)** — used for charts, where a short list keeps
   lines legible: **Cambridge, Greenwich, Salem** (all Washington County),
   **Schuylerville** (Saratoga County), and **Hoosick Falls** (Rensselaer
-  County). These are Cambridge's closest small-district neighbors.
+  County). These are nearby small districts.
 - **Table group (12 districts)** — used for tables, which can hold more rows:
   **every Washington County K-12 district** plus the two graph-group districts
   that sit just outside the county (Schuylerville and Hoosick Falls).
