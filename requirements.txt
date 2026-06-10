@@ -1,2 +1,12 @@
 polars>=1.41
 pyarrow>=21
+access-parser>=0.0.6  # pure-Python reader for NYSED MS-Access (.mdb) databases
+
+# Quarto book: plotting & tables (see books/)
+plotnine>=0.13      # ggplot2-style grammar of graphics
+great-tables>=0.14  # publication-quality HTML tables (the gt equivalent)
+
+# Jupyter engine used by Quarto to execute .qmd Python cells
+ipykernel>=6
+nbclient>=0.10
+nbformat>=5

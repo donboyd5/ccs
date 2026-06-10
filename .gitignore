@@ -11,10 +11,28 @@ data/*.parquet
 data/**/*.csv
 data/**/*.parquet
 
+# Raw downloaded source archives / MS-Access databases (large, reproducible)
+data/**/*.zip
+data/**/*.mdb
+data/**/*.accdb
+data/**/*.doc
+data/**/*.docx
+
+# Source spreadsheets & report PDFs (large, reproducible downloads from NYSED)
+data/**/*.xls
+data/**/*.xlsx
+data/**/*.xlsm
+data/**/*.pdf
+
 # Quarto
 /.quarto/
 /_book/
 /_site/
+# rendered books & quarto caches live in each book dir (e.g. books/*/_book/)
+**/_book/
+**/.quarto/
+# standalone rendered HTML at repo root (e.g. nys_contingency_budgets.html)
+/*.html
 
 # OS / editor
 .DS_Store

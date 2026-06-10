@@ -1,0 +1,199 @@
+year,district,vote1_pct_for,vote1_pct_against,vote2_pct_for,vote2_pct_against,above_cap_1st,above_cap_2nd,outcome
+2012,CHEEKTOWAGA-SLOAN UFSD,48.2,51.8,39.7,60.3,FALSE,FALSE,Contingency (failed revote)
+2012,OPPENHEIM-EPHRATAH CSD,27.4,72.6,39.3,60.7,TRUE,TRUE,Contingency (failed revote)
+2012,BOLIVAR-RICHBURG CSD,46.2,53.8,71.9,28.1,FALSE,FALSE,Passed on revote
+2012,CENTER MORICHES UFSD,38.6,61.4,57.1,42.9,TRUE,TRUE,Passed on revote
+2012,COBLESKILL-RICHMONDVILLE CSD,45,55,57,43,TRUE,TRUE,Passed on revote
+2012,COMSEWOGUE UFSD,58.8,41.2,78.3,21.7,TRUE,TRUE,Passed on revote
+2012,EAST ISLIP UFSD,45.3,54.7,56.5,43.5,TRUE,TRUE,Passed on revote
+2012,EAST RAMAPO CSD (SPRING VALLEY),42.4,57.6,74.5,25.5,FALSE,FALSE,Passed on revote
+2012,ELMIRA CITY SD,54.6,45.4,65.2,34.8,TRUE,TRUE,Passed on revote
+2012,ELMONT UFSD,43.3,56.7,62.5,37.5,TRUE,TRUE,Passed on revote
+2012,FLORAL PARK-BELLEROSE UFSD,50.9,49.1,59,41,TRUE,TRUE,Passed on revote
+2012,FONDA-FULTONVILLE CSD,43.1,56.9,58,42,TRUE,TRUE,Passed on revote
+2012,GERMANTOWN CSD,44.7,55.3,69,31,TRUE,TRUE,Passed on revote
+2012,HIGHLAND CSD,51.1,48.9,60.4,39.6,TRUE,TRUE,Passed on revote
+2012,MT SINAI UFSD,52.4,47.6,67,33,TRUE,TRUE,Passed on revote
+2012,NEW PALTZ CSD,59.4,40.6,73.2,26.8,TRUE,TRUE,Passed on revote
+2012,NIAGARA-WHEATFIELD CSD,46.1,53.9,57.4,42.6,TRUE,TRUE,Passed on revote
+2012,OYSTERPONDS UFSD,43.1,56.9,54.9,45.1,FALSE,FALSE,Passed on revote
+2012,PLATTSBURGH CITY SD,34.8,65.2,56.7,43.3,TRUE,TRUE,Passed on revote
+2012,STILLWATER CSD,56.3,43.7,61.6,38.4,TRUE,TRUE,Passed on revote
+2012,THREE VILLAGE CSD,56.7,43.3,68.7,31.3,TRUE,TRUE,Passed on revote
+2012,TUCKAHOE COMN SD,45.3,54.7,51.3,48.7,FALSE,FALSE,Passed on revote
+2012,UNADILLA VALLEY CSD,50.2,49.8,70,30,TRUE,TRUE,Passed on revote
+2012,WYOMING CSD,36.3,63.7,63.3,36.7,TRUE,TRUE,Passed on revote
+2013,ALDEN CSD,40,60,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2013,BALDWIN UFSD,55.8,44.2,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,BEMUS POINT CSD,48.6,51.4,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2013,BRIARCLIFF MANOR UFSD,51.3,48.7,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,CAIRO-DURHAM CSD,47.9,52.1,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2013,CLARENCE CSD,41.7,58.3,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,CORNWALL CSD,59.9,40.1,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,EAST QUOGUE UFSD,59.2,40.8,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,EAST RAMAPO CSD (SPRING VALLEY),47.5,52.5,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2013,ELMIRA HTS CSD,53.4,46.6,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,ELMSFORD UFSD,47.1,52.9,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2013,GENERAL BROWN CSD,58.2,41.8,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,LEWISTON-PORTER CSD,44.9,55.1,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,MANHASSET UFSD,53.3,46.7,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,MARLBORO CSD,36.7,63.3,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2013,MIDDLEBURGH CSD,48.4,51.6,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2013,MINERVA CSD,44.9,55.1,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,MORAVIA CSD,56.6,43.4,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,MT VERNON CITY SD,39.8,60.2,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2013,NEWCOMB CSD,51.6,48.4,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,NIAGARA-WHEATFIELD CSD,50,50,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2013,NISKAYUNA CSD,44.1,55.9,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,NORTH BABYLON UFSD,54,46,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,NORTH SYRACUSE CSD,54.2,45.8,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,REMSEN CSD,45.3,54.7,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2013,SACHEM CSD,54.2,45.8,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,SCARSDALE UFSD,46.6,53.4,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,SOUTH COUNTRY CSD,54.1,45.9,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,SOUTH SENECA CSD,52,48,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,TUPPER LAKE CSD,42.8,57.2,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,VALLEY CSD (MONTGOMERY),48.3,51.7,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2013,WILSON CSD,37.2,62.8,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2014,MINERVA CSD,56,44,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2014,WEST IRONDEQUOIT CSD,56,44,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2014,ADDISON CSD,48.9,51.1,53.5,46.5,FALSE,FALSE,Passed on revote
+2014,BRIDGEHAMPTON UFSD,54.3,45.7,60.8,39.2,TRUE,TRUE,Passed on revote
+2014,BROOKFIELD CSD,59.9,40.1,65.1,34.9,TRUE,TRUE,Passed on revote
+2014,CLIFTON-FINE CSD,41.2,58.8,57.1,42.9,NA,NA,Passed on revote
+2014,DOVER UFSD,51.1,48.9,64.6,35.4,TRUE,TRUE,Passed on revote
+2014,NORTHVILLE CSD,58.8,41.2,62,38,TRUE,TRUE,Passed on revote
+2014,ROME CITY SD,31.4,68.6,53.7,46.3,FALSE,FALSE,Passed on revote
+2014,SAYVILLE UFSD,43.7,56.3,76,24,TRUE,TRUE,Passed on revote
+2014,TUXEDO UFSD,53.2,46.8,70.5,29.5,TRUE,TRUE,Passed on revote
+2014,WEST BABYLON UFSD,51.8,48.2,72.5,27.5,TRUE,TRUE,Passed on revote
+2015,TIOGA CSD,52.6,47.4,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2015,ADDISON CSD,45,55,63.2,36.8,FALSE,FALSE,Passed on revote
+2015,CHAZY UFSD,56.3,43.7,73.7,26.3,TRUE,TRUE,Passed on revote
+2015,GENEVA CITY SD,58,42,63.2,36.8,TRUE,TRUE,Passed on revote
+2015,HERKIMER CSD,47.2,52.8,67,33,TRUE,TRUE,Passed on revote
+2015,NORTHEASTERN CLINTON CSD,58.4,41.6,58.2,41.8,TRUE,TRUE,Passed on revote
+2015,PARISHVILLE-HOPKINTON CSD,52.7,47.3,59.5,40.5,TRUE,TRUE,Passed on revote
+2015,PATCHOGUE-MEDFORD UFSD,56.7,43.3,67.8,32.2,TRUE,TRUE,Passed on revote
+2015,WALTON CSD,45.7,54.3,50,50,FALSE,FALSE,Passed on revote
+2016,BROCKPORT CSD,41.5,58.5,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2016,CANASERAGA CSD,52.3,47.7,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2016,FLORIDA UFSD,59.9,40.1,53.8,46.2,TRUE,TRUE,Contingency (failed revote)
+2016,JASPER-TROUPSBURG CSD,47.3,52.7,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2016,TUCKAHOE COMN SD,49.8,50.2,53.6,46.4,TRUE,TRUE,Contingency (failed revote)
+2016,WAVERLY CSD,46.1,53.9,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2016,WEST VALLEY CSD,46.7,53.3,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2016,BEDFORD CSD,58.8,41.2,72.4,27.6,TRUE,TRUE,Passed on revote
+2016,ELWOOD UFSD,58.4,41.6,82.7,17.3,TRUE,TRUE,Passed on revote
+2016,HIGHLAND CSD,56.2,43.8,68.6,31.4,TRUE,TRUE,Passed on revote
+2017,DE RUYTER CSD,56.4,43.6,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2017,EAST RAMAPO CSD (SPRING VALLEY),12.6,87.4,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2017,HINSDALE CSD,48.9,51.1,NA,NA,NA,NA,Contingency (no revote / direct)
+2017,PITTSFORD CSD,53.5,46.5,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2017,PUTNAM CSD,49.5,50.5,NA,NA,NA,NA,Contingency (no revote / direct)
+2018,BREWSTER CSD,46,54,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2018,CARMEL CSD,55,45,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2018,CLYMER CSD,50.1,49.9,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2018,EAST RAMAPO CSD (SPRING VALLEY),44.9,55.1,NA,NA,NA,NA,Contingency (no revote / direct)
+2018,EDEN CSD,42.9,57.1,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2018,FORT EDWARD UFSD,40,60,NA,NA,NA,NA,Contingency (no revote / direct)
+2018,GOWANDA CSD,46.9,53.1,NA,NA,NA,NA,Contingency (no revote / direct)
+2018,NEW ROCHELLE CITY SD,35.1,64.9,NA,NA,NA,NA,Contingency (no revote / direct)
+2018,NORTH BELLMORE UFSD,51.8,48.2,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2018,RIPLEY CSD,49.7,50.3,NA,NA,NA,NA,Contingency (no revote / direct)
+2018,STAMFORD CSD,50,50,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2018,UNIONDALE UFSD,45.7,54.3,NA,NA,NA,NA,Contingency (no revote / direct)
+2018,VALLEY CSD (MONTGOMERY),46.2,53.8,NA,NA,NA,NA,Contingency (no revote / direct)
+2018,WEST VALLEY CSD,45.6,54.4,NA,NA,NA,NA,Contingency (no revote / direct)
+2018,WESTFIELD CSD,39.9,60.1,NA,NA,NA,NA,Contingency (no revote / direct)
+2018,WESTPORT CSD,43.9,56.1,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2019,ALTMAR-PARISH-WILLIAMSTOWN CSD,44.4,55.6,44.4,55.6,FALSE,FALSE,Contingency (failed revote)
+2019,BRIGHTON CSD,54.8,45.2,54.8,45.2,TRUE,TRUE,Contingency (failed revote)
+2019,BROCKPORT CSD,46.2,53.8,46.2,53.8,FALSE,FALSE,Contingency (failed revote)
+2019,CLYMER CSD,55.8,44.2,55.8,44.2,TRUE,TRUE,Contingency (failed revote)
+2019,DOLGEVILLE CSD,36.2,63.8,36.2,63.8,TRUE,TRUE,Contingency (failed revote)
+2019,EASTPORT-S. MANOR CSD,54.7,45.3,54.7,45.3,TRUE,TRUE,Contingency (failed revote)
+2019,JOHNSTOWN CITY SD,50.1,49.9,50.1,49.9,TRUE,TRUE,Contingency (failed revote)
+2019,LANSINGBURGH CSD,57.9,42.1,57.9,42.1,TRUE,TRUE,Contingency (failed revote)
+2019,MINISINK VALLEY CSD,39.4,60.6,39.4,60.6,TRUE,TRUE,Contingency (failed revote)
+2019,OWEGO-APALACHIN CSD,44.5,55.5,44.5,55.5,FALSE,TRUE,Contingency (failed revote)
+2019,TICONDEROGA CSD,42.8,57.2,42.8,57.2,TRUE,TRUE,Contingency (failed revote)
+2019,WYANDANCH UFSD,31,69,31,69,TRUE,TRUE,Contingency (failed revote)
+2020,CHEEKTOWAGA CSD,48.9,51.1,48.9,51.1,FALSE,FALSE,Contingency (failed revote)
+2020,DOLGEVILLE CSD,56.6,43.4,56.6,43.4,TRUE,TRUE,Contingency (failed revote)
+2020,EAST RAMAPO CSD (SPRING VALLEY),35.8,64.2,35.8,64.2,FALSE,FALSE,Contingency (failed revote)
+2020,EDEN CSD,49.4,50.6,49.4,50.6,FALSE,FALSE,Contingency (failed revote)
+2020,FORT EDWARD UFSD,52.8,47.2,52.8,47.2,TRUE,TRUE,Contingency (failed revote)
+2020,JOHNSTOWN CITY SD,57.3,42.7,57.3,42.7,TRUE,TRUE,Contingency (failed revote)
+2020,MONTICELLO CSD,48.4,51.6,48.4,51.6,FALSE,FALSE,Contingency (failed revote)
+2020,RENSSELAER CITY SD,33.1,66.9,33.1,66.9,TRUE,TRUE,Contingency (failed revote)
+2020,RIVERHEAD CSD,47.3,52.7,47.3,52.7,FALSE,FALSE,Contingency (failed revote)
+2020,UNIONDALE UFSD,43.3,56.7,43.3,56.7,FALSE,FALSE,Contingency (failed revote)
+2020,VALLEY STREAM 13 UFSD,47.1,52.9,47.1,52.9,FALSE,FALSE,Contingency (failed revote)
+2020,WINDHAM-ASHLAND-JEWETT CSD,50,50,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2021,CARMEL CSD,46.5,53.5,44.3,55.7,FALSE,FALSE,Contingency (failed revote)
+2021,THREE VILLAGE CSD,57.7,42.3,38.7,61.3,TRUE,TRUE,Contingency (failed revote)
+2021,BRIDGEHAMPTON UFSD,59.3,40.7,60.1,39.9,TRUE,TRUE,Passed on revote
+2021,NORTHPORT-EAST NORTHPORT UFSD,47.9,52.1,70.4,29.6,FALSE,FALSE,Passed on revote
+2021,WANTAGH UFSD,50.8,49.2,70.9,29.1,TRUE,TRUE,Passed on revote
+2022,East Ramapo CSD,28.4,71.6,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2022,Garrison UFSD,50,50,69.5,30.5,TRUE,TRUE,Passed on revote
+2022,Hastings on Hudson UFSD,49.3,50.7,76.8,23.2,FALSE,FALSE,Passed on revote
+2022,Mahopac CSD,49.8,50.2,60.9,39.1,FALSE,FALSE,Passed on revote
+2022,Mount Vernon City SD,30.4,69.6,64.7,35.3,FALSE,FALSE,Passed on revote
+2022,Newfield CSD,53,47,69.6,30.4,TRUE,TRUE,Passed on revote
+2022,West Hempstead UFSD,40,60,53.8,46.2,FALSE,FALSE,Passed on revote
+2023,Elmsford UFSD,37.3,62.7,36.4,63.6,FALSE,FALSE,Contingency (failed revote)
+2023,Putnam CSD,43.9,56.1,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2023,Wainscott Common SD,58.3,41.7,54.1,45.9,TRUE,TRUE,Contingency (failed revote)
+2023,Waterloo CSD,49.3,50.7,49.9,50.1,FALSE,FALSE,Contingency (failed revote)
+2023,Addison CSD,48.3,51.7,52.9,47.1,FALSE,FALSE,Passed on revote
+2023,Blind Brook UFSD,55.1,44.9,71.6,28.4,TRUE,TRUE,Passed on revote
+2023,Cortland Enlarged CSD,45.4,54.6,67.6,32.4,TRUE,FALSE,Passed on revote
+2023,East Ramapo CSD,49.4,50.6,72.2,27.8,FALSE,FALSE,Passed on revote
+2023,Minisink Valley CSD,49.1,50.9,64.1,35.9,FALSE,FALSE,Passed on revote
+2023,Roscoe CSD,51.4,48.6,73.9,26.1,TRUE,TRUE,Passed on revote
+2023,West Hempstead UFSD,46,54,54.4,45.6,FALSE,FALSE,Passed on revote
+2024,Belleville Henderson CSD,59.2,40.8,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2024,Berne-Knox-Westerlo CSD,58.7,41.3,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2024,Putnam CSD,49.2,50.8,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2024,Rush Henrietta CSD,49.5,50.5,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2024,Brookfield CSD,49.3,50.7,52.9,47.1,FALSE,FALSE,Passed on revote
+2024,Cazenovia CSD,58.3,41.7,67.4,32.6,TRUE,FALSE,Passed on revote
+2024,Chappaqua CSD,36,64,81.5,18.5,TRUE,FALSE,Passed on revote
+2024,Corning-Painted Post Area SD,50.2,49.8,67.2,32.8,TRUE,FALSE,Passed on revote
+2024,East Ramapo CSD,44.2,55.8,53.5,46.5,FALSE,FALSE,Passed on revote
+2024,Ithaca CSD,29.5,70.5,73.9,26.1,TRUE,FALSE,Passed on revote
+2024,Jefferson CSD,49,51,50.2,49.8,FALSE,FALSE,Passed on revote
+2024,Newburgh City SD,47.2,52.8,53.2,46.8,FALSE,FALSE,Passed on revote
+2024,Newfield CSD,48.2,51.8,59.7,40.3,FALSE,FALSE,Passed on revote
+2024,Northville CSD,59.7,40.3,73.1,26.9,TRUE,FALSE,Passed on revote
+2024,Sachem CSD,50.3,49.7,68.1,31.9,TRUE,FALSE,Passed on revote
+2024,Salem CSD,58.6,41.4,71.4,28.6,TRUE,FALSE,Passed on revote
+2024,Saugerties CSD,57.9,42.1,69.4,30.6,TRUE,TRUE,Passed on revote
+2024,St. Regis Falls CSD,47.1,52.9,56,44,FALSE,FALSE,Passed on revote
+2024,West Babylon UFSD,56.5,43.5,73,27,TRUE,FALSE,Passed on revote
+2025,Cazenovia Central School District,52.7,47.3,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2025,Corning-Painted Post Area SD,40.2,59.8,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2025,Cortland Enlarged City School District,45.7,54.3,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2025,Fredonia,46.7,53.3,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2025,Jefferson,43.3,56.7,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2025,Jordan-Elbridge Central School District,46.9,53.1,NA,NA,FALSE,FALSE,Contingency (no revote / direct)
+2025,Oakfield-Alabama CSD,46.3,53.7,46.1,53.9,TRUE,TRUE,Contingency (failed revote)
+2025,Sherrill City (Vernon Verona Sherrill Central),51.6,48.4,NA,NA,TRUE,TRUE,Contingency (no revote / direct)
+2025,Tuxedo UFSD,43.8,56.2,48.7,51.3,FALSE,FALSE,Contingency (failed revote)
+2025,Brunswick CSD,58.3,41.7,75.5,24.5,TRUE,FALSE,Passed on revote
+2025,Caledonia-Mumford CSD,41.2,58.8,78.4,21.6,FALSE,FALSE,Passed on revote
+2025,Central Square CSD,49.7,50.3,68.9,31.1,FALSE,FALSE,Passed on revote
+2025,Elwood UFSD,54.2,45.8,71.6,28.4,TRUE,TRUE,Passed on revote
+2025,Gananda CSD,40.7,59.3,72,28,TRUE,FALSE,Passed on revote
+2025,Germantown CSD,57.8,42.2,60.4,39.6,TRUE,TRUE,Passed on revote
+2025,Horseheads CSD,50.9,49.1,66.3,33.7,TRUE,FALSE,Passed on revote
+2025,Indian Lake CSD,46.7,53.3,69.6,30.4,TRUE,TRUE,Passed on revote
+2025,Keene CSD,53.8,46.2,80.9,19.1,TRUE,TRUE,Passed on revote
+2025,Mahopac CSD,48.8,51.2,71.1,28.9,FALSE,FALSE,Passed on revote
+2025,New Lebanon CSD,56.5,43.5,68.7,31.3,TRUE,TRUE,Passed on revote
+2025,Northville CSD,41.6,58.4,56.7,43.3,TRUE,FALSE,Passed on revote
+2025,Prattsburgh CSD,50,50,65.7,34.3,TRUE,FALSE,Passed on revote
+2025,Scotia-Glenville CSD,55.1,44.9,74.2,25.8,TRUE,FALSE,Passed on revote
+2025,Shelter Island UFSD,54.9,45.1,80.1,19.9,TRUE,FALSE,Passed on revote
