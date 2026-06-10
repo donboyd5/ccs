@@ -41,6 +41,8 @@ import comparisons as cc
 The chart below tracks the graph group from school-year-ending 2018 (the first
 year teacher counts exist) through 2025.
 
+**Cambridge now has the fewest students per teacher of the group.**
+
 ```{python}
 #| label: fig-students-per-teacher
 #| fig-cap: "K–12 students per teacher by school year ending, 2018 (2017–18) through 2025 (2024–25). Lower means fewer students per teacher. Source: NYSED Enrollment and Student & Educator databases."
@@ -66,8 +68,9 @@ cambridge = pdf[pdf["district"] == cc.FOCUS]
     + labs(
         x="School year ending",
         y="K–12 students per teacher",
-        title="Cambridge now has the fewest students per teacher of the group",
-        subtitle="District K-12 enrollment ÷ teacher headcount, 2017–18 to 2024–25",
+        # Title states only the facts; the interpretive headline lives above the
+        # figure in the prose (see the project's graph-title convention).
+        title="District K–12 enrollment ÷ teacher headcount, 2017–18 to 2024–25",
     )
     + cc.theme_ccs()
 )
