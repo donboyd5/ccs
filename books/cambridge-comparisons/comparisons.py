@@ -36,6 +36,7 @@ REPO_ROOT = _find_repo_root()
 DATA_DIR = REPO_ROOT / "data"
 PANEL_PATH = DATA_DIR / "enrollment_staff" / "district_enrollment_teachers_panel.parquet"
 CCD_PATH = DATA_DIR / "enrollment_staff" / "ccd_pupil_teacher_ny.parquet"
+SPENDING_PATH = DATA_DIR / "finance" / "spending_per_pupil.parquet"
 
 
 # ---------------------------------------------------------------------------
@@ -97,6 +98,25 @@ NCES_LEAID: dict[str, str] = {
     "64170106": "3631290",  # Whitehall
     "52170104": "3626160",  # Schuylerville
     "49050106": "3614760",  # Hoosick Falls
+}
+
+#: NYS Comptroller (OSC) municipal codes for the comparison districts, used to
+#: join OSC local-government financial data (school spending). Keys are NYSED
+#: district codes. Matched by district name + county against the OSC data; OSC
+#: codes are unrelated to NYSED/BEDS codes, so this map is the only join key.
+OSC_CODE: dict[str, str] = {
+    "64010104": "530703000100",  # Argyle
+    "64161004": "530790601000",  # Cambridge
+    "64050204": "530729500200",  # Fort Ann
+    "64060102": "530929700100",  # Fort Edward (UFSD)
+    "64070104": "530733900100",  # Granville
+    "64080104": "530734900100",  # Greenwich
+    "64100104": "530737800100",  # Hartford
+    "64130106": "530643900100",  # Hudson Falls
+    "64150104": "530773800100",  # Salem
+    "64170106": "530690700100",  # Whitehall
+    "52170104": "410774700100",  # Schuylerville
+    "49050106": "380639800100",  # Hoosick Falls
 }
 
 #: Colour palette for the graph group: Cambridge gets the one bold colour and
@@ -171,6 +191,38 @@ def ccd_ratio_for(group: dict[str, str]) -> pl.DataFrame:
         .with_columns(pl.col("leaid").replace_strict(name_by_leaid).alias("district"))
         .with_columns(pl.col("district").replace_strict(region_by_name).alias("region"))
         .select("district", "region", "year_end", "ccd_students_per_teacher")
+        .sort("district", "year_end")
+    )
+
+
+def load_spending() -> pl.DataFrame:
+    """Read the cached per-pupil spending panel (one row per comparison
+    district-year).
+
+    Built by ``src/build_spending.py`` from the NYS Comptroller (OSC)
+    local-government financial data, joined to NYSED K-12 enrollment. Carries
+    three expenditure measures and their per-pupil values (see that script).
+    ``year_end`` is the fiscal year ending June 30, which equals OSC's
+    ``CALENDAR_YEAR`` and the NYSED school-year-ending label.
+    """
+    return pl.read_parquet(SPENDING_PATH)
+
+
+def spending_for(group: dict[str, str]) -> pl.DataFrame:
+    """Per-pupil spending for `group`, labelled like the other panels: a short
+    ``district`` name and a ``region`` column, plus the spending measures.
+    """
+    region_by_cd = {
+        cd: ("Washington County" if cd in WASHINGTON_K12 else "Other comparison districts")
+        for cd in group
+    }
+    return (
+        load_spending()
+        .filter(pl.col("district_cd").is_in(list(group)))
+        .with_columns(
+            pl.col("district_cd").replace_strict(group).alias("district"),
+            pl.col("district_cd").replace_strict(region_by_cd).alias("region"),
+        )
         .sort("district", "year_end")
     )
 

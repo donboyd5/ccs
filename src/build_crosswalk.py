@@ -66,6 +66,9 @@ def build() -> pl.DataFrame:
             pl.col("nysed_district_cd")
             .replace_strict(cc.NCES_LEAID, default=None)
             .alias("nces_leaid"),
+            pl.col("nysed_district_cd")
+            .replace_strict(cc.OSC_CODE, default=None)
+            .alias("osc_municipal_code"),
             pl.col("nysed_district_cd").is_in(graph_cds).alias("in_graph_group"),
             pl.col("nysed_district_cd").is_in(table_cds).alias("in_table_group"),
         )
@@ -77,6 +80,7 @@ def build() -> pl.DataFrame:
             "nysed_district_cd",
             "beds_entity_cd",
             "nces_leaid",
+            "osc_municipal_code",
             "needs_rc_category",
             "needs_rc_description",
             "in_graph_group",

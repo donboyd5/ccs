@@ -10,6 +10,7 @@ book:
   chapters:
     - index.qmd
     - class-sizes.qmd
+    - spending.qmd
   appendices:
     - sources.qmd
   repo-url: https://github.com/donboyd5/ccs

@@ -1,0 +1,161 @@
+# School district spending
+
+How much does each district spend to educate a student, and how does Cambridge
+compare? This chapter opens with the broadest summary — **current operating
+spending per pupil** — and will build toward the major categories of spending in
+later sections.
+
+## What "spending per pupil" means here
+
+A district's spending can be measured several ways, and the choice changes the
+number a lot. This chapter uses **current operating spending**: the cost of
+running schools in a year — salaries, benefits, classroom and BOCES services,
+food service, and federally funded programs — divided by **K-12 enrollment**.
+
+It deliberately leaves out two things that make year-to-year comparisons
+misleading:
+
+- **Capital projects** (new buildings, roofs, buses) and the **debt** that pays
+  for them. These arrive in large, irregular lumps — one building project can
+  briefly multiply a district's total spending. Salem's all-funds spending hit
+  about \$87,000 per pupil in 2021–22 for this reason, against current operating
+  spending of about \$26,000 that year.
+- **Transfers between a district's own funds**, which would otherwise be counted
+  twice.
+
+This is close to the "current spending per pupil" measure the U.S. Census and the
+National Center for Education Statistics use to compare districts and states. The
+dollars come from the **New York State Comptroller's** financial-reporting data
+and are **not adjusted for inflation**, so part of the upward drift over time
+reflects rising prices rather than rising real resources.
+
+```{python}
+#| label: setup
+#| include: false
+import os
+import sys
+
+sys.path.insert(0, os.getcwd())
+
+import polars as pl
+from plotnine import (
+    aes,
+    geom_line,
+    geom_point,
+    ggplot,
+    labs,
+    scale_color_manual,
+    scale_x_continuous,
+    scale_y_continuous,
+)
+from great_tables import GT, loc, md, style
+
+import comparisons as cc
+
+# Format axis/break values as whole dollars.
+def _dollars(breaks):
+    return [f"${v:,.0f}" if v is not None else "" for v in breaks]
+```
+
+## Spending per pupil, over time
+
+**Cambridge spends near the top of the group per pupil — consistently second only to Salem.**
+
+```{python}
+#| label: fig-spending-per-pupil
+#| fig-cap: "Current operating spending per K–12 pupil (nominal dollars) by school year ending, 2016 (2015–16) through 2025 (2024–25). Source: NYS Comptroller local-government financial data; K-12 enrollment from NYSED."
+g = (
+    cc.spending_for(cc.GRAPH_GROUP)
+    .filter(pl.col("year_end") >= 2016)
+    .select("district", "year_end", "current_pp")
+    .drop_nulls()
+)
+cambridge = g.filter(pl.col("district") == cc.FOCUS)
+
+(
+    ggplot(g, aes("year_end", "current_pp", color="district"))
+    + geom_line(size=1)
+    + geom_point(size=1.8)
+    + geom_line(cambridge, size=2.4)  # emphasize the focus district
+    + scale_color_manual(
+        values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
+    )
+    + scale_x_continuous(breaks=list(range(2016, 2026)))
+    + scale_y_continuous(labels=_dollars)
+    + labs(
+        x="School year ending",
+        y="Current operating spending per pupil",
+        title="Current operating spending per K-12 pupil, 2015–16 to 2024–25",
+    )
+    + cc.theme_ccs()
+)
+```
+
+The two highest-spending districts per pupil — Cambridge and Salem — are also the
+two **smallest** by enrollment. That is the cost-side mirror of the
+[students-per-teacher](class-sizes.qmd) picture: a small district spreads fixed
+costs (a principal, a building, a bus run) over fewer students, so its spending
+*per pupil* runs high even when its total budget is modest. Every district's
+figure rises over the decade, but remember these are nominal dollars — much of
+that climb is inflation.
+
+## The full comparison group
+
+The table widens the lens to all twelve table-group districts. Columns are
+school-years-ending; the final column is the change from 2016 to 2025 (in nominal
+dollars). Cambridge is highlighted.
+
+```{python}
+#| label: tbl-spending-per-pupil
+#| tbl-cap: "Current operating spending per K–12 pupil by district and school year ending (nominal dollars)."
+t = cc.spending_for(cc.TABLE_GROUP).filter(pl.col("year_end").is_between(2016, 2025))
+
+wide = (
+    t.select("region", "district", "year_end", "current_pp")
+    .with_columns(
+        pl.when(pl.col("region") == "Washington County")
+        .then(0)
+        .otherwise(1)
+        .alias("_rank")
+    )
+    .pivot(values="current_pp", index=["_rank", "region", "district"], on="year_end")
+    .sort(["_rank", "district"])
+    .drop("_rank")
+)
+
+year_cols = [c for c in wide.columns if c.isdigit()]
+wide = wide.with_columns((pl.col("2025") - pl.col("2016")).alias("chg"))
+
+(
+    GT(wide, rowname_col="district", groupname_col="region")
+    .tab_header(
+        title="Current operating spending per pupil",
+        subtitle="School-year-ending 2016 (2015–16) through 2025 (2024–25), nominal dollars",
+    )
+    .fmt_currency(columns=year_cols + ["chg"], decimals=0)
+    .tab_spanner(label="School year ending", columns=year_cols)
+    .cols_label(chg=md("Change<br>2016→2025"))
+    .sub_missing(missing_text="—")
+    .tab_style(
+        style=[style.fill(color="#FCEFB4"), style.text(weight="bold")],
+        locations=[
+            loc.body(rows=pl.col("district") == cc.FOCUS),
+            loc.stub(rows=pl.col("district") == cc.FOCUS),
+        ],
+    )
+    .tab_source_note(
+        md(
+            "**Source:** New York State Comptroller local-government financial "
+            "data (expenditures); K-12 enrollment from NYSED. Current operating "
+            "spending = General, Special Aid and School Lunch funds, excluding "
+            "capital outlay, debt service and interfund transfers. Nominal "
+            "dollars; year = school-year-ending (2025 = 2024–25)."
+        )
+    )
+)
+```
+
+Across the wider group the same pattern holds: the smallest districts tend to
+post the highest spending per pupil, and Cambridge sits near the top. Later
+sections will open up *what* the money buys — the major categories of spending —
+and add the general-fund-only and total-all-funds views for context.
