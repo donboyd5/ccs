@@ -60,6 +60,46 @@
     ]
   },
   {
+    "objectID": "spending.html",
+    "href": "spending.html",
+    "title": "2  School district spending",
+    "section": "",
+    "text": "2.1 What “spending per pupil” means here\nHow much does each district spend to educate a student, and how does Cambridge compare? This chapter opens with the broadest summary — current operating spending per pupil — and will build toward the major categories of spending in later sections.\nA district’s spending can be measured several ways, and the choice changes the number a lot. This chapter uses current operating spending: the cost of running schools in a year — salaries, benefits, classroom and BOCES services, food service, and federally funded programs — divided by K-12 enrollment.\nIt deliberately leaves out two things that make year-to-year comparisons misleading:\nThis is close to the “current spending per pupil” measure the U.S. Census and the National Center for Education Statistics use to compare districts and states. The dollars come from the New York State Comptroller’s financial-reporting data and are not adjusted for inflation, so part of the upward drift over time reflects rising prices rather than rising real resources.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>School district spending</span>"
+    ]
+  },
+  {
+    "objectID": "spending.html#what-spending-per-pupil-means-here",
+    "href": "spending.html#what-spending-per-pupil-means-here",
+    "title": "2  School district spending",
+    "section": "",
+    "text": "Capital projects (new buildings, roofs, buses) and the debt that pays for them. These arrive in large, irregular lumps — one building project can briefly multiply a district’s total spending. Salem’s all-funds spending hit about $87,000 per pupil in 2021–22 for this reason, against current operating spending of about $26,000 that year.\nTransfers between a district’s own funds, which would otherwise be counted twice.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>School district spending</span>"
+    ]
+  },
+  {
+    "objectID": "spending.html#spending-per-pupil-over-time",
+    "href": "spending.html#spending-per-pupil-over-time",
+    "title": "2  School district spending",
+    "section": "2.2 Spending per pupil, over time",
+    "text": "2.2 Spending per pupil, over time\nCambridge spends near the top of the group per pupil — consistently second only to Salem.\n\n\nCode\ng = (\n    cc.spending_for(cc.GRAPH_GROUP)\n    .filter(pl.col(\"year_end\") &gt;= 2016)\n    .select(\"district\", \"year_end\", \"current_pp\")\n    .drop_nulls()\n)\ncambridge = g.filter(pl.col(\"district\") == cc.FOCUS)\n\n(\n    ggplot(g, aes(\"year_end\", \"current_pp\", color=\"district\"))\n    + geom_line(size=1)\n    + geom_point(size=1.8)\n    + geom_line(cambridge, size=2.4)  # emphasize the focus district\n    + scale_color_manual(\n        values=cc.PALETTE, name=\"\", limits=cc.district_order(cc.GRAPH_GROUP)\n    )\n    + scale_x_continuous(breaks=list(range(2016, 2026)))\n    + scale_y_continuous(labels=_dollars)\n    + labs(\n        x=\"School year ending\",\n        y=\"Current operating spending per pupil\",\n        title=\"Current operating spending per K-12 pupil, 2015–16 to 2024–25\",\n    )\n    + cc.theme_ccs()\n)\n\n\n\n\n\n\n\n\nFigure 2.1: Current operating spending per K–12 pupil (nominal dollars) by school year ending, 2016 (2015–16) through 2025 (2024–25). Source: NYS Comptroller local-government financial data; K-12 enrollment from NYSED.\n\n\n\n\n\nThe two highest-spending districts per pupil — Cambridge and Salem — are also the two smallest by enrollment. That is the cost-side mirror of the students-per-teacher picture: a small district spreads fixed costs (a principal, a building, a bus run) over fewer students, so its spending per pupil runs high even when its total budget is modest. Every district’s figure rises over the decade, but remember these are nominal dollars — much of that climb is inflation.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>School district spending</span>"
+    ]
+  },
+  {
+    "objectID": "spending.html#the-full-comparison-group",
+    "href": "spending.html#the-full-comparison-group",
+    "title": "2  School district spending",
+    "section": "2.3 The full comparison group",
+    "text": "2.3 The full comparison group\nThe table widens the lens to all twelve table-group districts. Columns are school-years-ending; the final column is the change from 2016 to 2025 (in nominal dollars). Cambridge is highlighted.\n\n\nCode\nt = cc.spending_for(cc.TABLE_GROUP).filter(pl.col(\"year_end\").is_between(2016, 2025))\n\nwide = (\n    t.select(\"region\", \"district\", \"year_end\", \"current_pp\")\n    .with_columns(\n        pl.when(pl.col(\"region\") == \"Washington County\")\n        .then(0)\n        .otherwise(1)\n        .alias(\"_rank\")\n    )\n    .pivot(values=\"current_pp\", index=[\"_rank\", \"region\", \"district\"], on=\"year_end\")\n    .sort([\"_rank\", \"district\"])\n    .drop(\"_rank\")\n)\n\nyear_cols = [c for c in wide.columns if c.isdigit()]\nwide = wide.with_columns((pl.col(\"2025\") - pl.col(\"2016\")).alias(\"chg\"))\n\n(\n    GT(wide, rowname_col=\"district\", groupname_col=\"region\")\n    .tab_header(\n        title=\"Current operating spending per pupil\",\n        subtitle=\"School-year-ending 2016 (2015–16) through 2025 (2024–25), nominal dollars\",\n    )\n    .fmt_currency(columns=year_cols + [\"chg\"], decimals=0)\n    .tab_spanner(label=\"School year ending\", columns=year_cols)\n    .cols_label(chg=md(\"Change&lt;br&gt;2016→2025\"))\n    .sub_missing(missing_text=\"—\")\n    .tab_style(\n        style=[style.fill(color=\"#FCEFB4\"), style.text(weight=\"bold\")],\n        locations=[\n            loc.body(rows=pl.col(\"district\") == cc.FOCUS),\n            loc.stub(rows=pl.col(\"district\") == cc.FOCUS),\n        ],\n    )\n    .tab_source_note(\n        md(\n            \"**Source:** New York State Comptroller local-government financial \"\n            \"data (expenditures); K-12 enrollment from NYSED. Current operating \"\n            \"spending = General, Special Aid and School Lunch funds, excluding \"\n            \"capital outlay, debt service and interfund transfers. Nominal \"\n            \"dollars; year = school-year-ending (2025 = 2024–25).\"\n        )\n    )\n)\n\n\n\n\nTable 2.1: Current operating spending per K–12 pupil by district and school year ending (nominal dollars).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCurrent operating spending per pupil\n\n\nSchool-year-ending 2016 (2015–16) through 2025 (2024–25), nominal dollars\n\n\n\nSchool year ending\nChange\n2016→2025\n\n\n2016\n2017\n2018\n2019\n2020\n2021\n2022\n2023\n2024\n2025\n\n\n\n\nWashington County\n\n\nArgyle\n$22,221\n$22,677\n$24,335\n$25,670\n$26,900\n$26,684\n$28,890\n$29,199\n$29,335\n$30,138\n$7,917\n\n\nCambridge\n$20,926\n$21,065\n$22,264\n$23,053\n$23,178\n$24,571\n$25,407\n$27,367\n$30,445\n$31,158\n$10,232\n\n\nFort Ann\n$22,829\n$21,921\n$23,160\n$25,018\n$25,771\n$26,894\n$29,483\n$29,291\n$33,426\n$33,529\n$10,700\n\n\nFort Edward\n$19,853\n$21,613\n$25,290\n$29,394\n$25,437\n$22,544\n$26,861\n$31,463\n$33,348\n$36,250\n$16,397\n\n\nGranville\n$21,617\n$22,169\n$23,098\n$22,557\n$23,499\n$23,184\n$25,944\n$27,128\n$27,054\n$30,652\n$9,035\n\n\nGreenwich\n$18,164\n$18,944\n$19,970\n$21,100\n$21,440\n$23,213\n$25,131\n$26,823\n$28,843\n$30,218\n$12,054\n\n\nHartford\n$21,563\n$23,227\n$25,144\n$27,554\n$26,339\n$27,275\n$30,068\n$31,029\n$37,435\n$37,799\n$16,236\n\n\nHudson Falls\n$17,290\n$18,383\n$18,234\n$18,527\n$18,048\n$19,088\n$21,024\n$23,680\n$25,134\n$26,979\n$9,689\n\n\nSalem\n$21,580\n$21,031\n$21,456\n$24,032\n$24,505\n$24,042\n$26,156\n$28,184\n$29,698\n$31,966\n$10,386\n\n\nWhitehall\n$19,575\n$19,312\n$21,522\n$22,760\n$22,360\n$23,227\n$23,437\n$27,541\n$29,200\n$30,885\n$11,310\n\n\nOther comparison districts\n\n\nHoosick Falls\n$18,510\n$18,691\n$19,006\n$20,641\n$20,802\n$20,432\n$24,759\n$25,586\n$27,444\n$27,097\n$8,587\n\n\nSchuylerville\n$19,071\n$20,044\n$20,856\n$21,392\n$21,443\n$23,162\n$24,935\n$25,996\n$27,409\n$29,284\n$10,213\n\n\n\nSource: New York State Comptroller local-government financial data (expenditures); K-12 enrollment from NYSED. Current operating spending = General, Special Aid and School Lunch funds, excluding capital outlay, debt service and interfund transfers. Nominal dollars; year = school-year-ending (2025 = 2024–25).\n\n\n\n\n\n\n\n\n\n\n\n\nAcross the wider group the same pattern holds: the smallest districts tend to post the highest spending per pupil, and Cambridge sits near the top. Later sections will open up what the money buys — the major categories of spending — and add the general-fund-only and total-all-funds views for context.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>School district spending</span>"
+    ]
+  },
+  {
     "objectID": "sources.html",
     "href": "sources.html",
     "title": "Sources & references",
