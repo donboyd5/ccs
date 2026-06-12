@@ -2,7 +2,13 @@
 
 District-level **K-12 enrollment** and **number of teachers** for every New York
 public school district, built from NYSED's public downloads. Built by
-[`src/build_enrollment_teachers.py`](../../src/build_enrollment_teachers.py).
+[`src/build_enrollment_teachers.py`](../../../src/build_enrollment_teachers.py).
+
+> **Provenance note.** This folder holds the **raw** NYSED downloads (in the
+> `enrollment/` and `studed/` subfolders). The build script writes its **processed**
+> outputs to [`data/processed/`](../../processed/). Raw archive/database filenames
+> are kept **exactly as downloaded from NYSED** (e.g. `ENROLL_2024.mdb`,
+> `studed2022.zip`) — not renamed.
 
 | metric | source dataset | coverage (school years) |
 |---|---|---|
@@ -12,8 +18,9 @@ public school district, built from NYSED's public downloads. Built by
 
 Source page: https://data.nysed.gov/downloads.php
 (8 annual `enrollment_*.zip` and 8 annual `studed*.zip` archives, each an MS-Access
-`.mdb`/`.accdb`). Raw downloads live in `raw/` and are git-ignored; re-download
-by re-running the script's URLs.
+`.mdb`/`.accdb`). The raw archives/databases live next to this file in
+`enrollment/` and `studed/` and are git-ignored (too large for GitHub); re-download
+by hand from the source page above into those folders.
 
 ## Time convention
 

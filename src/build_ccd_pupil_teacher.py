@@ -15,7 +15,7 @@ the Y/(Y+1) school year. We store ``year_end = ccd_year + 1`` to match the rest
 of this project (NYSED school-year-ending), verified against the COVID
 enrollment trough (CCD 2020 == 2020-21 == year_end 2021).
 
-Output (data/enrollment_staff/, git-ignored and regenerable):
+Output (data/processed/, git-ignored and regenerable):
     ccd_pupil_teacher_ny.parquet   one row per LEA-year, all NY districts
 
 Usage:  python src/build_ccd_pupil_teacher.py   (requires internet)
@@ -30,7 +30,7 @@ from pathlib import Path
 import polars as pl
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-OUT_PATH = PROJECT_ROOT / "data" / "enrollment_staff" / "ccd_pupil_teacher_ny.parquet"
+OUT_PATH = PROJECT_ROOT / "data" / "processed" / "ccd_pupil_teacher_ny.parquet"
 
 # CCD fall-years to pull. 2015-2024 maps to year_end 2016-2025.
 CCD_YEARS = range(2015, 2025)

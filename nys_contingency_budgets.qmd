@@ -14,7 +14,7 @@ format:
     theme: cosmo
 params:
   years: !expr 2012:2026     # tax-cap era; pre-2012 has no cap, so above/below-cap is undefined
-  cache_dir: "data/nysed_budget_votes"   # downloaded NYSED .xls/.xlsx live here
+  cache_dir: "data/raw/nysed_budget_votes"   # downloaded NYSED .xls/.xlsx live here
   download: false            # files already cached; set TRUE to (re)download from NYSED
   levy_tol: 0.0005           # tolerance (in proportion units) when testing proposed levy > levy limit
 execute:
@@ -724,7 +724,7 @@ known_district |>
   backward (no cap split).
 - **Reproducibility**: `embed-resources: true` self-contains the HTML; the per-district CSV
   is written to `output/`. Source `.xls/.xlsx` are cached in `params$cache_dir`
-  (`data/nysed_budget_votes`); set `download: true` to refresh them from NYSED. Pin versions
+  (`data/raw/nysed_budget_votes`); set `download: true` to refresh them from NYSED. Pin versions
   with `renv::snapshot()` if archiving.
 
 ```{r session}

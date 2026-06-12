@@ -16,8 +16,8 @@ import polars as pl
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
-SRC_PATH = DATA_DIR / "school_finance_2013_2025.parquet"
-OUT_PATH = DATA_DIR / "cambridge_finance_2013_2025.parquet"
+SRC_PATH = DATA_DIR / "processed" / "school_finance.parquet"
+OUT_PATH = DATA_DIR / "processed" / "cambridge_finance.parquet"
 
 CAMBRIDGE_CODE = "530790601000"
 

@@ -1,7 +1,7 @@
 """Build a per-pupil spending panel for the comparison districts.
 
 Source: NYS Office of the State Comptroller (OSC) local-government financial
-data (``data/school_finance_2013_2025.parquet``), joined to NYSED K-12
+data (``data/processed/school_finance.parquet``), joined to NYSED K-12
 enrollment. OSC collects this from school districts' Annual Update Documents
 using the NY Uniform System of Accounts; the fund is the leading letter of the
 account code (A = General, F = Special Aid, C = School Lunch, H = Capital,
@@ -20,7 +20,7 @@ fiscal year ending June 30, which equals OSC's ``CALENDAR_YEAR`` and the NYSED
 school-year-ending label (no off-by-one). Per-pupil values are null before
 2016, where the enrollment panel does not reach.
 
-Output (data/finance/, git-ignored, regenerable):
+Output (data/processed/, git-ignored, regenerable):
     spending_per_pupil.parquet   one row per comparison district-year
 
 Usage:  python src/build_spending.py
@@ -37,8 +37,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "books" / "cambridge-comparisons"))
 import comparisons as cc  # noqa: E402  (after sys.path tweak)
 
-OSC_PATH = REPO_ROOT / "data" / "school_finance_2013_2025.parquet"
-OUT_PATH = REPO_ROOT / "data" / "finance" / "spending_per_pupil.parquet"
+OSC_PATH = REPO_ROOT / "data" / "processed" / "school_finance.parquet"
+OUT_PATH = REPO_ROOT / "data" / "processed" / "spending_per_pupil.parquet"
 
 #: Operating funds kept for the "current operating" measure.
 OPERATING_FUNDS = ["A", "F", "C"]  # General, Special Aid, School Lunch

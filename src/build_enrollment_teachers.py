@@ -19,7 +19,7 @@ We keep only district-total rows (digits 9-12 == "0000"), dropping building
 rows and the statewide / county / Need-Resource-Capacity aggregate rows
 (which use a leading "0000" or "11" entity code).
 
-Outputs (data/enrollment_staff/):
+Outputs (data/processed/):
     enrollment_k12_by_district.parquet          tidy enrollment + grade detail
     teachers_by_district.parquet                tidy staff counts
     district_enrollment_teachers_panel.parquet  combined district-year panel
@@ -40,9 +40,10 @@ from access_parser import AccessParser
 
 # --- configuration ---------------------------------------------------------
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-SUBDIR = PROJECT_ROOT / "data" / "enrollment_staff"
-ENROLL_DIR = SUBDIR / "raw" / "enrollment"
-STUDED_DIR = SUBDIR / "raw" / "studed"
+RAW_DIR = PROJECT_ROOT / "data" / "raw" / "nysed_enrollment_staff"
+OUT_DIR = PROJECT_ROOT / "data" / "processed"
+ENROLL_DIR = RAW_DIR / "enrollment"
+STUDED_DIR = RAW_DIR / "studed"
 
 # Washington County (64) plus its NY neighbors for the convenience view.
 # Cambridge CSD straddles Washington (64) and Rensselaer (49).
@@ -337,14 +338,14 @@ def main() -> None:
         .sort("county_cd", "district_name", "year_end")
     )
 
-    SUBDIR.mkdir(parents=True, exist_ok=True)
-    enr.write_parquet(SUBDIR / "enrollment_k12_by_district.parquet", compression="zstd")
-    tch.write_parquet(SUBDIR / "teachers_by_district.parquet", compression="zstd")
-    panel.write_parquet(SUBDIR / "district_enrollment_teachers_panel.parquet", compression="zstd")
-    panel.write_csv(SUBDIR / "district_enrollment_teachers_panel.csv")
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    enr.write_parquet(OUT_DIR / "enrollment_k12_by_district.parquet", compression="zstd")
+    tch.write_parquet(OUT_DIR / "teachers_by_district.parquet", compression="zstd")
+    panel.write_parquet(OUT_DIR / "district_enrollment_teachers_panel.parquet", compression="zstd")
+    panel.write_csv(OUT_DIR / "district_enrollment_teachers_panel.csv")
 
     wash = panel.filter(pl.col("washington_area"))
-    wash.write_csv(SUBDIR / "washington_area_enrollment_teachers.csv")
+    wash.write_csv(OUT_DIR / "washington_area_enrollment_teachers.csv")
 
     # ---------------- validation report ----------------
     print("\n" + "=" * 64 + "\nVALIDATION\n" + "=" * 64)
@@ -401,7 +402,7 @@ def main() -> None:
             .sort("district_name", "year_end")
         )
 
-    print("\nWrote outputs to", SUBDIR.relative_to(PROJECT_ROOT))
+    print("\nWrote outputs to", OUT_DIR.relative_to(PROJECT_ROOT))
 
 
 if __name__ == "__main__":

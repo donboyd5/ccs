@@ -4,8 +4,10 @@ __pycache__/
 *.pyc
 .ipynb_checkpoints/
 
-# Data: large source CSVs and generated parquet (not tracked in git)
-# (both loose in data/ and nested in subfolders like data/account_codes/)
+# Data (see data/README.md for the raw/ vs processed/ scheme).
+# Raw source files under data/raw/<source>/ and all generated parquet/CSV are
+# NOT tracked; provenance lives in tracked .md files (SOURCE.md / README.md),
+# which are never matched by these data patterns.
 data/*.csv
 data/*.parquet
 data/**/*.csv

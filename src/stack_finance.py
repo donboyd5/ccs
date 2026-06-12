@@ -1,6 +1,6 @@
 """Stack NY school district finance CSVs (2013-2025) into a single parquet file.
 
-The annual files in ``data/account_codes/`` cover every NY school district. Years 2013-2025
+The annual files in ``data/raw/osc_school_finance/`` cover every NY school district. Years 2013-2025
 share a single schema (PERIOD_START/PERIOD_END/ACCOUNT_CODE_SECTION), so they
 can be concatenated without harmonization. 2026 (a near-empty placeholder) and
 the 1995-2012 files (a different, older schema) are intentionally excluded.
@@ -18,8 +18,8 @@ import polars as pl
 # --- configuration ---------------------------------------------------------
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
-ACCOUNT_CODES_DIR = DATA_DIR / "account_codes"
-OUT_PATH = DATA_DIR / "school_finance_2013_2025.parquet"
+ACCOUNT_CODES_DIR = DATA_DIR / "raw" / "osc_school_finance"
+OUT_PATH = DATA_DIR / "processed" / "school_finance.parquet"
 
 YEARS = range(2013, 2026)  # 2013 through 2025 inclusive
 
@@ -56,6 +56,7 @@ def main() -> None:
     combined = stack()
     print(f"Combined: {combined.height:,} rows, {combined.width} cols")
 
+    OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     combined.write_parquet(OUT_PATH, compression="zstd")
     size_mb = OUT_PATH.stat().st_size / 1e6
     print(f"Wrote {OUT_PATH.relative_to(PROJECT_ROOT)}  ({size_mb:.1f} MB)")

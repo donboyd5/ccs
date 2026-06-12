@@ -4,6 +4,25 @@ All figures on this website come from public data. This appendix documents each
 source, notes the main caveats, and lists full references (APA style) at the
 end. Citation keys are given in brackets so they can be reused in the text.
 
+## Data sources index
+
+Every dataset the project uses (or is weighing). Raw files and a full provenance
+record for each live under [`data/raw/<source>/`](https://github.com/donboyd5/ccs/tree/main/data)
+in a tracked `SOURCE.md`; the scheme is described in
+[`data/README.md`](https://github.com/donboyd5/ccs/blob/main/data/README.md).
+Years are **school-year-ending** (2025 = 2024–25).
+
+| Dataset | Publisher | What it provides | Years | Status |
+|---|---|---|---|---|
+| Enrollment & staff | NYSED | K-12 enrollment; teacher/staff headcounts | 2016–2025 (staff 2018–2025) | **In use** |
+| Pupil–teacher FTE (CCD) | NCES, via Urban Institute | FTE-based pupil-teacher ratio (cross-check) | 2016–2025 | **In use** |
+| School district finance | NYS Comptroller (OSC) | revenue & expenditure by account code → per-pupil spending | 2013–2025 | **In use** |
+| Audited financial reports | Federal Audit Clearinghouse | Cambridge CSD audited statements (PDF) | 2020–2025 | Reference |
+| Property Tax Report Card | NYSED | proposed budget, tax levy & limit, projected enrollment | 2020–2027 | **Adding** |
+| Budget vote results | NYSED | district budget vote / re-vote outcomes | 2013–2026 | Related analysis |
+| State school aid | NYS (data.ny.gov `9pb8-dg53`) | state aid to each district by year | 1996– | Candidate |
+| Real property tax rates & levies | NYS (data.ny.gov `iq85-sdzs`) | tax levies and rates by municipality | varies | Candidate |
+
 ## NYSED data files
 
 The enrollment and staffing numbers are built from two New York State Education
@@ -24,7 +43,7 @@ Access files:
 
 These were stacked into a district-by-year panel by
 [`src/build_enrollment_teachers.py`](https://github.com/donboyd5/ccs/blob/main/src/build_enrollment_teachers.py);
-the dataset's own [README](https://github.com/donboyd5/ccs/blob/main/data/enrollment_staff/README.md)
+the dataset's own [SOURCE.md](https://github.com/donboyd5/ccs/blob/main/data/raw/nysed_enrollment_staff/SOURCE.md)
 records the build in full.
 
 **Caveats worth repeating.** `num_teachers` is a district-wide *headcount*
@@ -34,6 +53,41 @@ for comparison across districts and over time — **not** NYSED's official
 pupil-teacher ratio or average class size. Charter schools are excluded (they
 have no district-total row), and a small number of districts reorganized within
 the window (statewide, not in this comparison group).
+
+## National pupil–teacher ratios (NCES Common Core of Data)
+
+To cross-check the headcount-based ratio above against a full-time-equivalent
+measure, the project pulls the federal **Common Core of Data** (CCD) school-
+district directory — which reports teacher **FTE** — through the **Urban
+Institute's Education Data Portal** (<https://educationdata.urban.org>), which
+mirrors NCES. CCD labels a year by its fall term, so it is shifted to this
+project's school-year-ending convention (CCD 2024 → 2024–25).
+
+## School district finance (NYS Comptroller)
+
+Per-pupil **spending** comes from the **New York State Comptroller's (OSC)**
+local-government financial data — annual revenue and expenditure detail, by
+account code, that every district reports in its Annual Update Document under the
+state Uniform System of Accounts. Funds are identified by the leading letter of
+the account code (General, Special Aid, School Lunch, Capital, Debt Service). The
+**current operating spending per pupil** measure used in the spending chapter
+keeps the General, Special Aid, and School Lunch funds and excludes capital
+outlay, debt service, and transfers between funds, to approximate the U.S. Census
+/ NCES basis for comparing districts. The fiscal year ends June 30 and matches the
+school-year-ending label (no off-by-one). Dollars are **nominal** (not adjusted
+for inflation). Full provenance:
+[`data/raw/osc_school_finance/SOURCE.md`](https://github.com/donboyd5/ccs/blob/main/data/raw/osc_school_finance/SOURCE.md).
+
+## Property Tax Report Card (NYSED)
+
+NYSED posts a statewide **Property Tax Report Card** workbook each year
+(<https://www.p12.nysed.gov/mgtserv/propertytax/>) recording, for every district,
+the **proposed budget**, the **proposed and prior-year tax levy**, the district's
+**tax levy limit**, **projected enrollment**, and reserve balances — the numbers
+put before voters each May. These are *proposed/budgeted* figures (forward-
+looking), in contrast to the Comptroller's *actual* spending. Provenance and the
+year-by-year download list:
+[`data/raw/nysed_property_tax_report_card/SOURCE.md`](https://github.com/donboyd5/ccs/blob/main/data/raw/nysed_property_tax_report_card/SOURCE.md).
 
 ## Cambridge CSD annual financial reports
 
@@ -48,6 +102,18 @@ and the title *"Financial report."* They are the same series of district audits.
 
 - FY2020 [@ccsd_fin_2020], FY2021 [@ccsd_fin_2021], FY2022 [@ccsd_fin_2022]
 - FY2023 [@ccsd_fin_2023], FY2024 [@ccsd_fin_2024], FY2025 [@ccsd_fin_2025]
+
+## Candidate sources under consideration
+
+These are not yet used on the website but are likely additions, both from New
+York's open-data portal (<https://data.ny.gov>):
+
+- **State school aid** (dataset `9pb8-dg53`) — state aid to each school district
+  by year, back to the mid-1990s. Would let the spending chapter separate
+  state-funded from locally-funded dollars.
+- **Real property tax rates & levy data by municipality** (dataset `iq85-sdzs`) —
+  tax levies and rates by municipality, useful for putting each district's school
+  tax levy in the context of total local property taxes.
 
 ## Reader comments
 

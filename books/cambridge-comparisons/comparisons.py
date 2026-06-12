@@ -25,18 +25,20 @@ import polars as pl
 def _find_repo_root() -> Path:
     start = Path(__file__).resolve()
     for base in (start, *start.parents):
-        if (base / "data" / "enrollment_staff").is_dir():
+        # data/crosswalks is tracked in git, so it is present in every clone
+        # (unlike the git-ignored, regenerable data/processed/).
+        if (base / "data" / "crosswalks").is_dir():
             return base
     raise FileNotFoundError(
-        f"Could not find data/enrollment_staff above {start}"
+        f"Could not find data/crosswalks above {start}"
     )
 
 
 REPO_ROOT = _find_repo_root()
 DATA_DIR = REPO_ROOT / "data"
-PANEL_PATH = DATA_DIR / "enrollment_staff" / "district_enrollment_teachers_panel.parquet"
-CCD_PATH = DATA_DIR / "enrollment_staff" / "ccd_pupil_teacher_ny.parquet"
-SPENDING_PATH = DATA_DIR / "finance" / "spending_per_pupil.parquet"
+PANEL_PATH = DATA_DIR / "processed" / "district_enrollment_teachers_panel.parquet"
+CCD_PATH = DATA_DIR / "processed" / "ccd_pupil_teacher_ny.parquet"
+SPENDING_PATH = DATA_DIR / "processed" / "spending_per_pupil.parquet"
 
 
 # ---------------------------------------------------------------------------
