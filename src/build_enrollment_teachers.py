@@ -123,7 +123,7 @@ def is_district() -> pl.Expr:
     return (
         cd.str.slice(8, 4).eq("0000")      # digits 9-12 == 0000  -> district
         & ~cd.str.starts_with("0000")      # drop statewide & county aggregates
-        & ~cd.str.starts_with("11")        # drop "111111111111" statewide row
+        & cd.ne("111111111111")            # drop the statewide total row (exact)
     )
 
 

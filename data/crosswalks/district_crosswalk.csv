@@ -106,6 +106,11 @@ short_name,district_name,county_name,county_cd,nysed_district_cd,beds_entity_cd,
 ,KINDERHOOK CSD,Columbia,10,10140104,101401040000,,,5,Average Need,false,false
 ,NEW LEBANON CSD,Columbia,10,10160104,101601040000,,,5,Average Need,false,false
 ,TACONIC HILLS CSD,Columbia,10,10050104,100501040000,,,5,Average Need,false,false
+,CINCINNATUS CSD,Cortland,11,11010104,110101040000,,,4,High Need: Rural,false,false
+,CORTLAND CITY SD,Cortland,11,11020001,110200010000,,,3,High Need: Urban-Suburban,false,false
+,HOMER CSD,Cortland,11,11070106,110701060000,,,5,Average Need,false,false
+,MARATHON CSD,Cortland,11,11090104,110901040000,,,4,High Need: Rural,false,false
+,MCGRAW CSD,Cortland,11,11030404,110304040000,,,4,High Need: Rural,false,false
 ,ANDES CSD,Delaware,12,12010204,120102040000,,,5,Average Need,false,false
 ,CHARLOTTE VALLEY CSD,Delaware,12,12040104,120401040000,,,4,High Need: Rural,false,false
 ,DELAWARE ACADEMY CSD AT DELHI,Delaware,12,12050104,120501040000,,,5,Average Need,false,false
