@@ -52,4 +52,27 @@ the project via [`data/crosswalks/district_crosswalk.csv`](../../crosswalks/dist
 ## Processed output
 
 [`src/build_ptrc.py`](../../../src/build_ptrc.py) → `data/processed/property_tax_report_card.parquet`
-(stacked, all districts × `year_end`).
+— **6,015 district-years, year_end 2019–2027, 675 districts**. The main data sheet
+has a stable **35-column** layout across all years (prior-year / budget-year
+**pairs**); the builder selects the **budget-year** value of each pair **by column
+position** (header text carries shifting year labels and stray spaces) and joins
+the 6-digit BEDS code to `data/crosswalks/district_crosswalk.csv` to attach
+`nysed_district_cd`.
+
+Columns: `nysed_district_cd`, `beds_code`, `district_name`, `county_name`,
+`year_end`, then the budget-year measures — `proposed_spending`,
+`spending_pct_change`, `proposed_tax_levy_to_support_budget`,
+`levy_for_library_debt`, `levy_for_nonexcludable_propositions`,
+`tax_cap_reserve_used`, `total_proposed_tax_levy`, `tax_levy_pct_change`,
+`permissible_exclusions`, `tax_levy_limit_wo_exclusions`,
+`proposed_tax_levy_wo_exclusions`, `levy_vs_limit_wo_exclusions`,
+`projected_enrollment`, `enrollment_pct_change`, `fund_balance_restricted`,
+`fund_balance_assigned_appropriated`, `fund_balance_unrestricted`,
+`fund_balance_unrestricted_pct_of_budget`. Dollar amounts are **nominal**;
+`*_pct_*` are percents; `projected_enrollment` is the report's **forecast** for the
+budget year (it can differ from later *actual* K-12 enrollment).
+
+**Known non-link:** `ROCKLAND CSD` (Sullivan Co., BEDS `591303`) appears only in the
+2026-27 and 2025-26 cards — a newly reorganized district not yet in the enrollment
+panel (which ends at `year_end` 2025), so it is reported by the builder and
+excluded from the linked output until enrollment coverage catches up.

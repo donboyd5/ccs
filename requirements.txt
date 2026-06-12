@@ -1,6 +1,7 @@
 polars>=1.41
 pyarrow>=21
 access-parser>=0.0.6  # pure-Python reader for NYSED MS-Access (.mdb) databases
+fastexcel>=0.20       # calamine-backed .xlsx reader (PTRC workbooks)
 
 # Quarto book: plotting & tables (see books/)
 plotnine>=0.13      # ggplot2-style grammar of graphics
