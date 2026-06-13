@@ -9,6 +9,7 @@ rebuilds from `raw/` + the scripts.
 data/
 ├── raw/                     # source data, as downloaded — one folder per source
 │   ├── osc_school_finance/            NYS Comptroller school-district finance (CSV)
+│   ├── osc_school_district_tax_levies/ NYS Comptroller tax levies & full-value rates, by district×town (Excel)
 │   ├── nysed_enrollment_staff/        NYSED enrollment + staff (MS-Access)
 │   ├── nysed_budget_votes/            NYSED budget vote / re-vote results (Excel)
 │   ├── nysed_property_tax_report_card/ NYSED Property Tax Report Card (Excel)
@@ -40,6 +41,7 @@ data/
 | `cambridge_view.py` | `processed/school_finance.parquet` | `cambridge_finance.parquet` |
 | `build_spending.py` | `processed/school_finance.parquet` + enrollment | `spending_per_pupil.parquet` |
 | `download_ptrc.py` / `build_ptrc.py` | `raw/nysed_property_tax_report_card/` | `property_tax_report_card.parquet` |
+| `download_osc_tax_levies.py` / `build_osc_tax_levies.py` | `raw/osc_school_district_tax_levies/` | `osc_school_district_tax_levies.parquet` (+ tracked `crosswalks/osc_rpt_district_crosswalk.csv`) |
 | `build_crosswalk.py` | enrollment panel + `comparisons.py` maps | `crosswalks/district_crosswalk.{csv,parquet}` |
 
 The reader-facing **index of all data sources** is in the website's Sources

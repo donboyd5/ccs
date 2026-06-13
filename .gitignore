@@ -30,6 +30,8 @@ data/**/*.xls
 data/**/*.xlsx
 data/**/*.xlsm
 data/**/*.pdf
+# Raw landing-page / source HTML snapshots kept under data/raw for provenance
+data/**/*.html
 
 # Quarto
 /.quarto/
@@ -41,6 +43,10 @@ data/**/*.pdf
 **/_freeze/
 # standalone rendered HTML at repo root (e.g. nys_contingency_budgets.html)
 /*.html
+
+# Claude Code: keep settings.json + hooks/ tracked; ignore personal/transient state
+.claude/settings.local.json
+.claude/worktrees/
 
 # OS / editor
 .DS_Store

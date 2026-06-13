@@ -1,0 +1,681 @@
+osc_sd_muni_code,school_name,primary_county,nysed_district_cd,xwalk_name,match_method
+460700200100,Addison Central School District,Steuben,57010104,ADDISON CSD,name
+300608200100,Adirondack Central School District,Oneida,41040106,ADIRONDACK CSD,name
+080700300100,Afton Central School District,Chenango,08010104,AFTON CSD,name
+140758200100,Akron Central School District,Erie,14210104,AKRON CSD,name
+010501000000,Albany City School District,Albany,01010001,ALBANY CITY SD,name
+340600500100,Albion Central School District,Orleans,45010106,ALBION CSD,name
+140600700100,Alden Central School District,Erie,14010106,ALDEN CSD,name
+180700800200,Alexander Central School District,Genesee,18020204,ALEXANDER CSD,name
+220700900200,Alexandria Central School District,Jefferson,22020204,ALEXANDRIA CSD,name
+020701000100,Alfred-Almond Central School District,Allegany,02010104,ALFRED-ALMOND CSD,name
+040701100100,Allegany-Limestone Central School District,Cattaraugus,04030206,ALLEGANY-LIMESTONE CSD,name
+350700600200,Altmar-Parish-Williamstown Central School District,Oswego,46010204,ALTMAR-PARISH-WILLIAMSTOWN CSD,name
+470925000300,Amagansett Union Free School District,Suffolk,58030302,AMAGANSETT UFSD,name
+140601900100,Amherst Central School District,Erie,14020106,AMHERST CSD,name
+470604600600,Amityville Union Free School District,Suffolk,58010603,AMITYVILLE UFSD,name
+270502000000,Amsterdam City School District,Montgomery,27010001,AMSTERDAM CITY SD,name
+120702300200,Andes Central School District,Delaware,12010204,ANDES CSD,name
+020702400100,Andover Central School District,Allegany,02060104,ANDOVER CSD,name
+550634200500,Ardsley Union Free School District,Westchester,66040503,ARDSLEY UFSD,name
+530703000100,Argyle Central School District,Washington,64010104,ARGYLE CSD,name
+460740400100,Arkport Central School District,Steuben,57190104,ARKPORT CSD,name
+130668600100,Arlington Central School District,Dutchess,13160106,ARLINGTON CSD,name
+560603700100,Attica Central School District,Wyoming,67020106,ATTICA CSD,name
+050503000000,Auburn City School District,Cayuga,05010001,AUBURN CITY SD,name
+090704100100,Ausable Valley Central School District,Clinton,09020104,AUSABLE VALLEY CSD,name
+380674100100,Averill Park Central School District,Rensselaer,49130206,AVERILL PARK CSD,name
+460704400100,Avoca Central School District,Steuben,57020104,AVOCA CSD,name
+240704500100,Avon Central School District,Livingston,24010104,AVON CSD,name
+470604600100,Babylon Union Free School District,Suffolk,58010103,BABYLON UFSD,name
+080704700100,Bainbridge-Guilford Central School District,Chenango,08020104,BAINBRIDGE-GUILFORD CSD,name
+280638601000,Baldwin Union Free School District,Nassau,28021003,BALDWIN UFSD,name
+310649300100,Baldwinsville Central School District,Onondaga,42090106,BALDWINSVILLE CSD,name
+410653400100,Ballston Spa Central School District,Saratoga,52130106,BALLSTON SPA CSD,name
+290778600100,Barker Central School District,Niagara,40130104,BARKER CSD,name
+180504000000,Batavia City School District,Genesee,18030001,BATAVIA CITY SD,name
+460605600200,Bath Central School District,Steuben,57030206,BATH CSD,name
+470642100100,Bay Shore Union Free School District,Suffolk,58050103,BAY SHORE UFSD,name
+470942100500,Bayport-Blue Point Union Free School District,Suffolk,58050502,BAYPORT-BLUE POINT UFSD,name
+130505000000,Beacon City School District,Dutchess,13020001,BEACON CITY SD,name
+230756800100,Beaver River Central School District,Lewis,23130104,BEAVER RIVER CSD,name
+550605700200,Bedford Central School District,Westchester,66010206,BEDFORD CSD,name
+090605900100,Beekmantown Central School District,Clinton,09030106,BEEKMANTOWN CSD,name
+020706000100,Belfast Central School District,Allegany,02080104,BELFAST CSD,name
+220726700200,Belleville-Henderson Central School District,Jefferson,22090904,BELLEVILLE-HENDERSON CSD,name
+280938600700,Bellmore Union Free School District,Nassau,28020702,BELLMORE UFSD,name
+060726300100,Bemus Point Central School District,Chautauqua,06100104,BEMUS POINT CSD,name
+380706700100,Berlin Central School District,Rensselaer,49010104,BERLIN CSD,name
+010706800100,Berne-Knox-Westerlo Central School District,Albany,01020104,BERNE-KNOX-WESTERLO CSD,name
+010607100600,Bethlehem Central School District,Albany,01030606,BETHLEHEM CSD,name
+280663402100,Bethpage Union Free School District,Nassau,28052103,BETHPAGE UFSD,name
+030506000000,Binghamton City School District,Broome,03020001,BINGHAMTON CITY SD,name
+550973400500,Blind Brook-Rye Union Free School District,Westchester,66190502,BLIND BROOK-RYE UFSD,name
+020707900100,Bolivar-Richburg Central School District,Allegany,02290204,BOLIVAR-RICHBURG CSD,name
+520708000100,Bolton Central School District,Warren,63010104,BOLTON CSD,name
+150789600200,Boquet Valley Central School District at Elizabethtown-Lewis-Westport,Essex,15180104,,manual
+460708600100,Bradford Central School District,Steuben,57040104,BRADFORD CSD,name
+400708900100,Brasher Falls Central School District,St. Lawrence,51010104,BRASHER FALLS CSD,name
+470642101200,Brentwood Union Free School District,Suffolk,58051203,BRENTWOOD UFSD,name
+370678900100,Brewster Central School District,Putnam,48060106,BREWSTER CSD,name
+550962200200,Briarcliff Manor Union Free School District,Westchester,66140202,BRIARCLIFF MANOR UFSD,name
+470978700900,Bridgehampton Union Free School District,Suffolk,58090902,BRIDGEHAMPTON UFSD,name
+260609200100,Brighton Central School District,Monroe,26010106,BRIGHTON CSD,name
+170709400100,Broadalbin-Perth Central School District,Fulton,17110204,BROADALBIN-PERTH CSD,name
+260681900100,Brockport Central School District,Monroe,26180106,BROCKPORT CSD,name
+060768200100,Brocton Central School School District,Chautauqua,06230104,BROCTON CSD,name+county
+550624700300,Bronxville Union Free School District,Westchester,66030303,BRONXVILLE UFSD,name
+250709500900,Brookfield Central School District,Madison,25010904,BROOKFIELD CSD,name
+470909600300,Brookhaven-Comsewogue Union Free School District,Suffolk,58020302,BROOKHAVEN-COMSEWOGUE UFSD,name
+380709900200,Brunswick Central School District,Rensselaer,49020204,BRUNSWICK CSD (BRITTONKILL),name
+160754100100,Brushton-Moira Central School District,Franklin,16160104,BRUSHTON-MOIRA CSD,name
+140507000000,Buffalo City School District,Erie,14060001,BUFFALO CITY SD,name
+410604900100,Burnt Hills-Ballston Lake Central School District,Saratoga,52010106,BURNT HILLS-BALLSTON LAKE CSD,name
+550659000100,Byram Hills Central School District,Westchester,66120106,BYRAM HILLS CSD,name
+180710700100,Byron-Bergen Central School District,Genesee,18070104,BYRON-BERGEN CSD,name
+190710800100,Cairo-Durham Central School District,Greene,19030104,CAIRO-DURHAM CSD,name
+240711000100,Caledonia-Mumford Central School District,Livingston,24020104,CALEDONIA-MUMFORD CSD,name
+530790601000,Cambridge Central School District,Washington,64161004,CAMBRIDGE CSD,name
+300711400100,Camden Central School District,Oneida,41060104,CAMDEN CSD,name
+460711700200,Campbell-Savona Central School District,Steuben,57060304,CAMPBELL-SAVONA CSD,name
+270712000100,Canajoharie Central School District,Montgomery,27030104,CANAJOHARIE CSD,name
+320508000000,Canandaigua City School District,Ontario,43030005,CANANDAIGUA CITY SD,name
+020710300200,Canaseraga Central School District,Allegany,02110204,CANASERAGA CSD,name
+250645700100,Canastota Central School District,Madison,25090106,CANASTOTA CSD,name
+490712200100,Candor Central School District,Tioga,60030104,CANDOR CSD,name
+460712400100,Canisteo-Greenwood Central School District,Steuben,57150206,CANISTEO-GREENWOOD CSD,name
+400612500100,Canton Central School District,St. Lawrence,51020106,CANTON CSD,name
+280659701100,Carle Place Union Free School District,Nassau,28041103,CARLE PLACE UFSD,name
+370612900200,Carmel Central School District,Putnam,48010206,CARMEL CSD,name
+220691500100,Carthage Central School District,Jefferson,22220106,CARTHAGE CSD,name
+060714600100,Cassadaga Valley Central School District,Chautauqua,06040104,CASSADAGA VALLEY CSD,name
+050713700100,Cato-Meridian Central School District,Cayuga,05040104,CATO-MERIDIAN CSD,name
+190613900100,Catskill Central School District,Greene,19040106,CATSKILL CSD,name
+040756400100,Cattaraugus-Little Valley Central School District,Cattaraugus,04230204,CATTARAUGUS-LITTLE VALLEY CSD,name
+250614100100,Cazenovia Central School District,Madison,25020106,CAZENOVIA CSD,name
+470909603300,Center Moriches Union Free School District,Suffolk,58023302,CENTER MORICHES UFSD,name
+470642101300,Central Islip Union Free School District,Suffolk,58051303,CENTRAL ISLIP UFSD,name
+350638200100,Central Square Central School District,Oswego,46080106,CENTRAL SQUARE CSD,name
+210732500300,Central Valley Central School District at Ilion-Mohawk School District,Herkimer,21210104,CENTRAL VALLEY CSD AT ILION-MOHAWK,name+county
+550657000400,Chappaqua Central School District,Westchester,66100406,CHAPPAQUA CSD,name
+120721900100,Charlotte Valley Central School District,Delaware,12040104,CHARLOTTE VALLEY CSD,name
+160714800100,Chateaugay Central School District,Franklin,16080104,CHATEAUGAY CSD,name
+100732800100,Chatham Central School District,Columbia,10100104,CHATHAM CSD,name
+060715000200,Chautauqua Lake Central School District,Chautauqua,06050304,CHAUTAUQUA LAKE CSD,name
+090915100100,Chazy Union Free School District,Clinton,09060102,CHAZY UFSD,name
+140615200100,Cheektowaga Central School District,Erie,14070106,CHEEKTOWAGA CSD,name
+140615200200,Cheektowaga-Maryvale Union Free School District,Erie,14070203,CHEEKTOWAGA-MARYVALE UFSD,name
+140615200900,Cheektowaga-Sloan Union Free School District,Erie,14070903,CHEEKTOWAGA-SLOAN UFSD,name
+030605100100,Chenango Forks Central School District,Broome,03010106,CHENANGO FORKS CSD,name
+030623500100,Chenango Valley Central School District,Broome,03070106,CHENANGO VALLEY CSD,name
+360715600100,Cherry Valley-Springfield Central School District,Otsego,47220204,CHERRY VALLEY-SPRINGFIELD CSD,name
+330915700100,Chester Union Free School District,Orange,44020102,CHESTER UFSD,name
+250681600100,Chittenango Central School District,Madison,25160106,CHITTENANGO CSD,name
+260671400100,Churchville-Chili Central School District,Monroe,26150106,CHURCHVILLE-CHILI CSD,name
+110716200100,Cincinnatus Central School District,Cortland,11010104,CINCINNATUS CSD,name
+140616400100,Clarence Central School District,Erie,14080106,CLARENCE CSD,name
+390616700100,Clarkstown Central School District,Rockland,50010106,CLARKSTOWN CSD,name
+140915200300,Cleveland Hill Union Free School District,Erie,14070302,CLEVELAND HILL UFSD,name
+400717300100,Clifton-Fine Central School District,St. Lawrence,51040104,CLIFTON-FINE CSD,name
+300644100100,Clinton Central School District,Oneida,41110106,CLINTON CSD,name
+540731200100,Clyde-Savannah Central School District,Wayne,65030104,CLYDE-SAVANNAH CSD,name
+060717700100,Clymer Central School District,Chautauqua,06070104,CLYMER CSD,name
+430617800100,Cobleskill-Richmondville Central School District,Schoharie,54110206,COBLESKILL-RICHMONDVILLE CSD,name
+010509000000,Cohoes City School District,Albany,01050001,COHOES CITY SD,name
+470641100200,Cold Spring Harbor Central School District,Suffolk,58040206,COLD SPRING HARBOR CSD,name
+400718800100,Colton-Pierrepont Central School District,St. Lawrence,51050104,COLTON-PIERREPONT CSD,name
+470641101000,Commack Union Free School District,Suffolk,58041003,COMMACK UFSD,name
+470642100700,Connetquot Central School District,Suffolk,58050706,CONNETQUOT CSD,name
+360762700100,Cooperstown Central School District,Otsego,47170104,COOPERSTOWN CSD,name
+230722800100,Copenhagen Central School District,Lewis,23020104,COPENHAGEN CSD,name
+470604600500,Copiague Union Free School District,Suffolk,58010503,COPIAGUE UFSD,name
+410720000100,Corinth Central School District,Saratoga,52040104,CORINTH CSD,name
+460510000000,Corning City School District,Steuben,57100001,CORNING CITY SD,name
+330620200100,Cornwall Central School District,Orange,44030106,CORNWALL CSD,name
+110511000000,Cortland City School District,Cortland,11020001,CORTLAND CITY SD,name
+190720800100,Coxsackie-Athens Central School District,Greene,19050104,COXSACKIE-ATHENS CSD,name
+550620300200,Croton-Harmon Union Free School District,Westchester,66020203,CROTON-HARMON UFSD,name
+150721100300,Crown Point Central School District,Essex,15020304,CROWN POINT CSD,name
+020721200100,Cuba-Rushford Central School District,Allegany,02230204,CUBA-RUSHFORD CSD,name
+240760400100,Dalton-Nunda Central School District,Livingston,24110104,DALTON-NUNDA CSD (KESHEQUA),name
+240659200100,Dansville Central School District,Livingston,24100106,DANSVILLE CSD,name
+470604600700,Deer Park Union Free School District,Suffolk,58010703,DEER PARK UFSD,name
+120722700100,Delaware Academy Central School District at Delhi School District,Delaware,12050104,DELAWARE ACADEMY CSD AT DELHI,name+county
+140615200700,Depew Union Free School District,Erie,14070703,DEPEW UFSD,name
+030774300100,Deposit Central School District,Broome,03130104,DEPOSIT CSD,name
+250723200100,Deruyter Central School District,Madison,25030104,DERUYTER CSD,name
+550634200300,Dobbs Ferry Union Free School District,Westchester,66040303,DOBBS FERRY UFSD,name
+210750500200,Dolgeville Central School District,Herkimer,21100304,DOLGEVILLE CSD,name
+130923800200,Dover Union Free School District,Dutchess,13050202,DOVER UFSD,name
+120718200100,Downsville Central School District,Delaware,12030104,DOWNSVILLE CSD,name
+500624000100,Dryden Central School District,Tompkins,61030106,DRYDEN CSD,name
+420724200100,Duanesburg Central School District,Schenectady,53010104,DUANESBURG CSD,name
+570780300100,Dundee Central School District,Yates,68080104,DUNDEE CSD,name
+060512000000,Dunkirk City School District,Chautauqua,06080001,DUNKIRK CITY SD,name
+140604000100,East Aurora Union Free School District,Erie,14030103,EAST AURORA UFSD,name
+320724600100,East Bloomfield Central School District,Ontario,43050104,EAST BLOOMFIELD CSD,name
+380624900100,East Greenbush Central School District,Rensselaer,49030106,EAST GREENBUSH CSD,name
+470925000100,East Hampton Union Free School District,Suffolk,58030102,EAST HAMPTON UFSD,name
+260641900100,East Irondequoit Central School District,Monroe,26080106,EAST IRONDEQUOIT CSD,name
+470642100300,East Islip Union Free School District,Suffolk,58050303,EAST ISLIP UFSD,name
+280638600300,East Meadow Union Free School District,Nassau,28020303,EAST MEADOW UFSD,name
+470909603400,East Moriches Union Free School District,Suffolk,58023402,EAST MORICHES UFSD,name
+470978701700,East Quogue Union Free School District,Suffolk,58091702,EAST QUOGUE UFSD,name
+390669800200,East Ramapo Central School District,Rockland,50040206,EAST RAMAPO CSD (SPRING VALLEY),name
+260665001300,East Rochester Union Free School District,Monroe,26131303,EAST ROCHESTER UFSD,name
+280638601900,East Rockaway Union Free School District,Nassau,28021903,EAST ROCKAWAY UFSD,name
+310623300100,East Syracuse-Minoa Central School District,Onondaga,42040106,EAST SYRACUSE MINOA CSD,name
+280659700200,East Williston Union Free School District,Nassau,28040203,EAST WILLISTON UFSD,name
+550624700100,Eastchester Union Free School District,Westchester,66030103,EASTCHESTER UFSD,name
+470609601300,Eastport-South Manor Central School District,Suffolk,58091206,EASTPORT-SOUTH MANOR CSD,name
+140625400100,Eden Central School District,Erie,14120106,EDEN CSD,name
+550634200600,Edgemont Union Free School District,Westchester,66040603,EDGEMONT UFSD,name
+411025500100,Edinburg Common School District,Saratoga,52060108,EDINBURG COMMON SD,name+county
+360725600100,Edmeston Central School District,Otsego,47050104,EDMESTON CSD,name
+400725700100,Edwards-Knox Central School District,St. Lawrence,51310204,EDWARDS-KNOX CSD,name
+180725800100,Elba Central School District,Genesee,18090104,ELBA CSD,name
+480739100100,Eldred Central School District,Sullivan,59080104,ELDRED CSD,name
+150726000100,Elizabethtown-Lewis Central School District,Essex,15030104,ELIZABETHTOWN-LEWIS CENTRAL SCHOOL DISTRICT,name
+510688000200,Ellenville Central School District,Ulster,62200206,ELLENVILLE CSD,name
+040726500100,Ellicottville Central School District,Cattaraugus,04090104,ELLICOTTVILLE CSD,name
+070513000000,Elmira City School District,Chemung,07060001,ELMIRA CITY SD,name
+070640500200,Elmira Heights Central School District,Chemung,07090206,ELMIRA HEIGHTS CSD,name
+280938601600,Elmont Union Free School District,Nassau,28021602,ELMONT UFSD,name
+550934200900,Elmsford Union Free School District,Westchester,66040902,ELMSFORD UFSD,name
+470941100100,Elwood Union Free School District,Suffolk,58040102,ELWOOD UFSD,name
+140627700100,Evans-Brant Central School District,Erie,14140106,EVANS-BRANT CSD (LAKE SHORE),name
+310727900100,Fabius-Pompey Central School District,Onondaga,42060104,FABIUS-POMPEY CSD,name
+260665000100,Fairport Central School District,Monroe,26130106,FAIRPORT CSD,name
+060726400100,Falconer Central School District,Chautauqua,06110104,FALCONER CSD,name
+480628100100,Fallsburg Central School District,Sullivan,59050106,FALLSBURG CSD,name
+280663402200,Farmingdale Union Free School District,Nassau,28052203,FARMINGDALE UFSD,name
+310650600100,Fayetteville-Manlius Central School District,Onondaga,42100106,FAYETTEVILLE-MANLIUS CSD,name
+020740800100,Fillmore Central School District,Allegany,02200104,FILLMORE CSD,name
+470942101400,Fire Island Union Free School District,Suffolk,58051402,FIRE ISLAND UFSD,name
+470979000400,Fishers Island Union Free School District,Suffolk,58100402,FISHERS ISLAND UFSD,name
+280938602200,Floral Park-Bellerose Union Free School District,Nassau,28022202,FLORAL PARK-BELLEROSE UFSD,name
+330987301500,Florida Union Free School District,Orange,44211502,FLORIDA UFSD,name
+270733000100,Fonda-Fultonville Central School District,Montgomery,27060104,FONDA-FULTONVILLE CSD,name
+060737000300,Forestville Central School District,Chautauqua,06150304,FORESTVILLE CSD,name
+530729500200,Fort Ann Central School District,Washington,64050204,FORT ANN CSD,name
+530929700100,Fort Edward Union Free School District,Washington,64060102,FORT EDWARD UFSD,name
+270753600100,Fort Plain Central School District,Montgomery,27070104,FORT PLAIN CSD,name
+210629900200,Frankfort-Schuyler Central School District,Herkimer,21040206,FRANKFORT-SCHUYLER CSD,name
+120730000100,Franklin Central School District,Delaware,12070104,FRANKLIN CSD,name
+280938601700,Franklin Square Union Free School District,Nassau,28021702,FRANKLIN SQUARE UFSD,name
+040730200100,Franklinville Central School District,Cattaraugus,04110104,FRANKLINVILLE CSD,name
+060667800100,Fredonia Central School District,Chautauqua,06220106,FREDONIA CSD,name
+280638600900,Freeport Union Free School District,Nassau,28020903,FREEPORT UFSD,name
+060713200100,Frewsburg Central School District,Chautauqua,06030104,FREWSBURG CSD,name
+020730800100,Friendship Central School District,Allegany,02160104,FRIENDSHIP CSD,name
+140636100400,Frontier Central School District,Erie,14160406,FRONTIER CSD,name
+350514000000,Fulton City School District,Oswego,46050001,FULTON CITY SD,name
+410731400100,Galway Central School District,Saratoga,52070104,GALWAY CSD,name
+540749400100,Gananda Central School District,Wayne,65090204,GANANDA CSD,name
+280638601800,Garden City Union Free School District,Nassau,28021803,GARDEN CITY UFSD,name
+370966000400,Garrison Union Free School District,Putnam,48040402,GARRISON UFSD,name
+260631600100,Gates-Chili Central School District,Monroe,26040106,GATES CHILI CSD,name
+220709800100,General Brown Central School District,Jefferson,22040104,GENERAL BROWN CSD,name
+020702500100,Genesee Valley Central School District,Allegany,02070204,GENESEE VALLEY CSD,name
+240732000100,Geneseo Central School District,Livingston,24040104,GENESEO CSD,name
+320515000000,Geneva City School District,Ontario,43070001,GENEVA CITY SD,name
+100732600200,Germantown Central School District,Columbia,10090204,GERMANTOWN CSD,name
+360710600100,Gilbertsville-Mount Upton Central School District,Otsego,47020204,GILBERTSVILLE-MOUNT UPTON CSD,name
+430732900100,Gilboa-Conesville Central School District,Schoharie,54080104,GILBOA-CONESVILLE CSD,name
+280516000000,Glen Cove City School District,Nassau,28010001,GLEN COVE CITY SD,name
+520517000000,Glens Falls City School District,Warren,63030001,GLENS FALLS CITY SD,name
+521069701800,Glens Falls Common School District,Warren,63091808,GLENS FALLS COMN SD,name
+170518000000,Gloversville City School District,Fulton,17050001,GLOVERSVILLE CITY SD,name
+320633200100,Gorham-Middlesex Central School District,Ontario,43090106,,manual
+330733300100,Goshen Central School District,Orange,44060104,GOSHEN CSD,name
+400633400100,Gouverneur Central School District,St. Lawrence,51110106,GOUVERNEUR CSD,name
+040665300100,Gowanda Central School District,Cattaraugus,04280106,GOWANDA CSD,name
+140633700100,Grand Island Central School District,Erie,14150106,GRAND ISLAND CSD,name
+530733900100,Granville Central School District,Washington,64070104,GRANVILLE CSD,name
+280659700700,Great Neck Union Free School District,Nassau,28040703,GREAT NECK UFSD,name
+260634100100,Greece Central School District,Monroe,26050106,GREECE CSD,name
+010634500100,Green Island Union Free School District,Albany,01070103,GREEN ISLAND UFSD,name
+550634200700,Greenburgh Central School District,Westchester,66040706,GREENBURGH CSD,name
+080734300100,Greene Central School District,Chenango,08060104,GREENE CSD,name
+470979001000,Greenport Union Free School District,Suffolk,58101002,GREENPORT UFSD,name
+190734700100,Greenville Central School District,Greene,19070104,GREENVILLE CSD,name
+530734900100,Greenwich Central School District,Washington,64080104,GREENWICH CSD,name
+330987301100,Greenwood Lake Union Free School District,Orange,44211102,GREENWOOD LAKE UFSD,name
+500735200100,Groton Central School District,Tompkins,61050104,GROTON CSD,name
+010635500200,Guilderland Central School District,Albany,01080206,GUILDERLAND CSD,name
+520744660100,Hadley-Luzerne Central School District,Warren,63080104,HADLEY-LUZERNE CSD,name
+370766000100,Haldane Central School District,Putnam,48040104,HALDANE CSD,name
+470641100500,Half Hollow Hills Central School District,Suffolk,58040506,HALF HOLLOW HILLS CSD,name
+140636100100,Hamburg Central School District,Erie,14160106,HAMBURG CSD,name
+250736300100,Hamilton Central School District,Madison,25070104,HAMILTON CSD,name
+400736500100,Hammond Central School District,St. Lawrence,51120104,HAMMOND CSD,name
+460784800100,Hammondsport Central School District,Steuben,57290104,HAMMONDSPORT CSD,name
+470978700500,Hampton Bays Union Free School District,Suffolk,58090502,HAMPTON BAYS UFSD,name
+120736800600,Hancock Central School District,Delaware,12090604,HANCOCK CSD,name
+350736900100,Hannibal Central School District,Oswego,46070104,HANNIBAL CSD,name
+470641100600,Harborfields Central School District,Suffolk,58040606,HARBORFIELDS CSD,name
+030718500100,Harpursville Central School District,Broome,03050104,HARPURSVILLE CSD,name
+550637700100,Harrison Central School District,Westchester,66050106,HARRISON CSD,name
+230723400100,Harrisville Central School District,Lewis,23030104,HARRISVILLE CSD,name
+530737800100,Hartford Central School District,Washington,64100104,HARTFORD CSD,name
+550634200400,Hastings-On-Hudson Union Free School District,Westchester,66040403,HASTINGS-ON-HUDSON UFSD,name
+470642100600,Hauppauge Union Free School District,Suffolk,58050603,HAUPPAUGE UFSD,name
+390638300100,Haverstraw-Stony Point Central School District,Rockland,50020106,,manual
+280638600100,Hempstead Union Free School District,Nassau,28020103,HEMPSTEAD UFSD,name
+550620300300,Hendrick Hudson Central School District,Westchester,66020306,HENDRICK HUDSON CSD,name
+210638900100,Herkimer Central School District,Herkimer,21060106,HERKIMER CSD,name
+400739000100,Hermon-Dekalb Central School District,St. Lawrence,51130104,HERMON-DEKALB CSD,name
+280659700900,Herricks Union Free School District,Nassau,28040903,HERRICKS UFSD,name
+400762300400,Heuvelton Central School District,St. Lawrence,51240404,HEUVELTON CSD,name
+280638601400,Hewlett-Woodmere Union Free School District,Nassau,28021403,HEWLETT-WOODMERE UFSD,name
+280663401700,Hicksville Union Free School District,Nassau,28051703,HICKSVILLE UFSD,name
+510747900300,Highland Central School District,Ulster,62080304,HIGHLAND CSD,name
+330739200100,Highland Falls-Fort Montgomery School District,Orange,44090104,,manual
+260664200100,Hilton Central School District,Monroe,26110106,HILTON CSD,name
+040739500100,Hinsdale Central School District,Cattaraugus,04140104,HINSDALE CSD,name
+140739600100,Holland Central School District,Erie,14170104,HOLLAND CSD,name
+300683200100,Holland Patent Central School District,Oneida,41220106,HOLLAND PATENT CSD,name
+340755700400,Holley Central School District,Orleans,45070404,HOLLEY CSD,name
+110639700100,Homer Central School District,Cortland,11070106,HOMER CSD,name
+320771100100,Honeoye Central School District,Ontario,43140104,HONEOYE CSD,name
+260652200100,Honeoye Falls-Lima Central School District,Monroe,26090106,HONEOYE FALLS-LIMA CSD,name
+380775200100,Hoosic Valley Central School District,Rensselaer,49140104,HOOSIC VALLEY CSD,name
+380639800100,Hoosick Falls Central School District,Rensselaer,49050106,HOOSICK FALLS CSD,name
+460519000000,Hornell City School District,Steuben,57180001,HORNELL CITY SD,name
+070640500100,Horseheads Central School District,Chemung,07090106,HORSEHEADS CSD,name
+100520000000,Hudson City School District,Columbia,10130001,HUDSON CITY SD,name
+530643900100,Hudson Falls Central School District,Washington,64130106,HUDSON FALLS CSD,name
+190741000100,Hunter-Tannersville Central School District,Greene,19090104,HUNTER-TANNERSVILLE CSD,name
+470641100300,Huntington Union Free School District,Suffolk,58040303,HUNTINGTON UFSD,name
+130641400100,Hyde Park Central School District,Dutchess,13080106,HYDE PARK CSD,name
+200741600100,Indian Lake Central School District,Hamilton,20040104,INDIAN LAKE CSD,name
+220602700100,Indian River Central School District,Jefferson,22030106,INDIAN RIVER CSD,name
+201041700100,Inlet Common School District,Hamilton,20050108,INLET COMN SD,name
+140626800100,Iroquois Central School District,Erie,14130106,IROQUOIS CSD,name
+550934200200,Irvington Union Free School District,Westchester,66040202,IRVINGTON UFSD,name
+280938603100,Island Park Union Free School District,Nassau,28023102,ISLAND PARK UFSD,name
+280638602600,Island Trees Union Free School District,Nassau,28022603,ISLAND TREES UFSD,name
+470942100200,Islip Union Free School District,Suffolk,58050202,ISLIP UFSD,name
+500521000000,Ithaca City School District,Tompkins,61060001,ITHACA CITY SD,name
+060522000000,Jamestown City School District,Chautauqua,06170001,JAMESTOWN CITY SD,name
+310623301100,Jamesville-Dewitt Central School District,Onondaga,42041106,JAMESVILLE-DEWITT CSD,name
+460742500100,Jasper-Troupsburg Central School District,Steuben,57270204,JASPER-TROUPSBURG CSD,name
+430742800100,Jefferson Central School District,Schoharie,54090104,JEFFERSON CSD,name
+280663401500,Jericho Union Free School District,Nassau,28051503,JERICHO UFSD,name
+520743100100,Johnsburg Central School District,Warren,63060104,JOHNSBURG CSD,name
+030684600200,Johnson City Central School District,Broome,03150206,JOHNSON CITY CSD,name
+170523000000,Johnstown City School District,Fulton,17060001,JOHNSTOWN CITY SD,name
+310625900100,Jordan-Elbridge Central School District,Onondaga,42050106,JORDAN-ELBRIDGE CSD,name
+550605700100,Katonah-Lewisboro Union Free School District,Westchester,66010103,KATONAH-LEWISBORO UFSD,name
+150743400100,Keene Central School District,Essex,15060104,KEENE CSD,name
+340743500700,Kendall Central School District,Orleans,45060704,KENDALL CSD,name
+140683000100,Kenmore-Tonawanda Union Free School District,Erie,14260103,KENMORE-TONAWANDA UFSD,name
+100743800100,Kinderhook Central School District,Columbia,10140104,KINDERHOOK CSD,name
+470778000500,Kings Park Central School District,Suffolk,58080506,KINGS PARK CSD,name
+510524000000,Kingston City School District,Ulster,62060001,KINGSTON CITY SD,name
+330954200200,Kiryas Joel Village Union Free School District,Orange,44120202,KIRYAS JOEL VILLAGE UFSD,name
+220761800100,La Fargeville Central School District,Jefferson,22140104,LA FARGEVILLE CSD,name
+140525000000,Lackawanna City School District,Erie,14180001,LACKAWANNA CITY SD,name
+310744500700,Lafayette Central School District,Onondaga,42080704,LAFAYETTE CSD,name
+520744630100,Lake George Central School District,Warren,63070104,LAKE GEORGE CSD,name
+150759400200,Lake Placid Central School District,Essex,15110204,LAKE PLACID CSD,name
+200744700100,Lake Pleasant Central School District,Hamilton,20060104,LAKE PLEASANT CSD,name
+550693200100,Lakeland Central School District,Westchester,66240106,LAKELAND CSD,name
+140644800100,Lancaster Central School District,Erie,14190106,LANCASTER CSD,name
+500744900100,Lansing Central School District,Tompkins,61080104,LANSING CSD,name
+380657000100,Lansingburgh Central School District,Rensselaer,49060106,LANSINGBURGH CSD,name
+360745100100,Laurens Central School District,Otsego,47080104,LAURENS CSD,name
+280638601500,Lawrence Union Free School District,Nassau,28021503,LAWRENCE UFSD,name
+180646000100,Le Roy Central School District,Genesee,18100106,LE ROY CSD,name
+560713400100,Letchworth Central School District,Wyoming,67040104,LETCHWORTH CSD,name
+280638600500,Levittown Union Free School District,Nassau,28020503,LEVITTOWN UFSD,name
+290646400100,Lewiston-Porter Central School District,Niagara,40030106,LEWISTON-PORTER CSD,name
+480646700100,Liberty Central School District,Sullivan,59090106,LIBERTY CSD,name
+470604600400,Lindenhurst Union Free School District,Suffolk,58010403,LINDENHURST UFSD,name
+400747200200,Lisbon Central School District,St. Lawrence,51160204,LISBON CSD,name
+210526000000,Little Falls City School District,Herkimer,21080005,LITTLE FALLS CITY SD,name
+310673900100,Liverpool Central School District,Onondaga,42150106,LIVERPOOL CSD,name
+480771800200,Livingston Manor Central School District,Sullivan,59130204,LIVINGSTON MANOR CSD,name
+240647800100,Livonia Central School District,Livingston,24080106,LIVONIA CSD,name
+290527000000,Lockport City School District,Niagara,40040001,LOCKPORT CITY SD,name
+280663400300,Locust Valley Central School District,Nassau,28050306,LOCUST VALLEY CSD,name
+280528000000,Long Beach City School District,Nassau,28030001,LONG BEACH CITY SD,name
+200748300100,Long Lake Central School District,Hamilton,20070104,LONG LAKE CSD,name
+470609601200,Longwood Central School District,Suffolk,58021206,LONGWOOD CSD,name
+230748600100,Lowville Academy and Central School District,Lewis,23090104,LOWVILLE ACADEMY & CSD,name
+220748900100,Lyme Central School District,Jefferson,22130104,LYME CSD,name
+280638602000,Lynbrook Union Free School District,Nassau,28022003,LYNBROOK UFSD,name
+310973900400,Lyncourt Union Free School District,Onondaga,42150402,LYNCOURT UFSD,name
+340792900100,Lyndonville Central School District,Orleans,45100104,LYNDONVILLE CSD,name
+540749100100,Lyons Central School District,Wayne,65050104,LYONS CSD,name
+250749700100,Madison Central School District,Madison,25110104,MADISON CSD,name
+400749800100,Madrid-Waddington Central School District,St. Lawrence,51190104,MADRID-WADDINGTON CSD,name
+370612900100,Mahopac Central School District,Putnam,48010106,MAHOPAC CSD,name
+030649900100,Maine-Endwell Central School District,Broome,03110106,MAINE-ENDWELL CSD,name
+160650000100,Malone Central School District,Franklin,16150106,MALONE CSD,name
+280638601200,Malverne Union Free School District,Nassau,28021203,MALVERNE UFSD,name
+550650300100,Mamaroneck Union Free School District,Westchester,66070103,MAMARONECK UFSD,name
+320750400100,Manchester-Shortsville Central School District,Ontario,43110104,,manual
+280659700600,Manhasset Union Free School District,Nassau,28040603,MANHASSET UFSD,name
+110750800100,Marathon Central School District,Cortland,11090104,MARATHON CSD,name
+310651000100,Marcellus Central School District,Onondaga,42110106,MARCELLUS CSD,name
+120753000100,Margaretville Central School District,Delaware,12140104,MARGARETVILLE CSD,name
+540751300100,Marion Central School District,Wayne,65070104,MARION CSD,name
+510651400100,Marlboro Central School District,Ulster,62100106,MARLBORO CSD,name
+280663402300,Massapequa Union Free School District,Nassau,28052303,MASSAPEQUA UFSD,name
+400651900100,Massena Central School District,St. Lawrence,51200106,MASSENA CSD,name
+470979000900,Mattituck-Cutchogue Union Free School District,Suffolk,58101202,MATTITUCK-CUTCHOGUE UFSD,name
+170752000100,Mayfield Central School District,Fulton,17080104,MAYFIELD CSD,name
+110720400400,McGraw Central School District,Cortland,11030404,MCGRAW CSD,name
+410529000000,Mechanicville City School District,Saratoga,52120005,MECHANICVILLE CITY SD,name
+340671300100,Medina Central School District,Orleans,45080106,MEDINA CSD,name
+010918701500,Menands Union Free School District,Albany,01061502,MENANDS UFSD,name
+280938602500,Merrick Union Free School District,Nassau,28022502,MERRICK UFSD,name
+350652500100,Mexico Central School District,Oswego,46090106,MEXICO CSD,name
+470609601100,Middle Country Central School District,Suffolk,58021106,MIDDLE COUNTRY CSD,name
+430752600100,Middleburgh Central School District,Schoharie,54100104,MIDDLEBURGH CSD,name
+330530000000,Middletown City School District,Orange,44100001,MIDDLETOWN CITY SD,name
+360753200100,Milford Central School District,Otsego,47110104,MILFORD CSD,name
+130787400100,Millbrook Central School District,Dutchess,13220104,MILLBROOK CSD,name
+470909600800,Miller Place Union Free School District,Suffolk,58020802,MILLER PLACE UFSD,name
+280659701000,Mineola Union Free School District,Nassau,28041003,MINEOLA UFSD,name
+150753700100,Minerva Central School District,Essex,15080104,MINERVA CSD,name
+330753900100,Minisink Valley Central School District,Orange,44110104,MINISINK VALLEY CSD,name
+330654200100,Monroe-Woodbury Central School District,Orange,44120106,MONROE-WOODBURY CSD,name
+470925000600,Montauk Union Free School District,Suffolk,58030602,MONTAUK UFSD,name
+480682300100,Monticello Central School District,Sullivan,59140106,MONTICELLO CSD,name
+050754800100,Moravia Central School District,Cayuga,05130104,MORAVIA CSD,name
+150755100100,Moriah Central School District,Essex,15090104,MORIAH CSD,name
+360755200100,Morris Central School District,Otsego,47120104,MORRIS CSD,name
+400755300100,Morristown Central School District,St. Lawrence,51210104,MORRISTOWN CSD,name
+250725300100,Morrisville-Eaton Central School District,Madison,25040104,MORRISVILLE-EATON CSD,name
+210792000100,Mount Markham Central School District,Herkimer,21200104,MOUNT MARKHAM CSD,name
+240755500100,Mount Morris Central School District,Livingston,24090104,MT MORRIS CSD,name
+550655600100,Mount Pleasant Central School District,Westchester,66080106,MT PLEASANT CSD,name
+470909600700,Mount Sinai Union Free School District,Suffolk,58020702,MT SINAI UFSD,name
+550531000000,Mount Vernon School District,Westchester,66090001,MT VERNON SCHOOL DISTRICT,name
+390616700800,Nanuet Union Free School District,Rockland,50010803,NANUET UFSD,name
+320755900100,Naples Central School District,Ontario,43120104,NAPLES CSD,name
+300657400100,New Hartford Central School District,Oneida,41150106,NEW HARTFORD CSD,name
+280959700500,New Hyde Park-Garden City Park Union Free School District,Nassau,28040502,NEW HYDE PARK-GARDEN CITY PARK UFSD,name
+100757700100,New Lebanon Central School District,Columbia,10160104,NEW LEBANON CSD,name
+510657900100,New Paltz Central School District,Ulster,62110106,NEW PALTZ CSD,name
+550533000000,New Rochelle City School District,Westchester,66110001,NEW ROCHELLE CITY SD,name
+471079001500,New Suffolk Common School District,Suffolk,58101508,NEW SUFFOLK COMN SD,name
+600534000000,New York City School District,New York City,,,unmatched
+300957400400,New York Mills Union Free School District,Oneida,41150402,,manual
+540602900100,Newark Central School District,Wayne,65010106,NEWARK CSD,name
+490756500200,Newark Valley Central School District,Tioga,60040204,NEWARK VALLEY CSD,name
+330532000000,Newburgh City School District,Orange,44160001,NEWBURGH CITY SD,name
+150757100100,Newcomb Central School District,Essex,15100104,NEWCOMB CSD,name
+290657200100,Newfane Central School District,Niagara,40060106,NEWFANE CSD,name
+500757300100,Newfield Central School District,Tompkins,61090104,NEWFIELD CSD,name
+290535000000,Niagara Falls City School District,Niagara,40080001,NIAGARA FALLS CITY SD,name
+290658400100,Niagara-Wheatfield Central School District,Niagara,40070106,NIAGARA-WHEATFIELD CSD,name
+420658700100,Niskayuna Central School District,Schenectady,53030106,NISKAYUNA CSD,name
+470604600300,North Babylon Union Free School District,Suffolk,58010303,NORTH BABYLON UFSD,name
+280938600400,North Bellmore Union Free School District,Nassau,28020402,NORTH BELLMORE UFSD,name
+140759100100,North Collins Central School District,Erie,14220104,NORTH COLLINS CSD,name
+010618700700,North Colonie Central School District,Albany,01062306,NORTH COLONIE CSD,name
+381059500100,North Greenbush Common School District,Rensselaer,49080108,NORTH GREENBUSH COMN SD (WILLIAMS),name
+280938602900,North Merrick Union Free School District,Nassau,28022902,NORTH MERRICK UFSD,name
+540692200100,North Rose-Wolcott Central School District,Wayne,65150106,NORTH ROSE-WOLCOTT CSD,name
+550760000100,North Salem Central School District,Westchester,66130104,NORTH SALEM CSD,name
+280663400100,North Shore Central School District,Nassau,28050106,NORTH SHORE CSD,name
+310617000300,North Syracuse Central School District,Onondaga,42030306,NORTH SYRACUSE CSD,name
+290536000000,North Tonawanda City School District,Niagara,40090001,NORTH TONAWANDA CITY SD,name
+520715800200,North Warren Central School District,Warren,63020204,NORTH WARREN CSD,name
+130759300100,Northeast Central School District,Dutchess,13110104,NORTHEAST CSD,name
+090714400100,Northeastern Clinton Central School District,Clinton,09050104,NORTHEASTERN CLINTON CSD,name
+090726200100,Northern Adirondack Central School District,Clinton,09090104,NORTHERN ADIRONDACK CSD,name
+470641100400,Northport-East Northport Union Free School District,Suffolk,58040403,NORTHPORT-EAST NORTHPORT UFSD,name
+170758900100,Northville Central School District,Fulton,17090104,NORTHVILLE CSD,name
+080537000000,Norwich City School District,Chenango,08120005,NORWICH CITY SD,name
+400758800100,Norwood-Norfolk Central School District,St. Lawrence,51220104,NORWOOD-NORFOLK CSD,name
+390661500400,Nyack Union Free School District,Rockland,50030403,NYACK UFSD,name
+180760500100,Oakfield-Alabama Central School District,Genesee,18110104,OAKFIELD-ALABAMA CSD,name
+280638601100,Oceanside Union Free School District,Nassau,28021103,OCEANSIDE UFSD,name
+440713500100,Odessa-Montour Central School District,Schuyler,55010104,ODESSA-MONTOUR CSD,name
+400538000000,Ogdensburg City School District,St. Lawrence,51230001,OGDENSBURG CITY SD,name
+040539000000,Olean City School District,Cattaraugus,04240001,OLEAN CITY SD,name
+250540000000,Oneida City School District,Madison,25140001,ONEIDA CITY SD,name
+360541000000,Oneonta City School District,Otsego,47140001,ONEONTA CITY SD,name
+310761100100,Onondaga Central School District,Onondaga,42120104,ONONDAGA CSD,name
+510660900100,Onteora Central School District,Ulster,62120106,ONTEORA CSD,name
+270773600300,Oppenheim-Ephratah-St. Johnsville Central School District,Montgomery,27120104,,manual
+140661700100,Orchard Park Central School District,Erie,14230106,ORCHARD PARK CSD,name
+300790800100,Oriskany Central School District,Oneida,41290104,ORISKANY CSD,name
+550662200100,Ossining Union Free School District,Westchester,66140103,OSSINING UFSD,name
+350542000000,Oswego City School District,Oswego,46130001,OSWEGO CITY SD,name
+360762500100,Otego-Unadilla Central School District,Otsego,47160104,OTEGO-UNADILLA CSD,name
+080762800100,Otselic Valley Central School District,Chenango,08140104,OTSELIC VALLEY CSD,name
+490663200100,Owego-Apalachin Central School District,Tioga,60060106,OWEGO-APALACHIN CSD,name
+080763300100,Oxford Academy And Central School District,Chenango,08150104,OXFORD ACADEMY & CSD,name
+280663400600,Oyster Bay-East Norwich Central School District,Nassau,28050606,OYSTER BAY-EAST NORWICH CSD,name
+470979000200,Oysterponds Union Free School District,Suffolk,58100202,OYSTERPONDS UFSD,name
+540663700100,Palmyra-Macedon Central School District,Wayne,65090106,PALMYRA-MACEDON CSD,name
+060737300100,Panama Central School District,Chautauqua,06160104,PANAMA CSD,name
+400764100100,Parishville-Hopkinton Central School District,St. Lawrence,51250104,PARISHVILLE-HOPKINTON CSD,name
+470609602400,Patchogue-Medford Union Free School District,Suffolk,58022403,PATCHOGUE-MEDFORD UFSD,name
+180764400100,Pavilion Central School District,Genesee,18120104,PAVILION CSD,name
+130764500100,Pawling Central School District,Dutchess,13120104,PAWLING CSD,name
+390661500800,Pearl River Union Free School District,Rockland,50030803,PEARL RIVER UFSD,name
+550543000000,Peekskill City School District,Westchester,66150001,PEEKSKILL CITY SD,name
+550664600100,Pelham Union Free School District,Westchester,66160103,PELHAM UFSD,name
+180764700200,Pembroke Central School District,Genesee,18130204,PEMBROKE CSD,name
+260664900100,Penfield Central School District,Monroe,26120106,PENFIELD CSD,name
+570653300100,Penn Yan Central School District,Yates,68060106,PENN YAN CSD,name
+560665100100,Perry Central School District,Wyoming,67120106,PERRY CSD,name
+090665500100,Peru Central School District,Clinton,09110106,PERU CSD,name
+320665800100,Phelps-Clifton Springs Central School District,Ontario,43130106,PHELPS-CLIFTON SPRINGS CSD,name
+350675500100,Phoenix Central School District,Oswego,46200106,PHOENIX CSD,name
+330620900100,Pine Bush Central School District,Orange,44040106,PINE BUSH CSD,name
+130766500100,Pine Plains Central School District,Dutchess,13130104,PINE PLAINS CSD,name
+060715500100,Pine Valley Central School District,Chautauqua,06060104,PINE VALLEY CSD (SOUTH DAYTON),name
+201003100100,Piseco Common School District,Hamilton,20010108,PISECO COMN SD,name
+260666900100,Pittsford Central School District,Monroe,26140106,PITTSFORD CSD,name
+280663401800,Plainedge Union Free School District,Nassau,28051803,PLAINEDGE UFSD,name
+280663400400,Plainview-Old Bethpage Central School District,Nassau,28050406,PLAINVIEW-OLD BETHPAGE CSD,name
+090544000000,Plattsburgh City School District,Clinton,09120001,PLATTSBURGH CITY SD,name
+550655600900,Pleasantville Union Free School District,Westchester,66080903,PLEASANTVILLE UFSD,name
+550755600200,Pocantico Hills Central School District,Westchester,66080204,POCANTICO HILLS CSD,name
+210758000300,Poland Central School District,Herkimer,21110304,POLAND CSD,name
+050752300100,Port Byron Central School District,Cayuga,05110104,PORT BYRON CSD,name
+550673400400,Port Chester-Rye Union Free School District,Westchester,66190403,PORT CHESTER-RYE UFSD,name
+470909600600,Port Jefferson Union Free School District,Suffolk,58020602,PORT JEFFERSON UFSD,name
+330545000000,Port Jervis City School District,Orange,44180005,PORT JERVIS CITY SD,name
+280659700400,Port Washington Union Free School District,Nassau,28040403,PORT WASHINGTON UFSD,name
+040768300100,Portville Central School District,Cattaraugus,04290104,PORTVILLE CSD,name
+400668400200,Potsdam Central School District,St. Lawrence,51290206,POTSDAM CSD,name
+130546000000,Poughkeepsie City School District,Dutchess,13150001,POUGHKEEPSIE CITY SD,name
+460768800100,Prattsburgh Central School District,Steuben,57230104,PRATTSBURGH CSD,name
+350771000100,Pulaski Central School District,Oswego,46180104,PULASKI CSD,name
+530769500100,Putnam Central School District,Washington,64140104,PUTNAM CSD,name
+370769600300,Putnam Valley Central School District,Putnam,48050304,PUTNAM VALLEY CSD,name
+520669700200,Queensbury Union Free School District,Warren,63090203,QUEENSBURY UFSD,name
+470978700300,Quogue Union Free School District,Suffolk,58090302,QUOGUE UFSD,name
+040769900100,Randolph Central School District,Cattaraugus,04300104,RANDOLPH CSD,name
+200948300200,Raquette Lake Union Free School District,Hamilton,20070202,RAQUETTE LAKE UFSD,name
+010618000200,Ravena-Coeymans-Selkirk Central School District,Albany,01040206,RAVENA-COEYMANS-SELKIRK CSD,name
+540792200300,Red Creek Central School District,Wayne,65150304,RED CREEK CSD,name
+130670300100,Red Hook Central School District,Dutchess,13170106,RED HOOK CSD,name
+300770500100,Remsen Central School District,Oneida,41170104,REMSEN CSD,name
+470978700100,Remsenburg-Speonk Union Free School District,Suffolk,58090102,REMSENBURG-SPEONK UFSD,name
+380547000000,Rensselaer City School District,Rensselaer,49120001,RENSSELAER CITY SD,name
+130770700100,Rhinebeck Central School District,Dutchess,13180104,RHINEBECK CSD,name
+360770800100,Richfield Springs Central School District,Otsego,47200104,RICHFIELD SPRINGS CSD,name
+060771500100,Ripley Central School District,Chautauqua,06240104,RIPLEY CSD,name
+470771600200,Riverhead Central School District,Suffolk,58060204,RIVERHEAD CSD,name
+260548000000,Rochester City School District,Monroe,26160001,ROCHESTER CITY SD,name
+280638602100,Rockville Centre Union Free School District,Nassau,28022103,ROCKVILLE CENTRE UFSD,name
+470909600900,Rocky Point Union Free School District,Suffolk,58020902,ROCKY POINT UFSD,name
+300549000000,Rome City School District,Oneida,41180001,ROME CITY SD,name
+450772000300,Romulus Central School District,Seneca,56060304,ROMULUS CSD,name
+510650900100,Rondout Valley Central School District,Ulster,62090106,RONDOUT VALLEY CSD,name
+280638600800,Roosevelt Union Free School District,Nassau,28020803,ROOSEVELT UFSD,name
+480771800100,Roscoe Central School District,Sullivan,59130104,ROSCOE CSD,name
+280659700300,Roslyn Union Free School District,Nassau,28040303,ROSLYN UFSD,name
+420672600300,Rotterdam-Mohonasen Central School District,Schenectady,53051506,ROTTERDAM-MOHONASEN CSD,name
+120772700200,Roxbury Central School District,Delaware,12150204,ROXBURY CSD,name
+290672800100,Royalton-Hartland Central School District,Niagara,40120106,ROYALTON-HARTLAND CSD,name
+260672900100,Rush-Henrietta Central School District,Monroe,26170106,RUSH-HENRIETTA CSD,name
+550550000000,Rye City School District,Westchester,66180001,RYE CITY SD,name
+550673400100,Rye Neck Union Free School District,Westchester,66190103,RYE NECK UFSD,name
+470609600500,Sachem Central School District,Suffolk,58020506,SACHEM CSD,name
+220740600100,Sackets Harbor Central School District,Jefferson,22100104,SACKETS HARBOR CSD,name
+470925000500,Sag Harbor Union Free School District,Suffolk,58030502,SAG HARBOR UFSD,name
+471078701000,Sagaponack Common School District,Suffolk,58091008,SAGAPONACK COMN SD,name
+160787900100,Saint Regis Falls Central School District,Franklin,16180104,ST REGIS FALLS CSD,name
+040551000000,Salamanca City School District,Cattaraugus,04320005,SALAMANCA CITY SD,name
+530773800100,Salem Central School District,Washington,64150104,SALEM CSD,name
+160729600100,Salmon River Central School District,Franklin,16120104,SALMON RIVER CSD,name
+350774200100,Sandy Creek Central School District,Oswego,46190104,SANDY CREEK CSD,name
+090674600100,Saranac Central School District,Clinton,09140206,SARANAC CSD,name
+160637500100,Saranac Lake Central School District,Franklin,16140106,SARANAC LAKE CSD,name
+410552000000,Saratoga Springs City School District,Saratoga,52180001,SARATOGA SPRINGS CITY SD,name
+510674900100,Saugerties Central School District,Ulster,62160106,SAUGERTIES CSD,name
+300763900200,Sauquoit Valley Central School District,Oneida,41160304,SAUQUOIT VALLEY CSD,name
+470642100400,Sayville Union Free School District,Suffolk,58050403,SAYVILLE UFSD,name
+550675100100,Scarsdale Union Free School District,Westchester,66200103,SCARSDALE UFSD,name
+420672600100,Schalmont Central School District,Schenectady,53050106,SCHALMONT CSD,name
+420553000000,Schenectady City School District,Schenectady,53060001,SCHENECTADY CITY SD,name
+360751700100,Schenevus Central School District,Otsego,47090104,SCHENEVUS CSD,name
+380775300100,Schodack Central School District,Rensselaer,49150104,SCHODACK CSD,name
+430775400100,Schoharie Central School District,Schoharie,54120104,SCHOHARIE CSD,name
+150775600100,Schroon Lake Central School District,Essex,15140104,SCHROON LAKE CSD,name
+410774700100,Schuylerville Central School District,Saratoga,52170104,SCHUYLERVILLE CSD,name
+020775900100,Scio Central School District,Allegany,02240104,SCIO CSD,name
+420633100200,Scotia-Glenville Central School District,Schenectady,53020206,SCOTIA-GLENVILLE CSD,name
+280638600600,Seaford Union Free School District,Nassau,28020603,SEAFORD UFSD,name
+450676500100,Seneca Falls Central School District,Seneca,56070106,SENECA FALLS CSD,name
+430776900100,Sharon Springs Central School District,Schoharie,54140104,SHARON SPRINGS CSD,name
+470977300100,Shelter Island Union Free School District,Suffolk,58070102,SHELTER ISLAND UFSD,name
+410617400200,Shenendehowa Central School District,Saratoga,52030206,SHENENDEHOWA CSD,name
+080777400100,Sherburne-Earlville Central School District,Chenango,08200104,SHERBURNE-EARLVILLE CSD,name
+060777600100,Sherman Central School District,Chautauqua,06260104,SHERMAN CSD,name
+300554000000,Sherrill City School District,Oneida,41200005,SHERRILL CITY SD,name
+470771600100,Shoreham-Wading River Central School District,Suffolk,58060104,SHOREHAM-WADING RIVER CSD,name
+120677700100,Sidney Central School District,Delaware,12160106,SIDNEY CSD,name
+060737000100,Silver Creek Central School District,Chautauqua,06150104,SILVER CREEK CSD,name
+310677800100,Skaneateles Central School District,Onondaga,42160106,SKANEATELES CSD,name
+470678000100,Smithtown Central School District,Suffolk,58080106,SMITHTOWN CSD,name
+540678300100,Sodus Central School District,Wayne,65120106,SODUS CSD,name
+310631700200,Solvay Union Free School District,Onondaga,42070203,SOLVAY UFSD,name
+550678500100,Somers Central School District,Westchester,66210106,SOMERS CSD,name
+010618700100,South Colonie Central School District,Albany,01060106,SOUTH COLONIE CSD,name
+470609600400,South Country Central School District,Suffolk,58023506,SOUTH COUNTRY CSD,name
+410754900100,South Glens Falls Central School District,Saratoga,52140104,SOUTH GLENS FALLS CSD,name
+470641101300,South Huntington Union Free School District,Suffolk,58041303,SOUTH HUNTINGTON UFSD,name
+220700100100,South Jefferson Central School District,Jefferson,22010104,SOUTH JEFFERSON CSD,name
+120780000200,South Kortright Central School District,Delaware,12170204,SOUTH KORTRIGHT CSD,name
+230751600100,South Lewis Central School District,Lewis,23110104,SOUTH LEWIS CSD,name
+031007300100,South Mountain-Hickory Common School District,Broome,,,unmatched
+390661500100,South Orangetown Central School District,Rockland,50030106,SOUTH ORANGETOWN CSD,name
+450763000100,South Seneca Central School District,Seneca,56050104,SOUTH SENECA CSD,name
+470678700600,Southampton Union Free School District,Suffolk,58090603,SOUTHAMPTON UFSD,name
+050732200100,Southern Cayuga Central School District,Cayuga,05070104,SOUTHERN CAYUGA CSD,name
+470979000500,Southold Union Free School District,Suffolk,58100502,SOUTHOLD UFSD,name
+060610400100,Southwestern Central School District,Chautauqua,06020106,,manual
+130968600200,Spackenkill Union Free School District,Dutchess,13160202,SPACKENKILL UFSD,name
+490779500100,Spencer-Van Etten Central School District,Tioga,60080104,SPENCER-VAN ETTEN CSD,name
+260660600100,Spencerport Central School District,Monroe,26100106,SPENCERPORT CSD,name
+470925000400,Springs Union Free School District,Suffolk,58030402,SPRINGS UFSD,name
+140619100100,Springville-Griffith Institute Central School District,Erie,14110106,SPRINGVILLE-GRIFFITH INST CSD,name
+120780000100,Stamford Central School District,Delaware,12170104,STAMFORD CSD,name
+290664800100,Starpoint Central School District,Niagara,40100106,STARPOINT CSD,name
+410780700100,Stillwater Central School District,Saratoga,52200104,STILLWATER CSD,name
+250780800100,Stockbridge Valley Central School District,Madison,25150104,STOCKBRIDGE VALLEY CSD,name
+390669800100,Suffern Central School District,Rockland,50040106,SUFFERN CSD,name
+480722600100,Sullivan West Central School District,Sullivan,59150204,SULLIVAN WEST CSD,name
+030619500100,Susquehanna Valley Central School District,Broome,03060106,SUSQUEHANNA VALLEY CSD,name
+140601900700,Sweet Home Central School District,Erie,14020706,SWEET HOME CSD,name
+280663400200,Syosset Central School District,Nassau,28050206,SYOSSET CSD,name
+310555000000,Syracuse City School District,Onondaga,42180001,SYRACUSE CITY SD,name
+100716900100,Taconic Hills Central School District,Columbia,10050104,TACONIC HILLS CSD,name
+220717100100,Thousand Islands Central School District,Jefferson,22070104,THOUSAND ISLANDS CSD,name
+470609600100,Three Village Central School District,Suffolk,58020106,THREE VILLAGE CSD,name
+150682700100,Ticonderoga Central School District,Essex,15150106,TICONDEROGA CSD,name
+490782800300,Tioga Central School District,Tioga,60090304,TIOGA CSD,name
+140556000000,Tonawanda City School District,Erie,14250001,TONAWANDA CITY SD,name
+210988400100,Town Of Webb Union Free School District,Herkimer,21190102,TOWN OF WEBB UFSD,name
+480756300100,Tri-Valley Central School District,Sullivan,59120104,TRI-VALLEY CSD,name
+380557000000,Troy City School District,Rensselaer,49170001,TROY CITY SD,name
+500784400100,Trumansburg Central School District,Tompkins,61100104,TRUMANSBURG CSD,name
+471078701300,Tuckahoe Common School District,Suffolk,58091308,TUCKAHOE COMMON SD,name+county
+550624700200,Tuckahoe Union Free School District,Westchester,66030203,TUCKAHOE UFSD,name
+310783600200,Tully Central School District,Onondaga,42190204,TULLY CSD,name
+160601500100,Tupper Lake Central School District,Franklin,16010106,TUPPER LAKE CSD,name
+330984000300,Tuxedo Union Free School District,Orange,44190302,TUXEDO UFSD,name
+080756700100,Unadilla Valley Central School District,Chenango,08100304,UNADILLA VALLEY CSD,name
+550634200100,Union Free School District of The Tarrytowns School District,Westchester,66040103,,manual
+050779700100,Union Springs Central School District,Cayuga,05190104,UNION SPRINGS CSD,name
+030684600100,Union-Endicott Central School District,Broome,03150106,UNION-ENDICOTT CSD,name
+280638600200,Uniondale Union Free School District,Nassau,28020203,UNIONDALE UFSD,name
+300558000000,Utica City School District,Oneida,41230001,UTICA CITY SD,name
+550655600500,Valhalla Union Free School District,Westchester,66080503,VALHALLA UFSD,name
+330654500100,Valley Central School District,Orange,44130106,VALLEY CSD (MONTGOMERY),name
+280938601300,Valley Stream 13 Union Free School District,Nassau,28021302,VALLEY STREAM 13 UFSD,name
+280938602400,Valley Stream 24 Union Free School District,Nassau,28022402,VALLEY STREAM 24 UFSD,name
+280938603000,Valley Stream 30 Union Free School District,Nassau,28023002,VALLEY STREAM 30 UFSD,name
+210780200100,Van Hornesville-Owen D Young Central School District,Herkimer,21170104,VAN HORNESVILLE-OWEN D YOUNG CSD,name
+030685500100,Vestal Central School District,Broome,03160106,VESTAL CSD,name
+320685700100,Victor Central School District,Ontario,43170106,VICTOR CSD,name
+010658100300,Voorheesville Central School District,Albany,01100306,VOORHEESVILLE CSD,name
+471025000200,Wainscott Common School District,Suffolk,58030208,WAINSCOTT COMN SD,name
+510677000100,Wallkill Central School District,Ulster,62180106,WALLKILL CSD,name
+120786600100,Walton Central School District,Delaware,12190104,WALTON CSD,name
+280638602300,Wantagh Union Free School District,Nassau,28022303,WANTAGH UFSD,name
+130686800100,Wappingers Central School District,Dutchess,13210106,WAPPINGERS CSD,name
+520787100100,Warrensburg Central School District,Warren,63120104,WARRENSBURG CSD,name
+560787200100,Warsaw Central School District,Wyoming,67150104,WARSAW CSD,name
+330687300100,Warwick Valley Central School District,Orange,44210106,WARWICK VALLEY CSD,name
+330607800200,Washingtonville Central School District,Orange,44010206,WASHINGTONVILLE CSD,name
+410687500100,Waterford-Halfmoon Union Free School District,Saratoga,52210103,WATERFORD-HALFMOON UFSD,name
+450687600100,Waterloo Central School District,Seneca,56100606,WATERLOO CSD,name
+220559000000,Watertown City School District,Jefferson,22200001,WATERTOWN CITY SD,name
+300774400100,Waterville Central School District,Oneida,41190204,WATERVILLE CSD,name
+010560000000,Watervliet City School District,Albany,01120001,WATERVLIET CITY SD,name
+440623700100,Watkins Glen Central School District,Schuyler,55030106,WATKINS GLEN CSD,name
+490605400100,Waverly Central School District,Tioga,60010106,WAVERLY CSD,name
+460788200100,Wayland-Cohocton Central School District,Steuben,57300204,WAYLAND-COHOCTON CSD,name
+540661200100,Wayne Central School District,Wayne,65080106,WAYNE CSD,name
+260688500100,Webster Central School District,Monroe,26190106,WEBSTER CSD,name
+050710000100,Weedsport Central School District,Cayuga,05030104,WEEDSPORT CSD,name
+200788600100,Wells Central School District,Hamilton,20090104,WELLS CSD,name
+020688700100,Wellsville Central School District,Allegany,02260106,WELLSVILLE CSD,name
+470604600200,West Babylon Union Free School District,Suffolk,58010203,WEST BABYLON UFSD,name
+210728000200,West Canada Valley Central School District,Herkimer,21030204,WEST CANADA VALLEY CSD,name
+310611600100,West Genesee Central School District,Onondaga,42010106,WEST GENESEE CSD,name
+280638602700,West Hempstead Union Free School District,Nassau,28022703,WEST HEMPSTEAD UFSD,name
+260641900300,West Irondequoit Central School District,Monroe,26080306,WEST IRONDEQUOIT CSD,name
+470642100900,West Islip Union Free School District,Suffolk,58050903,WEST ISLIP UFSD,name
+140689700100,West Seneca Central School District,Erie,14280106,WEST SENECA CSD,name
+040703300400,West Valley Central School District,Cattaraugus,04020404,WEST VALLEY CSD,name
+280659700100,Westbury Union Free School District,Nassau,28040103,WESTBURY UFSD,name
+060789200100,Westfield Central School District,Chautauqua,06290104,WESTFIELD CSD,name
+470978700200,Westhampton Beach Union Free School District,Suffolk,58090202,WESTHAMPTON BEACH UFSD,name
+310631700100,Westhill Central School District,Onondaga,42070106,WESTHILL CSD,name
+300789500100,Westmoreland Central School District,Oneida,41280104,WESTMORELAND CSD,name
+150789600100,Westport Central School District,Essex,15160104,WESTPORT CENTRAL SCHOOL DISTRICT,name
+260790400100,Wheatland-Chili Central School District,Monroe,26200104,WHEATLAND-CHILI CSD,name
+170913000100,Wheelerville Union Free School District,Fulton,17030102,WHEELERVILLE UFSD,name
+550561000000,White Plains City School District,Westchester,66220001,WHITE PLAINS CITY SD,name
+530690700100,Whitehall Central School District,Washington,64170106,WHITEHALL CSD,name
+300690800200,Whitesboro Central School District,Oneida,41290206,WHITESBORO CSD,name
+020741500100,Whitesville Central School District,Allegany,02210104,WHITESVILLE CSD,name
+030683300100,Whitney Point Central School District,Broome,03140106,WHITNEY POINT CSD,name
+470609603200,William Floyd Union Free School District,Suffolk,58023203,WILLIAM FLOYD UFSD,name
+540791000200,Williamson Central School District,Wayne,65140204,WILLIAMSON CSD,name
+140601900300,Williamsville Central School District,Erie,14020306,WILLIAMSVILLE CSD,name
+150791300100,Willsboro Central School District,Essex,15170104,WILLSBORO CSD,name
+290691600100,Wilson Central School District,Niagara,40150106,WILSON CSD,name
+190791800100,Windham-Ashland-Jewett Central School District,Greene,19140104,WINDHAM-ASHLAND-JEWETT CSD,name
+030691900100,Windsor Central School District,Broome,03170106,WINDSOR CSD,name
+360792600600,Worcester Central School District,Otsego,47250604,WORCESTER CSD,name
+470904600900,Wyandanch Union Free School District,Suffolk,58010902,WYANDANCH UFSD,name
+380959500400,Wynantskill Union Free School District,Rensselaer,49080402,WYNANTSKILL UFSD,name
+560752700200,Wyoming Central School District,Wyoming,67100204,WYOMING CSD,name
+550562000000,Yonkers City School District,Westchester,66230001,YONKERS CITY SD,name
+240793000100,York Central School District,Livingston,24170104,YORK CSD,name
+040693100100,Yorkshire-Pioneer Central School District,Cattaraugus,04350106,YORKSHIRE-PIONEER CSD,name
+550693200200,Yorktown Central School District,Westchester,66240206,YORKTOWN CSD,name
