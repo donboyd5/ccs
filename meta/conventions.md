@@ -30,6 +30,12 @@ itself is specified in [`../data/README.md`](../data/README.md); this restates t
   asserting it. Prefer "computed from X" / "as reported by Y" to vague attribution.
 - When two series look comparable, check the time basis and definitions first
   (actual vs. proposed, headcount vs. FTE, fiscal-year alignment).
+- **Validate the seam when splicing a time series.** When a panel is extended
+  backward/forward or stitched across format eras or sources, check continuity at the
+  join: compare each measure's median year-over-year change at the seam against
+  neighboring transitions, and investigate any measure that jumps (it usually means a
+  definition changed). Also check per-year null/zero coverage to catch measures not
+  collected in some years. Record the check (e.g. in the source's `SOURCE.md`).
 
 ## Plain-language writing (reader-facing prose)
 
