@@ -19,6 +19,7 @@ Years are **school-year-ending** (2025 = 2024–25).
 | School district finance | NYS Comptroller (OSC) | revenue & expenditure by account code → per-pupil spending | 2013–2025 | **In use** |
 | Audited financial reports | Federal Audit Clearinghouse | Cambridge CSD audited statements (PDF) | 2020–2025 | Reference |
 | Property Tax Report Card | NYSED | proposed budget, tax levy & limit, projected enrollment | 2020–2027 | **Adding** |
+| School district property taxes | NYS Comptroller (OSC) | tax levy, taxable full value & full-value tax rate, by district × town | 2015–2025 | **Adding** |
 | Budget vote results | NYSED | district budget vote / re-vote outcomes | 2013–2026 | Related analysis |
 | State school aid | NYS (data.ny.gov `9pb8-dg53`) | state aid to each district by year | 1996– | Candidate |
 | Real property tax rates & levies | NYS (data.ny.gov `iq85-sdzs`) | tax levies and rates by municipality | varies | Candidate |
@@ -88,6 +89,31 @@ put before voters each May. These are *proposed/budgeted* figures (forward-
 looking), in contrast to the Comptroller's *actual* spending. Provenance and the
 year-by-year download list:
 [`data/raw/nysed_property_tax_report_card/SOURCE.md`](https://github.com/donboyd5/ccs/blob/main/data/raw/nysed_property_tax_report_card/SOURCE.md).
+
+## School district property taxes (NYS Comptroller)
+
+To show **how much property tax each school district raises and how heavily it
+taxes property**, the project uses the Comptroller's **"Table 3" school-district
+tax workbooks** (the same OSC local-government data program as the finance files,
+at <https://www.osc.ny.gov/local-government/data/real-property-tax-levies-taxable-full-value-and-full-value-tax-rates>).
+For every district and **each year 2015 through 2025**, they give the district's
+**tax levy** (total property tax the district raises), its **taxable full value**
+(the market-value tax base, after equalizing assessed values across towns), and
+the **full-value tax rate** — the levy per $1,000 of full value, the standard way
+to compare tax effort across places with different assessment practices.
+
+A distinctive feature: each district's figures are **broken out by the city or
+town the district covers** — many districts straddle several towns — so the data
+has both a **detail row per district-and-town** and a **district total**. The
+totals are summed from the parts (and match the Comptroller's own published
+totals, where it publishes them, to the dollar). The fiscal year ends June 30 and
+matches the school-year-ending label, the same as the finance data (verified
+against the Property Tax Report Card). Districts are joined to the project's key
+via a generated crosswalk; 678 of 680 link, the two exceptions being New York City
+(which the state splits into many borough districts) and one non-operating
+district. Full provenance, the format-change history, and caveats (including a
+2019-file quirk) are in
+[`data/raw/osc_school_district_tax_levies/SOURCE.md`](https://github.com/donboyd5/ccs/blob/main/data/raw/osc_school_district_tax_levies/SOURCE.md).
 
 ## Cambridge CSD annual financial reports
 

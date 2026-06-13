@@ -1,0 +1,13 @@
+{
+  "_comment": "Shared, tracked project settings. The PreToolUse hook enforces meta/workflow.md: the assistant may do anything EXCEPT write to `main` (no merge/commit/push/reset to main). Personal preferences (permission mode, allow-list) live in the git-ignored settings.local.json.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-main.sh" }
+        ]
+      }
+    ]
+  }
+}
