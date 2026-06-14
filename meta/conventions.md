@@ -47,6 +47,7 @@ itself is specified in [`../data/README.md`](../data/README.md); this restates t
 
 - A chart **title states just the facts** (what is plotted). The interpretation /
   takeaway goes in a **headline above the plot**, not in the title.
+- The details of what a chart plto should be in a capition below the chart or in a source note. The title should be clean explaining in a simple manner what is plotted, such as "Average number of pupils per teacher" (Figure 1.1 currently has a noisy title).
 - Tooling: Python + **polars** (not pandas); plots via **plotnine**; tables via
   **great-tables**; outputs as **parquet** (+ CSV convenience views where useful).
   Analysis writeups are Quarto `.qmd` under `books/`.
