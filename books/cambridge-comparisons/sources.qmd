@@ -15,6 +15,7 @@ Years are **school-year-ending** (2025 = 2024–25).
 | Dataset | Publisher | What it provides | Years | Status |
 |---|---|---|---|---|
 | Enrollment & staff | NYSED | K-12 enrollment; teacher/staff headcounts | 2016–2025 (staff 2018–2025) | **In use** |
+| Student test results (grades 3-8) | NYSED | grades 3-8 ELA & Math: % at/above proficiency, mean score, by district & subgroup | 2015–2025 (no 2020) | **Adding** |
 | Pupil–teacher FTE (CCD) | NCES, via Urban Institute | FTE-based pupil-teacher ratio (cross-check) | 2016–2025 | **In use** |
 | School district finance | NYS Comptroller (OSC) | revenue & expenditure by account code → per-pupil spending | 2013–2025 | **In use** |
 | Audited financial reports | Federal Audit Clearinghouse | Cambridge CSD audited statements (PDF) | 2020–2025 | Reference |
@@ -54,6 +55,37 @@ for comparison across districts and over time — **not** NYSED's official
 pupil-teacher ratio or average class size. Charter schools are excluded (they
 have no district-total row), and a small number of districts reorganized within
 the window (statewide, not in this comparison group).
+
+## Student test results (NYSED grades 3-8 assessments)
+
+To look at **student performance**, the project uses NYSED's annual **Report Card
+Database** (also from <https://data.nysed.gov/downloads.php>, distributed as
+Microsoft Access files). These databases hold the results of New York's **grades
+3-8 English Language Arts (ELA) and Mathematics tests** — the statewide exams every
+public-school student takes each spring — reported for each district (and for
+statewide, county, and "similar-needs" peer groupings) and broken out by student
+group. Coverage built so far: **school years 2015–16 through 2024–25** (ten years).
+The same databases also contain Regents and other results, which may be added
+later. The ten annual files were stitched into one district-by-year panel by
+[`src/build_assessments.py`](https://github.com/donboyd5/ccs/blob/main/src/build_assessments.py);
+full provenance is in
+[`data/raw/nysed_report_card/SOURCE.md`](https://github.com/donboyd5/ccs/blob/main/data/raw/nysed_report_card/SOURCE.md).
+
+The headline measure is the **percentage of students scoring at or above
+proficiency** (performance Level 3 or higher); the data also include the number
+tested and the average score. Two cautions matter a great deal for reading trends:
+
+- **Spring 2020 is missing and 2021 is unusual.** The grades 3-8 tests were
+  **cancelled in spring 2020** because of COVID-19, so that year has no data; in
+  **spring 2021** only about half of students were tested, so 2021's numbers are not
+  representative.
+- **The tests were redesigned twice, so scores don't compare across the breaks.**
+  New York set new tests and new passing standards in **2018** and again in **2023**
+  (the Next Generation Learning Standards). Results are comparable *within* each of
+  three periods — **2015–2017**, **2018–2022**, and **2023–2025** — but a change in
+  the proficiency rate *across* one of those boundaries reflects the new standard as
+  much as any change in student learning. Comparisons **between districts in the
+  same year** are unaffected by this and are the most reliable use of the data.
 
 ## National pupil–teacher ratios (NCES Common Core of Data)
 
