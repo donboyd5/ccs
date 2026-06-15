@@ -94,6 +94,70 @@ year. And the series only starts in 2018–19. For a longer, more complete view 
 turn to students per teacher — which exists for every district back to 2017–18,
 though, as the next section explains, it is a staffing ratio, not class size.
 
+### A sharper cut: grades 3–8 core classes
+
+The median above mixes very different classes — small high-school electives with
+larger elementary sections — and is swayed by *which* classes each district
+happens to report. A cleaner, apples-to-apples comparison restricts to the
+**twelve core academic classes every district teaches and reports**: English and
+Math in grades 3 through 8. (NYSED relabeled these classes in 2021; the build
+unifies the old and new names.)
+
+**On the same twelve classes, Cambridge's are the smallest in the group — by
+several students per class.**
+
+```{python}
+#| label: tbl-class-size-core
+#| tbl-cap: "Median average class size across the twelve grades 3–8 core academic classes (English and Math, grades 3–8) by district and school year ending, 2019 (2018–19) through 2025 (2024–25) — a like-for-like basket every district reports. Salem's 2021 value reflects pandemic-year reporting disruption. Source: NYSED Student & Educator (Average Class Size) database."
+core = cc.class_size_for(cc.GRAPH_GROUP, tier="grades_3_8", subjects=["ELA", "Math"])
+
+# Long -> wide (years become columns), Washington County districts first.
+wide = (
+    core.with_columns(
+        pl.when(pl.col("region") == "Washington County").then(0).otherwise(1).alias("_rank")
+    )
+    .pivot(values="class_size", index=["_rank", "region", "district"], on="year_end")
+    .sort(["_rank", "district"])
+    .drop("_rank")
+)
+year_cols = [c for c in wide.columns if c.isdigit()]
+wide = wide.with_columns((pl.col("2025") - pl.col("2019")).alias("chg"))
+
+(
+    GT(wide, rowname_col="district", groupname_col="region")
+    .tab_header(
+        title="Class size: grades 3–8 core (English & Math)",
+        subtitle="Median across the twelve grade-3–8 ELA and Math classes, by school year ending",
+    )
+    .fmt_number(columns=year_cols + ["chg"], decimals=1)
+    .tab_spanner(label="School year ending", columns=year_cols)
+    .cols_label(chg=md("Change<br>2019→2025"))
+    .sub_missing(missing_text="—")
+    .tab_style(
+        style=[style.fill(color="#FCEFB4"), style.text(weight="bold")],
+        locations=[
+            loc.body(rows=pl.col("district") == cc.FOCUS),
+            loc.stub(rows=pl.col("district") == cc.FOCUS),
+        ],
+    )
+    .tab_source_note(
+        md(
+            "**Source:** NYSED Student &amp; Educator database, Average Class Size "
+            "(roster-based: students ÷ sections). Each district-year is the median "
+            "across its grades 3–8 English and Math classes; NYSED's 2019–20 and "
+            "2021+ labels for these classes are unified in the build. Year = "
+            "school-year-ending (2025 = 2024–25)."
+        )
+    )
+)
+```
+
+Cambridge's grades 3–8 core classes run about **10 to 16 students**, several
+below the other four districts in most years (Salem's dip to 9 in 2021 is the
+same pandemic-reporting artifact). This is the most like-for-like class-size
+comparison the NYSED data supports; the broad median above and the
+students-per-teacher ratio below tell the same story with wider coverage.
+
 ## Students per teacher, over time
 
 The chart below tracks the graph group from school-year-ending 2018 (the first

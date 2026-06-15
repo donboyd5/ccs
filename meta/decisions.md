@@ -2,6 +2,21 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-06-15 — Book strategy: exploratory now, polished summary later
+
+- **`books/cambridge-comparisons` is an exploratory book.** We deliberately keep
+  *multiple measures per topic* rather than committing to one — e.g. for class
+  size, a **median across all reported classes** *and* a **grades 3–8 ELA/Math**
+  comparison; for staffing, NYSED teacher **headcount** *and* NCES **FTE**. The
+  aim right now is breadth and understanding the data, not a finished narrative.
+- **A polished, lay-audience summary comes later** — drawing on this exploratory
+  work and using the **best measure for each chapter**. It may be a **separate,
+  clean public-facing book** built on top of the shared `comparisons.py` helpers
+  and processed datasets.
+- **Working rule:** when we find a better measure, **add it alongside** the old
+  one — do not drop the old. Keep helpers and processed datasets reusable so the
+  future summary can pick the best of each.
+
 ## 2026-06-13 — PTRC panel extended back to SY 2014-15 (year_end 2015)
 
 - **Extended the Property Tax Report Card panel from year_end 2019 → 2015** (now

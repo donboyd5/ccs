@@ -69,6 +69,17 @@ STUDED `Average Class Size` table; **roster/section-based** (students in a
 section ÷ number of sections), **not** teacher-derived (see above). Only rows
 NYSED flags `DATA_REPORTED='Y'` with a value are kept.
 
+**Stable taxonomy columns** (added by `classify_class()` in the builder, since
+NYSED's raw labels drift across years): `class_canonical` (one name per class,
+collapsing the 2019-20 vs 2021+ grade/subject relabel and the Regents
+`(Common Core)`/`(Framework)` suffixes), `class_tier`
+(`elementary` = self-contained K/1/2; `grades_3_8` = ELA/Math/Science by grade;
+`high_school` = Regents courses), `class_subject` (ELA/Math/Science/Social
+Studies/Self-contained), and `class_grade` (`K`,`1`…`8`; null for HS). These let
+you pick a like-for-like basket — e.g. grades 3-8 ELA+Math, or the HS Regents
+core — instead of mixing elementary with high-school electives (see
+`cc.class_size_for`). All 50 raw labels map cleanly (0 land in `tier='other'`).
+
 - **Coverage `year_end` 2019–2025** (school years 2018-19 → 2024-25). The pre-2018-19
   era is a **different format and method**: `STUDED_2018.mdb` stores this table in a
   *wide* layout (`COMMON_BRANCH`, `GRADE_8_MATH`, … ; years 2016-2018) collected from

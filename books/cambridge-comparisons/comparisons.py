@@ -324,35 +324,57 @@ def load_class_size() -> pl.DataFrame:
     return pl.read_parquet(CLASS_SIZE_PATH)
 
 
-def class_size_median_for(group: dict[str, str]) -> pl.DataFrame:
-    """Median NYSED average class size across all reported classes, per
+def class_size_for(
+    group: dict[str, str],
+    *,
+    tier: str | None = None,
+    subjects: list[str] | None = None,
+    classes: list[str] | None = None,
+) -> pl.DataFrame:
+    """Median NYSED average class size across a chosen basket of classes, per
     district-year, for `group`.
 
-    The **median** (not mean) summarizes each district-year so the figure
-    resists small-section artifacts (e.g. a 2-student physics class, or a
-    pandemic-year reporting glitch) that distort an unweighted mean. Columns:
-    ``district``, ``region``, ``year_end``, ``median_class_size``, ``n_classes``
-    (how many reported classes the median is taken over).
+    Narrow the basket with ``tier`` (``'elementary'`` | ``'grades_3_8'`` |
+    ``'high_school'``), ``subjects`` (e.g. ``['ELA', 'Math']``), and/or
+    ``classes`` (canonical names like ``'Algebra I'``). With no filters it
+    medians across every reported class. The **median** (not mean) resists
+    small-section artifacts (a 2-student physics class, a pandemic-year glitch).
+    Columns: ``district``, ``region``, ``year_end``, ``class_size``,
+    ``n_classes`` (how many classes the median is taken over).
     """
     region_by_cd = {
         cd: ("Washington County" if cd in WASHINGTON_K12 else "Other comparison districts")
         for cd in group
     }
+    d = load_class_size().filter(pl.col("district_cd").is_in(list(group)))
+    if tier is not None:
+        d = d.filter(pl.col("class_tier") == tier)
+    if subjects is not None:
+        d = d.filter(pl.col("class_subject").is_in(subjects))
+    if classes is not None:
+        d = d.filter(pl.col("class_canonical").is_in(classes))
     return (
-        load_class_size()
-        .filter(pl.col("district_cd").is_in(list(group)))
-        .group_by("district_cd", "year_end")
+        d.group_by("district_cd", "year_end")
         .agg(
-            pl.col("average_class_size").median().alias("median_class_size"),
+            pl.col("average_class_size").median().alias("class_size"),
             pl.len().alias("n_classes"),
         )
         .with_columns(
             pl.col("district_cd").replace_strict(group).alias("district"),
             pl.col("district_cd").replace_strict(region_by_cd).alias("region"),
         )
-        .select("district", "region", "year_end", "median_class_size", "n_classes")
+        .select("district", "region", "year_end", "class_size", "n_classes")
         .sort("district", "year_end")
     )
+
+
+def class_size_median_for(group: dict[str, str]) -> pl.DataFrame:
+    """Median class size across **all** reported classes (the broad view).
+
+    Thin wrapper over :func:`class_size_for` with no basket filter; the value
+    column is named ``median_class_size`` for the overview chart.
+    """
+    return class_size_for(group).rename({"class_size": "median_class_size"})
 
 
 def load_spending() -> pl.DataFrame:

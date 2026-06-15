@@ -80,6 +80,58 @@ NEEDS_RC_LABEL = {
 
 YEAR_RE = re.compile(r"(\d{4})")
 
+# NYSED's Average Class Size labels drift across years (the 2019-20 grade/subject
+# names differ from 2021+, and Regents courses gain "(Common Core)"/"(Framework)"
+# suffixes). classify_class() maps every observed raw label to a stable
+# (canonical, tier, subject, grade) so a class is one continuous series and
+# baskets (e.g. grades 3-8 ELA+Math, or the HS Regents core) are easy to select.
+_HS_COURSES = {
+    "Algebra I": ("Algebra I", "Math"),
+    "Algebra I (Common Core)": ("Algebra I", "Math"),
+    "Algebra II": ("Algebra II", "Math"),
+    "Algebra II (Common Core)": ("Algebra II", "Math"),
+    "Geometry": ("Geometry", "Math"),
+    "Geometry (Common Core)": ("Geometry", "Math"),
+    "ELA": ("ELA III", "ELA"),
+    "ELA III (Common Core)": ("ELA III", "ELA"),
+    "English/Language Arts III (Common Core)": ("ELA III", "ELA"),
+    "Biology": ("Biology", "Science"),
+    "Chemistry": ("Chemistry", "Science"),
+    "Earth Science": ("Earth Science", "Science"),
+    "Physics": ("Physics", "Science"),
+    "U.S. History-Comprehensive": ("US History & Gov't", "Social Studies"),
+    "U.S. History and Government (Framework)": ("US History & Gov't", "Social Studies"),
+    "World History & Geography": ("World History", "Social Studies"),
+    "World History and Geography (New Framework)": ("World History", "Social Studies"),
+    "World History and Geography New Framework": ("World History", "Social Studies"),
+}
+_RE_36_NEW = re.compile(r"^(Language Arts|Mathematics|Science) \(grade (\d)\)$")
+_RE_36_OLD = re.compile(r"^Grade (\d) (ELA|Math|Science)$")
+_SUBJ = {"Language Arts": "ELA", "Mathematics": "Math", "Science": "Science"}
+
+
+def classify_class(label: str) -> tuple[str, str, str | None, str | None]:
+    """(canonical label, tier, subject, grade) for a raw class_description.
+
+    tier in {elementary, grades_3_8, high_school, other}. grade is "K"/"1".."8"
+    for elementary & grades_3_8, else None.
+    """
+    s = label.strip()
+    if s in ("Kindergarten", "Grade 1", "Grade 2"):
+        return s, "elementary", "Self-contained", {"Kindergarten": "K"}.get(s, s[-1])
+    m = _RE_36_NEW.match(s)
+    if m:
+        subj = _SUBJ[m.group(1)]
+        return f"{subj} (grade {m.group(2)})", "grades_3_8", subj, m.group(2)
+    m = _RE_36_OLD.match(s)
+    if m:
+        subj = _SUBJ.get(m.group(2), m.group(2))
+        return f"{subj} (grade {m.group(1)})", "grades_3_8", subj, m.group(1)
+    if s in _HS_COURSES:
+        canon, subj = _HS_COURSES[s]
+        return canon, "high_school", subj, None
+    return s, "other", None, None
+
 
 # --- low-level helpers -----------------------------------------------------
 def mdb_table(path: Path, table: str) -> pl.DataFrame:
@@ -275,7 +327,7 @@ def build_class_size() -> pl.DataFrame:
         .filter(pl.col("average_class_size").is_not_null())
         .filter(pl.col("year_end") >= 2019)  # comparable SIRS-based era only
     )
-    return (
+    tidy = (
         df.sort("source_year", descending=True)
         .unique(subset=["ENTITY_CD", "year_end", "CLASS_DESCRIPTION"],
                 keep="first", maintain_order=True)
@@ -288,7 +340,29 @@ def build_class_size() -> pl.DataFrame:
             "average_class_size",
             pl.col("source_year").alias("acs_source_year"),
         )
-        .sort("district_cd", "year_end", "class_description")
+    )
+
+    # Attach the stable taxonomy (canonical label / tier / subject / grade),
+    # computed once per distinct raw label then joined back.
+    tax = pl.DataFrame(
+        [
+            {"class_description": lbl, "class_canonical": c, "class_tier": t,
+             "class_subject": s, "class_grade": g}
+            for lbl in tidy["class_description"].unique()
+            for (c, t, s, g) in [classify_class(lbl)]
+        ]
+    )
+    unmapped = tax.filter(pl.col("class_tier") == "other")["class_description"].to_list()
+    if unmapped:
+        print(f"  ⚠ class-size labels not in taxonomy (tier='other'): {unmapped}")
+    return (
+        tidy.join(tax, on="class_description", how="left")
+        .select(
+            "entity_cd", "district_cd", "district_name", "year_end",
+            "class_description", "class_canonical", "class_tier", "class_subject",
+            "class_grade", "average_class_size", "acs_source_year",
+        )
+        .sort("district_cd", "year_end", "class_canonical")
     )
 
 
