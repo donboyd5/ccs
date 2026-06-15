@@ -152,10 +152,10 @@ so teachers per 100 students rose about 17%.**
 
 ```{python}
 #| label: tbl-cambridge-staffing
-#| tbl-cap: "Cambridge K–12 enrollment, teachers, and teachers per 100 students: 2018 (2017–18) vs. 2025 (2024–25), with the change and percent change between those years."
+#| tbl-cap: "Cambridge K–12 enrollment, teachers, and teachers per 100 students by school year ending, 2018 (2017–18) through 2025 (2024–25), with the change and percent change from 2018 to 2025."
 cam = (
     cc.panel_for(cc.GRAPH_GROUP)
-    .filter((pl.col("district") == cc.FOCUS) & pl.col("year_end").is_in([2018, 2025]))
+    .filter(pl.col("district") == cc.FOCUS)
     .select("year_end", "k12_enrollment", "num_teachers")
     .with_columns(
         (pl.col("num_teachers") / pl.col("k12_enrollment") * 100).alias(
@@ -185,24 +185,23 @@ wide = (
 )
 
 # Counts show as whole numbers; the ratio row keeps one decimal.
+year_cols = [c for c in wide.columns if c.isdigit()]
 ratio_row = pl.col("measure") == "Teachers per 100 students"
 
 (
     GT(wide, rowname_col="measure")
     .tab_header(
         title="Cambridge: enrollment, teachers, and staffing",
-        subtitle="School-year-ending 2018 (2017–18) vs. 2025 (2024–25)",
+        subtitle="School-year-ending 2018 (2017–18) through 2025 (2024–25)",
     )
-    .fmt_number(columns=["2018", "2025"], rows=~ratio_row, decimals=0)
-    .fmt_number(columns=["2018", "2025"], rows=ratio_row, decimals=1)
+    .fmt_number(columns=year_cols, rows=~ratio_row, decimals=0)
+    .fmt_number(columns=year_cols, rows=ratio_row, decimals=1)
     .fmt_number(columns="chg", rows=~ratio_row, decimals=0, force_sign=True)
     .fmt_number(columns="chg", rows=ratio_row, decimals=1, force_sign=True)
     .fmt_percent(columns="pct_chg", decimals=1, force_sign=True)
-    .tab_spanner(label="School year ending", columns=["2018", "2025"])
-    .cols_label(
-        chg=md("Change<br>2018→2025"),
-        pct_chg=md("% change<br>2018→2025"),
-    )
+    .tab_spanner(label="School year ending", columns=year_cols)
+    .tab_spanner(label="Change, 2018 → 2025", columns=["chg", "pct_chg"])
+    .cols_label(chg="Change", pct_chg="% change")
     .tab_style(
         style=[style.fill(color="#FCEFB4"), style.text(weight="bold")],
         locations=loc.stub(rows=ratio_row),
