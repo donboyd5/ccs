@@ -165,11 +165,31 @@ not-tested counts (new years only), `level1_count`…`level5_count` (+ `_pct`),
 `mean_score`, `is_computed_aggregate` (true for the synthesized 2015-16 grades-3-8
 aggregate), `src_year` (which SRC file the row came from).
 
-**Synthesized 3-8 aggregate.** The old layout has no NYSED-provided grades-3-8
-aggregate row, so for 2015-16 the build synthesizes one (`ELA3_8`/`MATH3_8`,
-`is_computed_aggregate=true`) by summing the grade-level tests — the same way
-NYSED's own aggregate sums grades 3-8. Validated against NYSED's provided aggregate
-in the new-layout years.
+**Synthesized 3-8 aggregate (2015-16 only).** The old layout has no NYSED-provided
+grades-3-8 aggregate row, so for 2015-16 the build reconstructs one
+(`ELA3_8`/`MATH3_8`, `is_computed_aggregate=true`) by summing the grade-level tests.
+Checked against NYSED's *provided* aggregate in the new-layout years (districts,
+All Students):
+
+- **ELA** — the reconstruction is essentially exact (median |diff| = 0.0 pts,
+  99.4% within 0.1 pt), so the 2015-16 `ELA3_8` is reliable.
+- **Math** — the reconstruction differs from NYSED's provided `MATH3_8` by a median
+  ~2 pts because NYSED's math aggregate **includes accelerated grade-7/8 students
+  who take a Regents math exam** (the `RegentsMath*`/`Combined*Math` variants),
+  whereas a sum of the grade-level `MATH3…MATH8` tests excludes them. So the
+  2015-16 `MATH3_8` reconstruction is on a slightly **narrower** basis than the
+  NYSED-provided `MATH3_8` for 2017+ (the old layout had no accelerated-math
+  reporting to add back). Treat the math 3-8 aggregate's 2016→2017 step with that
+  in mind; the grade-level `MATH4`/`MATH8` series are unaffected.
+
+**Suppressed `MATH3_8` level breakdown.** In the new-layout years NYSED frequently
+blanks (`s`) the *level counts* of the provided `MATH3_8` aggregate while still
+reporting its `num_tested` — for **~130 districts/year (~18%)**, vs. only ~2-4% for
+`ELA3_8`. Because proficiency is computed from those level counts, `pct_prof` is
+**null** for the math 3-8 aggregate in those district-years (e.g. Cambridge 2022,
+2024). The grade-level `MATH4`/`MATH8` rows are usually still populated, so use
+those (the project's focus) rather than back-filling the aggregate with a
+non-matching computed value.
 
 ### Rebuild
 
@@ -209,5 +229,9 @@ python src/build_assessments.py          # parse + stitch -> processed parquet +
   fixed grade jumps between eras because the scale itself was reset: e.g. grade-4
   ELA runs ~300 (2015–17), ~600 (2018–19), and grade-8 math ~600 (2021–22) → ~460
   (2023–25). This is why `mean_score` is comparable only **within** an era.
-- **Synthesized 3-8 aggregate verified** against NYSED's provided aggregate in the
-  new-layout years (same "sum of grades 3-8" method).
+- **Synthesized 3-8 aggregate checked** against NYSED's provided aggregate in the
+  new-layout years: **ELA** reconstruction is ~exact (median |diff| 0.0 pts), but
+  **Math** differs ~2 pts because NYSED's math aggregate includes accelerated
+  Regents math-takers (see "Synthesized 3-8 aggregate" above) — so only `ELA3_8`
+  for 2015-16 is on the same basis as later years; the `MATH3_8` reconstruction is
+  narrower.
