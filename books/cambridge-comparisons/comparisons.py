@@ -354,9 +354,16 @@ def class_size_for(
     if classes is not None:
         d = d.filter(pl.col("class_canonical").is_in(classes))
     return (
-        d.group_by("district_cd", "year_end")
+        # Collapse label variants of the same course first: in transition years a
+        # district can report e.g. "Algebra I" and "Algebra I (Common Core)" (both
+        # canonical "Algebra I") with different values. Average those to one value
+        # per canonical class so a course isn't double-weighted, then median across
+        # courses (n_classes = distinct canonical classes).
+        d.group_by("district_cd", "year_end", "class_canonical")
+        .agg(pl.col("average_class_size").mean().alias("class_avg"))
+        .group_by("district_cd", "year_end")
         .agg(
-            pl.col("average_class_size").median().alias("class_size"),
+            pl.col("class_avg").median().alias("class_size"),
             pl.len().alias("n_classes"),
         )
         .with_columns(
