@@ -72,7 +72,7 @@ cambridge = g.filter(pl.col("district") == cc.FOCUS)
         y="K–12 students per teacher",
         # Title states only the facts; the interpretive headline lives above the
         # figure in the prose (see the project's graph-title convention).
-        title="District K–12 enrollment ÷ teacher headcount, 2017–18 to 2024–25",
+        title="Students per teacher",
     )
     + cc.theme_ccs()
 )
