@@ -11,6 +11,7 @@ data/
 │   ├── osc_school_finance/            NYS Comptroller school-district finance (CSV)
 │   ├── osc_school_district_tax_levies/ NYS Comptroller tax levies & full-value rates, by district×town (Excel)
 │   ├── nysed_enrollment_staff/        NYSED enrollment + staff (MS-Access)
+│   ├── nysed_report_card/             NYSED Report Card DB — grades 3-8 ELA/Math assessments (MS-Access)
 │   ├── nysed_budget_votes/            NYSED budget vote / re-vote results (Excel)
 │   ├── nysed_property_tax_report_card/ NYSED Property Tax Report Card (Excel)
 │   └── fac_annual_reports/            Cambridge CSD audited financial reports (PDF)
@@ -40,6 +41,7 @@ data/
 | `stack_finance.py` | `raw/osc_school_finance/` | `school_finance.parquet` |
 | `cambridge_view.py` | `processed/school_finance.parquet` | `cambridge_finance.parquet` |
 | `build_spending.py` | `processed/school_finance.parquet` + enrollment | `spending_per_pupil.parquet` |
+| `download_report_card.py` / `build_assessments.py` | `raw/nysed_report_card/zips/` | `assessments_em_ela_math.parquet` (+ `assessments_grade4_8_all_students.csv`) |
 | `download_ptrc.py` / `build_ptrc.py` | `raw/nysed_property_tax_report_card/` | `property_tax_report_card.parquet` |
 | `download_osc_tax_levies.py` / `build_osc_tax_levies.py` | `raw/osc_school_district_tax_levies/` | `osc_school_district_tax_levies.parquet` (+ tracked `crosswalks/osc_rpt_district_crosswalk.csv`) |
 | `build_crosswalk.py` | enrollment panel + `comparisons.py` maps | `crosswalks/district_crosswalk.{csv,parquet}` |

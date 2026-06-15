@@ -2,6 +2,42 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-06-15 — NYSED Report Card (SRC) grades 3-8 ELA & Math assessment panel
+
+- **Adopted the NYSED Report Card Database (SRC)** as the source for student
+  performance, downloading **10 annual files (SY 2015-16 → 2024-25, `SRC2016`–
+  `SRC2025`)** from data.nysed.gov. Chose the full SRC over the smaller "3-8
+  Assessment Database" because the SRC also contains **Regents** and other tables
+  we'll want later (no re-download needed). Raw zips (~3.3 GB) are git-ignored; the
+  `REGISTRY` in `download_report_card.py` + the `SOURCE.md` are the provenance
+  record. Done on **its own worktree/branch `feature/report-card-assessments`** (a
+  second assistant was working `feature/cambridge-staffing-table` concurrently).
+- **One seamless panel** `data/processed/assessments_em_ela_math.parquet`
+  (1,993,212 rows) — one row per entity × `year_end` × assessment × subgroup.
+  Built `download_report_card.py` + `build_assessments.py`.
+- **Two source layouts stitched.** 2016-17 use per-grade tables (`ELA4 Subgroup
+  Results` …, 4 levels, no proficiency column); 2018-25 use single `Annual EM
+  ELA`/`MATH` tables. The builder reads both and **computes proficiency identically
+  for every year** (`num_prof = L3+L4+L5`; `pct_prof = num_prof/num_tested`),
+  reproducing NYSED's reported `PER_PROF` exactly in the new-layout years.
+- **Kept districts + statewide/county/N-RC benchmark aggregates; dropped individual
+  schools** (via `Institution Grouping` GROUP_CODE). `nysed_district_cd` (8-digit,
+  = first 8 of the 12-digit BEDS) is the join key; canonical district name/county/
+  N-RC/BOCES attached from the `BOCES and N/RC` table.
+- **Scope now = grades 3-8 ELA & Math** (the user's focus is grade 4 & 8; all of
+  3-8 kept since it's the same extraction, plus the accelerated-math variants
+  `RegentsMath*`/`Combined*Math` flagged via `test_type`). Regents, science, etc.
+  are in the same DBs and can be added later from disk.
+- **"Seamless" ≠ "comparable."** NY reset its tests twice in-window, so proficiency
+  & scale scores compare only within three eras (2015-17 Common Core, 2018-22
+  redesign, 2023-25 Next-Gen). **2020 is absent** (tests cancelled); **2021 is
+  anomalous** (~half participation). The old↔new *format* seam (2016→2017) was
+  validated as continuous (district median ΔELA4-prof = −0.2 pts), confirming the
+  stitching adds no artifact. Full detail + the standard-setting timeline in
+  [`data/raw/nysed_report_card/SOURCE.md`](../data/raw/nysed_report_card/SOURCE.md).
+- **Next planned (separate branches):** a student-performance chapter on the
+  website; later, pull Regents performance from these same SRC databases.
+
 ## 2026-06-13 — PTRC panel extended back to SY 2014-15 (year_end 2015)
 
 - **Extended the Property Tax Report Card panel from year_end 2019 → 2015** (now
