@@ -14,7 +14,7 @@ Years are **school-year-ending** (2025 = 2024–25).
 
 | Dataset | Publisher | What it provides | Years | Status |
 |---|---|---|---|---|
-| Enrollment & staff | NYSED | K-12 enrollment; teacher/staff headcounts | 2016–2025 (staff 2018–2025) | **In use** |
+| Enrollment & staff | NYSED | K-12 enrollment; teacher/staff headcounts; average class size | 2016–2025 (staff 2018–2025; class size 2019–2025) | **In use** |
 | Student test results (grades 3-8) | NYSED | grades 3-8 ELA & Math: % at/above proficiency, mean score, by district & subgroup | 2015–2025 (no 2020) | **Adding** |
 | Pupil–teacher FTE (CCD) | NCES, via Urban Institute | FTE-based pupil-teacher ratio (cross-check) | 2016–2025 | **In use** |
 | School district finance | NYS Comptroller (OSC) | revenue & expenditure by account code → per-pupil spending | 2013–2025 | **In use** |
@@ -41,7 +41,12 @@ Access files:
   plus teacher attendance and turnover. Coverage: school years **2017–18
   through 2024–25**. Because teacher counts start in 2017–18, any measure that
   uses teachers (such as students per teacher) begins at school-year-ending
-  2018.
+  2018. The same database's `Average Class Size` table — roster-based class
+  sizes (students ÷ sections) for K-2 and the State-tested grade/subject and
+  Regents courses, school years **2018–19 through 2024–25** — backs the
+  class-size charts; it is measured from course rosters, not teacher counts, and
+  NYSED's pre-2018-19 (teacher-form) class-size data uses a different method and
+  is excluded.
 
 These were stacked into a district-by-year panel by
 [`src/build_enrollment_teachers.py`](https://github.com/donboyd5/ccs/blob/main/src/build_enrollment_teachers.py);

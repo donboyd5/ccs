@@ -80,6 +80,58 @@ NEEDS_RC_LABEL = {
 
 YEAR_RE = re.compile(r"(\d{4})")
 
+# NYSED's Average Class Size labels drift across years (the 2019-20 grade/subject
+# names differ from 2021+, and Regents courses gain "(Common Core)"/"(Framework)"
+# suffixes). classify_class() maps every observed raw label to a stable
+# (canonical, tier, subject, grade) so a class is one continuous series and
+# baskets (e.g. grades 3-8 ELA+Math, or the HS Regents core) are easy to select.
+_HS_COURSES = {
+    "Algebra I": ("Algebra I", "Math"),
+    "Algebra I (Common Core)": ("Algebra I", "Math"),
+    "Algebra II": ("Algebra II", "Math"),
+    "Algebra II (Common Core)": ("Algebra II", "Math"),
+    "Geometry": ("Geometry", "Math"),
+    "Geometry (Common Core)": ("Geometry", "Math"),
+    "ELA": ("ELA III", "ELA"),
+    "ELA III (Common Core)": ("ELA III", "ELA"),
+    "English/Language Arts III (Common Core)": ("ELA III", "ELA"),
+    "Biology": ("Biology", "Science"),
+    "Chemistry": ("Chemistry", "Science"),
+    "Earth Science": ("Earth Science", "Science"),
+    "Physics": ("Physics", "Science"),
+    "U.S. History-Comprehensive": ("US History & Gov't", "Social Studies"),
+    "U.S. History and Government (Framework)": ("US History & Gov't", "Social Studies"),
+    "World History & Geography": ("World History", "Social Studies"),
+    "World History and Geography (New Framework)": ("World History", "Social Studies"),
+    "World History and Geography New Framework": ("World History", "Social Studies"),
+}
+_RE_36_NEW = re.compile(r"^(Language Arts|Mathematics|Science) \(grade (\d)\)$")
+_RE_36_OLD = re.compile(r"^Grade (\d) (ELA|Math|Science)$")
+_SUBJ = {"Language Arts": "ELA", "Mathematics": "Math", "Science": "Science"}
+
+
+def classify_class(label: str) -> tuple[str, str, str | None, str | None]:
+    """(canonical label, tier, subject, grade) for a raw class_description.
+
+    tier in {elementary, grades_3_8, high_school, other}. grade is "K"/"1".."8"
+    for elementary & grades_3_8, else None.
+    """
+    s = label.strip()
+    if s in ("Kindergarten", "Grade 1", "Grade 2"):
+        return s, "elementary", "Self-contained", {"Kindergarten": "K"}.get(s, s[-1])
+    m = _RE_36_NEW.match(s)
+    if m:
+        subj = _SUBJ[m.group(1)]
+        return f"{subj} (grade {m.group(2)})", "grades_3_8", subj, m.group(2)
+    m = _RE_36_OLD.match(s)
+    if m:
+        subj = _SUBJ.get(m.group(2), m.group(2))
+        return f"{subj} (grade {m.group(1)})", "grades_3_8", subj, m.group(1)
+    if s in _HS_COURSES:
+        canon, subj = _HS_COURSES[s]
+        return canon, "high_school", subj, None
+    return s, "other", None, None
+
 
 # --- low-level helpers -----------------------------------------------------
 def mdb_table(path: Path, table: str) -> pl.DataFrame:
@@ -233,6 +285,87 @@ def build_teachers() -> pl.DataFrame:
     return df
 
 
+def build_class_size() -> pl.DataFrame:
+    """District-level NYSED 'Average Class Size' — one row per district x year x
+    reported class.
+
+    Roster/section-based (students enrolled in specified sections / number of
+    sections), reported through SIRS beginning school year 2018-19 (year_end
+    2019); it is NOT derived from teacher counts (headcount or FTE). NYSED gives
+    no single overall number — only specific classes (K-2 and assessment-aligned
+    courses) — so any per-district 'average class size' is an aggregate computed
+    downstream. Only rows NYSED flags DATA_REPORTED='Y' with a value are kept.
+    The pre-2018-19 era used a different (teacher-form) method and is excluded.
+    """
+    keep = ["ENTITY_CD", "ENTITY_NAME", "YEAR", "CLASS_DESCRIPTION",
+            "AVERAGE_CLASS_SIZE", "DATA_REPORTED"]
+    frames = []
+    for path in sorted(STUDED_DIR.glob("STUDED_*.mdb")):
+        df = mdb_table(path, "Average Class Size")
+        # Pre-2018-19 files store this table in a WIDE layout (COMMON_BRANCH,
+        # GRADE_8_MATH, ... ; years 2016-2018) under the old teacher-form method.
+        # That era is non-comparable to the modern SIRS roster method, so skip it
+        # with a logged reason rather than aborting (the modern long-format files
+        # carry all of 2019-2025 anyway).
+        if "CLASS_DESCRIPTION" not in df.columns:
+            print(f"  classsize {path.name}: skipped (pre-2019 wide layout)")
+            continue
+        df = df.select(keep).with_columns(
+            pl.lit(year_end_from_filename(path)).alias("source_year")
+        )
+        frames.append(df)
+        print(f"  classsize {path.name}: {df.height:>7,} rows")
+    allrows = pl.concat(frames, how="vertical_relaxed")
+
+    df = (
+        allrows.with_columns(
+            num("YEAR").cast(pl.Int32).alias("year_end"),
+            num("AVERAGE_CLASS_SIZE").alias("average_class_size"),
+        )
+        .filter(is_district())
+        .filter(pl.col("DATA_REPORTED") == "Y")
+        .filter(pl.col("average_class_size").is_not_null())
+        .filter(pl.col("year_end") >= 2019)  # comparable SIRS-based era only
+    )
+    tidy = (
+        df.sort("source_year", descending=True)
+        .unique(subset=["ENTITY_CD", "year_end", "CLASS_DESCRIPTION"],
+                keep="first", maintain_order=True)
+        .select(
+            pl.col("ENTITY_CD").alias("entity_cd"),
+            pl.col("ENTITY_CD").str.slice(0, 8).alias("district_cd"),
+            pl.col("ENTITY_NAME").str.strip_chars().alias("district_name"),
+            "year_end",
+            pl.col("CLASS_DESCRIPTION").str.strip_chars().alias("class_description"),
+            "average_class_size",
+            pl.col("source_year").alias("acs_source_year"),
+        )
+    )
+
+    # Attach the stable taxonomy (canonical label / tier / subject / grade),
+    # computed once per distinct raw label then joined back.
+    tax = pl.DataFrame(
+        [
+            {"class_description": lbl, "class_canonical": c, "class_tier": t,
+             "class_subject": s, "class_grade": g}
+            for lbl in tidy["class_description"].unique()
+            for (c, t, s, g) in [classify_class(lbl)]
+        ]
+    )
+    unmapped = tax.filter(pl.col("class_tier") == "other")["class_description"].to_list()
+    if unmapped:
+        print(f"  ⚠ class-size labels not in taxonomy (tier='other'): {unmapped}")
+    return (
+        tidy.join(tax, on="class_description", how="left")
+        .select(
+            "entity_cd", "district_cd", "district_name", "year_end",
+            "class_description", "class_canonical", "class_tier", "class_subject",
+            "class_grade", "average_class_size", "acs_source_year",
+        )
+        .sort("district_cd", "year_end", "class_canonical")
+    )
+
+
 def build_crosswalk() -> pl.DataFrame:
     """District -> county / BOCES / Need-Resource-Capacity.
 
@@ -274,6 +407,8 @@ def main() -> None:
     enr, enr_recon = build_enrollment()
     print("Reading staff databases ...")
     tch = build_teachers()
+    print("Reading class-size table ...")
+    acs = build_class_size()
     print("Building district crosswalk ...")
     xwalk = build_crosswalk()
 
@@ -341,6 +476,7 @@ def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     enr.write_parquet(OUT_DIR / "enrollment_k12_by_district.parquet", compression="zstd")
     tch.write_parquet(OUT_DIR / "teachers_by_district.parquet", compression="zstd")
+    acs.write_parquet(OUT_DIR / "class_size_by_district.parquet", compression="zstd")
     panel.write_parquet(OUT_DIR / "district_enrollment_teachers_panel.parquet", compression="zstd")
     panel.write_csv(OUT_DIR / "district_enrollment_teachers_panel.csv")
 
@@ -351,6 +487,8 @@ def main() -> None:
     print("\n" + "=" * 64 + "\nVALIDATION\n" + "=" * 64)
     print(f"enrollment rows: {enr.height:,}  ({enr['year_end'].min()}-{enr['year_end'].max()})")
     print(f"teacher rows:    {tch.height:,}  ({tch['year_end'].min()}-{tch['year_end'].max()})")
+    print(f"classsize rows:  {acs.height:,}  ({acs['year_end'].min()}-{acs['year_end'].max()}), "
+          f"{acs['class_description'].n_unique()} class types, {acs['district_cd'].n_unique():,} districts")
     print(f"panel rows:      {panel.height:,}   districts: {panel['district_cd'].n_unique():,}")
 
     print("\nStatewide K-12 enrollment & teachers by year (district sums):")

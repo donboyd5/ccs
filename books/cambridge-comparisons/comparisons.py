@@ -39,6 +39,7 @@ DATA_DIR = REPO_ROOT / "data"
 PANEL_PATH = DATA_DIR / "processed" / "district_enrollment_teachers_panel.parquet"
 CCD_PATH = DATA_DIR / "processed" / "ccd_pupil_teacher_ny.parquet"
 SPENDING_PATH = DATA_DIR / "processed" / "spending_per_pupil.parquet"
+CLASS_SIZE_PATH = DATA_DIR / "processed" / "class_size_by_district.parquet"
 
 
 # ---------------------------------------------------------------------------
@@ -163,6 +164,116 @@ def district_order(group: dict[str, str]) -> list[str]:
     return [FOCUS, *rest]
 
 
+def district_code(district: str) -> str:
+    """Resolve a district to its 8-digit NYSED code (the project's stable key).
+
+    Accepts either the code itself or a known short label from the comparison
+    groups. The **code is canonical** — it is the join key used everywhere and
+    is stable across a district's name changes; the label is only a convenience
+    for readable one-off calls. Prefer passing the code in scripts.
+    """
+    known = {**TABLE_GROUP, **GRAPH_GROUP}  # code -> label
+    if district in known:
+        return district
+    label_to_code = {label: cd for cd, label in known.items()}
+    if district in label_to_code:
+        return label_to_code[district]
+    raise KeyError(
+        f"Unknown district {district!r}: pass an 8-digit NYSED code or one of "
+        f"{sorted(label_to_code)}"
+    )
+
+
+def staffing_summary(district: str, *, since: int = 2018) -> pl.DataFrame:
+    """One-district staffing summary, shaped wide for a table.
+
+    Rows are the three measures (K-12 enrollment, teachers, teachers per 100
+    students); columns are each school-year-ending ``>= since`` plus the change
+    and percent change from the first to the last of those years. ``district``
+    may be a NYSED code (preferred) or a known short label (see
+    :func:`district_code`). ``since`` defaults to 2018, the first year teacher
+    counts exist.
+    """
+    code = district_code(district)
+    s = (
+        load_panel()
+        .filter((pl.col("district_cd") == code) & (pl.col("year_end") >= since))
+        .select("year_end", "k12_enrollment", "num_teachers")
+        .with_columns(
+            (pl.col("num_teachers") / pl.col("k12_enrollment") * 100).alias(
+                "teachers_per_100_students"
+            )
+        )
+        .sort("year_end")
+    )
+    labels = {
+        "k12_enrollment": "K–12 enrollment",
+        "num_teachers": "Teachers",
+        "teachers_per_100_students": "Teachers per 100 students",
+    }
+    order = list(labels)
+    first, last = str(s["year_end"].min()), str(s["year_end"].max())
+    return (
+        s.unpivot(index="year_end", on=order, variable_name="measure", value_name="value")
+        .pivot(values="value", index="measure", on="year_end")
+        .with_columns(
+            (pl.col(last) - pl.col(first)).alias("chg"),
+            ((pl.col(last) - pl.col(first)) / pl.col(first)).alias("pct_chg"),
+            pl.col("measure").replace_strict({k: i for i, k in enumerate(order)}).alias("_ord"),
+        )
+        .sort("_ord")
+        .with_columns(pl.col("measure").replace_strict(labels))
+        .drop("_ord")
+    )
+
+
+def staffing_table(district: str, *, since: int = 2018):
+    """A great-tables ``GT`` of :func:`staffing_summary` for one district.
+
+    Styled like the book's other tables: a "School year ending" spanner over the
+    year columns, a "Change" spanner over change / % change, the ratio row
+    highlighted, and the standard NYSED source note. Counts render as whole
+    numbers, the teachers-per-100 row to one decimal. ``district`` may be a
+    NYSED code or a known short label.
+    """
+    from great_tables import GT, loc, md, style
+
+    code = district_code(district)
+    label = {**TABLE_GROUP, **GRAPH_GROUP}.get(code, code)
+    wide = staffing_summary(district, since=since)
+    year_cols = [c for c in wide.columns if c.isdigit()]
+    first, last = year_cols[0], year_cols[-1]
+    ratio_row = pl.col("measure") == "Teachers per 100 students"
+
+    return (
+        GT(wide, rowname_col="measure")
+        .tab_header(
+            title=f"{label}: enrollment, teachers, and staffing",
+            subtitle=f"School-year-ending {first} through {last}",
+        )
+        .fmt_number(columns=year_cols, rows=~ratio_row, decimals=0)
+        .fmt_number(columns=year_cols, rows=ratio_row, decimals=1)
+        .fmt_number(columns="chg", rows=~ratio_row, decimals=0, force_sign=True)
+        .fmt_number(columns="chg", rows=ratio_row, decimals=1, force_sign=True)
+        .fmt_percent(columns="pct_chg", decimals=1, force_sign=True)
+        .tab_spanner(label="School year ending", columns=year_cols)
+        .tab_spanner(label=f"Change, {first} → {last}", columns=["chg", "pct_chg"])
+        .cols_label(chg="Change", pct_chg="% change")
+        .tab_style(
+            style=[style.fill(color="#FCEFB4"), style.text(weight="bold")],
+            locations=loc.stub(rows=ratio_row),
+        )
+        .tab_source_note(
+            md(
+                "**Source:** NYSED Enrollment database (K-12 enrollment) and "
+                "Student &amp; Educator database (teacher counts). Teachers per 100 "
+                "students = teacher headcount ÷ K-12 enrollment × 100. Year = "
+                "school-year-ending (2025 = 2024–25)."
+            )
+        )
+    )
+
+
 def load_ccd() -> pl.DataFrame:
     """Read the cached NCES Common Core of Data pupil-teacher table.
 
@@ -195,6 +306,82 @@ def ccd_ratio_for(group: dict[str, str]) -> pl.DataFrame:
         .select("district", "region", "year_end", "ccd_students_per_teacher")
         .sort("district", "year_end")
     )
+
+
+def load_class_size() -> pl.DataFrame:
+    """Read the district-level NYSED 'Average Class Size' extract — one row per
+    district x year x reported class (e.g. Kindergarten, Grade 1, Mathematics
+    (grade 5), Biology ...).
+
+    Built by ``src/build_enrollment_teachers.py`` from the STUDED ``Average
+    Class Size`` table. It is **roster/section-based** (students in a section ÷
+    number of sections), reported via SIRS for school years 2018-19 onward
+    (``year_end >= 2019``); it is **not** derived from teacher counts. NYSED
+    publishes no single overall figure, so a per-district 'average class size'
+    must be aggregated across the reported classes (see
+    :func:`class_size_median_for`). See the source's ``SOURCE.md``.
+    """
+    return pl.read_parquet(CLASS_SIZE_PATH)
+
+
+def class_size_for(
+    group: dict[str, str],
+    *,
+    tier: str | None = None,
+    subjects: list[str] | None = None,
+    classes: list[str] | None = None,
+) -> pl.DataFrame:
+    """Median NYSED average class size across a chosen basket of classes, per
+    district-year, for `group`.
+
+    Narrow the basket with ``tier`` (``'elementary'`` | ``'grades_3_8'`` |
+    ``'high_school'``), ``subjects`` (e.g. ``['ELA', 'Math']``), and/or
+    ``classes`` (canonical names like ``'Algebra I'``). With no filters it
+    medians across every reported class. The **median** (not mean) resists
+    small-section artifacts (a 2-student physics class, a pandemic-year glitch).
+    Columns: ``district``, ``region``, ``year_end``, ``class_size``,
+    ``n_classes`` (how many classes the median is taken over).
+    """
+    region_by_cd = {
+        cd: ("Washington County" if cd in WASHINGTON_K12 else "Other comparison districts")
+        for cd in group
+    }
+    d = load_class_size().filter(pl.col("district_cd").is_in(list(group)))
+    if tier is not None:
+        d = d.filter(pl.col("class_tier") == tier)
+    if subjects is not None:
+        d = d.filter(pl.col("class_subject").is_in(subjects))
+    if classes is not None:
+        d = d.filter(pl.col("class_canonical").is_in(classes))
+    return (
+        # Collapse label variants of the same course first: in transition years a
+        # district can report e.g. "Algebra I" and "Algebra I (Common Core)" (both
+        # canonical "Algebra I") with different values. Average those to one value
+        # per canonical class so a course isn't double-weighted, then median across
+        # courses (n_classes = distinct canonical classes).
+        d.group_by("district_cd", "year_end", "class_canonical")
+        .agg(pl.col("average_class_size").mean().alias("class_avg"))
+        .group_by("district_cd", "year_end")
+        .agg(
+            pl.col("class_avg").median().alias("class_size"),
+            pl.len().alias("n_classes"),
+        )
+        .with_columns(
+            pl.col("district_cd").replace_strict(group).alias("district"),
+            pl.col("district_cd").replace_strict(region_by_cd).alias("region"),
+        )
+        .select("district", "region", "year_end", "class_size", "n_classes")
+        .sort("district", "year_end")
+    )
+
+
+def class_size_median_for(group: dict[str, str]) -> pl.DataFrame:
+    """Median class size across **all** reported classes (the broad view).
+
+    Thin wrapper over :func:`class_size_for` with no basket filter; the value
+    column is named ``median_class_size`` for the overview chart.
+    """
+    return class_size_for(group).rename({"class_size": "median_class_size"})
 
 
 def load_spending() -> pl.DataFrame:
