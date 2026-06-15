@@ -153,68 +153,9 @@ so teachers per 100 students rose about 17%.**
 ```{python}
 #| label: tbl-cambridge-staffing
 #| tbl-cap: "Cambridge K–12 enrollment, teachers, and teachers per 100 students by school year ending, 2018 (2017–18) through 2025 (2024–25), with the change and percent change from 2018 to 2025."
-cam = (
-    cc.panel_for(cc.GRAPH_GROUP)
-    .filter(pl.col("district") == cc.FOCUS)
-    .select("year_end", "k12_enrollment", "num_teachers")
-    .with_columns(
-        (pl.col("num_teachers") / pl.col("k12_enrollment") * 100).alias(
-            "teachers_per_100_students"
-        )
-    )
-)
-
-# Measures become rows; the two years become columns.
-labels = {
-    "k12_enrollment": "K–12 enrollment",
-    "num_teachers": "Teachers",
-    "teachers_per_100_students": "Teachers per 100 students",
-}
-order = list(labels)
-wide = (
-    cam.unpivot(index="year_end", on=order, variable_name="measure", value_name="value")
-    .pivot(values="value", index="measure", on="year_end")
-    .with_columns(
-        (pl.col("2025") - pl.col("2018")).alias("chg"),
-        ((pl.col("2025") - pl.col("2018")) / pl.col("2018")).alias("pct_chg"),
-        pl.col("measure").replace_strict({k: i for i, k in enumerate(order)}).alias("_ord"),
-    )
-    .sort("_ord")
-    .with_columns(pl.col("measure").replace_strict(labels))
-    .drop("_ord")
-)
-
-# Counts show as whole numbers; the ratio row keeps one decimal.
-year_cols = [c for c in wide.columns if c.isdigit()]
-ratio_row = pl.col("measure") == "Teachers per 100 students"
-
-(
-    GT(wide, rowname_col="measure")
-    .tab_header(
-        title="Cambridge: enrollment, teachers, and staffing",
-        subtitle="School-year-ending 2018 (2017–18) through 2025 (2024–25)",
-    )
-    .fmt_number(columns=year_cols, rows=~ratio_row, decimals=0)
-    .fmt_number(columns=year_cols, rows=ratio_row, decimals=1)
-    .fmt_number(columns="chg", rows=~ratio_row, decimals=0, force_sign=True)
-    .fmt_number(columns="chg", rows=ratio_row, decimals=1, force_sign=True)
-    .fmt_percent(columns="pct_chg", decimals=1, force_sign=True)
-    .tab_spanner(label="School year ending", columns=year_cols)
-    .tab_spanner(label="Change, 2018 → 2025", columns=["chg", "pct_chg"])
-    .cols_label(chg="Change", pct_chg="% change")
-    .tab_style(
-        style=[style.fill(color="#FCEFB4"), style.text(weight="bold")],
-        locations=loc.stub(rows=ratio_row),
-    )
-    .tab_source_note(
-        md(
-            "**Source:** NYSED Enrollment database (K-12 enrollment) and "
-            "Student &amp; Educator database (teacher counts). Teachers per 100 "
-            "students = teacher headcount ÷ K-12 enrollment × 100. Year = "
-            "school-year-ending (2025 = 2024–25)."
-        )
-    )
-)
+# cc.staffing_table() builds this for any district (by NYSED code or label); see
+# comparisons.py. Pass e.g. "Greenwich" or "64080104" for another district.
+cc.staffing_table(cc.FOCUS)
 ```
 
 ## The full comparison group

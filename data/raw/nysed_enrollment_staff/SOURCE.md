@@ -28,6 +28,29 @@ by hand from the source page above into those folders.
 ("2024 == 2023-24"). So `year_end = 2025` is school year **2024-25**.
 Enrollment is the **BEDS-day** count (first Wednesday of October).
 
+**Numerator and denominator share the same fall snapshot.** Teacher (and other
+staff) counts come from NYSED's **Staff Snapshot**, reported through SIRS as of
+**BEDS Day** — the same first-Wednesday-in-October date as enrollment. So
+`k12_students_per_teacher` (and its reciprocal, teachers per 100 students) is a
+**point-in-time fall ratio, not a full-year average**: enrollment on BEDS Day
+÷ teacher headcount on BEDS Day. `NUM_TEACH` is a **headcount, not an FTE**.
+> ⚠ **Provenance note (well-supported, not formally certified).** That staff
+> counts are a BEDS-Day snapshot is documented in NYSED's BEDS-PMF / Staff
+> Snapshot reporting framework, but NYSED's short public glossary does not
+> restate the exact "as-of" date for the *published* "Number of Teachers"
+> figure. Treat the BEDS-Day alignment of teachers with enrollment as
+> well-supported but not certified to the day.
+> *Sources:* [NYSED Report Card glossary](https://data.nysed.gov/glossary.php?report=reportcards),
+> [Student & Educator glossary](https://data.nysed.gov/glossary.php?report=studed),
+> [BEDS-PMF Teacher/Staff Data](https://www.p12.nysed.gov/irs/beds/PMF/home.html).
+
+**Class size is measured differently.** NYSED's `Average Class Size` table (in
+the STUDED database, beginning 2018-19) is computed from actual course rosters —
+students enrolled in specified sections ÷ number of sections, for K-2 and
+assessment-aligned courses — **not** from any teacher count, headcount or FTE.
+It is the better source for true class size; the teacher-based ratios here are a
+staffing measure, not class size.
+
 ## Output files
 
 | file | grain | notes |

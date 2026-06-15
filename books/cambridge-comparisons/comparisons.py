@@ -163,6 +163,116 @@ def district_order(group: dict[str, str]) -> list[str]:
     return [FOCUS, *rest]
 
 
+def district_code(district: str) -> str:
+    """Resolve a district to its 8-digit NYSED code (the project's stable key).
+
+    Accepts either the code itself or a known short label from the comparison
+    groups. The **code is canonical** — it is the join key used everywhere and
+    is stable across a district's name changes; the label is only a convenience
+    for readable one-off calls. Prefer passing the code in scripts.
+    """
+    known = {**TABLE_GROUP, **GRAPH_GROUP}  # code -> label
+    if district in known:
+        return district
+    label_to_code = {label: cd for cd, label in known.items()}
+    if district in label_to_code:
+        return label_to_code[district]
+    raise KeyError(
+        f"Unknown district {district!r}: pass an 8-digit NYSED code or one of "
+        f"{sorted(label_to_code)}"
+    )
+
+
+def staffing_summary(district: str, *, since: int = 2018) -> pl.DataFrame:
+    """One-district staffing summary, shaped wide for a table.
+
+    Rows are the three measures (K-12 enrollment, teachers, teachers per 100
+    students); columns are each school-year-ending ``>= since`` plus the change
+    and percent change from the first to the last of those years. ``district``
+    may be a NYSED code (preferred) or a known short label (see
+    :func:`district_code`). ``since`` defaults to 2018, the first year teacher
+    counts exist.
+    """
+    code = district_code(district)
+    s = (
+        load_panel()
+        .filter((pl.col("district_cd") == code) & (pl.col("year_end") >= since))
+        .select("year_end", "k12_enrollment", "num_teachers")
+        .with_columns(
+            (pl.col("num_teachers") / pl.col("k12_enrollment") * 100).alias(
+                "teachers_per_100_students"
+            )
+        )
+        .sort("year_end")
+    )
+    labels = {
+        "k12_enrollment": "K–12 enrollment",
+        "num_teachers": "Teachers",
+        "teachers_per_100_students": "Teachers per 100 students",
+    }
+    order = list(labels)
+    first, last = str(s["year_end"].min()), str(s["year_end"].max())
+    return (
+        s.unpivot(index="year_end", on=order, variable_name="measure", value_name="value")
+        .pivot(values="value", index="measure", on="year_end")
+        .with_columns(
+            (pl.col(last) - pl.col(first)).alias("chg"),
+            ((pl.col(last) - pl.col(first)) / pl.col(first)).alias("pct_chg"),
+            pl.col("measure").replace_strict({k: i for i, k in enumerate(order)}).alias("_ord"),
+        )
+        .sort("_ord")
+        .with_columns(pl.col("measure").replace_strict(labels))
+        .drop("_ord")
+    )
+
+
+def staffing_table(district: str, *, since: int = 2018):
+    """A great-tables ``GT`` of :func:`staffing_summary` for one district.
+
+    Styled like the book's other tables: a "School year ending" spanner over the
+    year columns, a "Change" spanner over change / % change, the ratio row
+    highlighted, and the standard NYSED source note. Counts render as whole
+    numbers, the teachers-per-100 row to one decimal. ``district`` may be a
+    NYSED code or a known short label.
+    """
+    from great_tables import GT, loc, md, style
+
+    code = district_code(district)
+    label = {**TABLE_GROUP, **GRAPH_GROUP}.get(code, code)
+    wide = staffing_summary(district, since=since)
+    year_cols = [c for c in wide.columns if c.isdigit()]
+    first, last = year_cols[0], year_cols[-1]
+    ratio_row = pl.col("measure") == "Teachers per 100 students"
+
+    return (
+        GT(wide, rowname_col="measure")
+        .tab_header(
+            title=f"{label}: enrollment, teachers, and staffing",
+            subtitle=f"School-year-ending {first} through {last}",
+        )
+        .fmt_number(columns=year_cols, rows=~ratio_row, decimals=0)
+        .fmt_number(columns=year_cols, rows=ratio_row, decimals=1)
+        .fmt_number(columns="chg", rows=~ratio_row, decimals=0, force_sign=True)
+        .fmt_number(columns="chg", rows=ratio_row, decimals=1, force_sign=True)
+        .fmt_percent(columns="pct_chg", decimals=1, force_sign=True)
+        .tab_spanner(label="School year ending", columns=year_cols)
+        .tab_spanner(label=f"Change, {first} → {last}", columns=["chg", "pct_chg"])
+        .cols_label(chg="Change", pct_chg="% change")
+        .tab_style(
+            style=[style.fill(color="#FCEFB4"), style.text(weight="bold")],
+            locations=loc.stub(rows=ratio_row),
+        )
+        .tab_source_note(
+            md(
+                "**Source:** NYSED Enrollment database (K-12 enrollment) and "
+                "Student &amp; Educator database (teacher counts). Teachers per 100 "
+                "students = teacher headcount ÷ K-12 enrollment × 100. Year = "
+                "school-year-ending (2025 = 2024–25)."
+            )
+        )
+    )
+
+
 def load_ccd() -> pl.DataFrame:
     """Read the cached NCES Common Core of Data pupil-teacher table.
 
