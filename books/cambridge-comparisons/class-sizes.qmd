@@ -72,7 +72,7 @@ cambridge = g.filter(pl.col("district") == cc.FOCUS)
         y="K–12 students per teacher",
         # Title states only the facts; the interpretive headline lives above the
         # figure in the prose (see the project's graph-title convention).
-        title="District K–12 enrollment ÷ teacher headcount, 2017–18 to 2024–25",
+        title="Students per teacher",
     )
     + cc.theme_ccs()
 )
@@ -86,6 +86,63 @@ reported teachers in 2023–24 pushed its 2024 figure especially low (8.2).
 Schuylerville and Greenwich actually fell *more* over the full period (about
 2.0 and 1.9, versus Cambridge's 1.5), but from much higher starting points, so
 they remain above Cambridge.
+
+## Another view: teachers per 100 students
+
+Students per teacher and **teachers per 100 students** are the very same data
+seen from opposite ends. The first asks *how many students share each teacher*;
+the second asks *how many teachers a district employs for every 100 students*.
+One is just the other turned upside-down — but flipping it puts staffing, rather
+than crowding, in the foreground, and now a **higher** line means **more**
+teachers per student.
+
+**Seen this way, Cambridge now employs the most teachers per 100 students of the
+group.**
+
+```{python}
+#| label: fig-teachers-per-100
+#| fig-cap: "K–12 teachers per 100 students by school year ending, 2018 (2017–18) through 2025 (2024–25). Higher means more teachers per student. Computed as a district's teacher headcount ÷ its K-12 enrollment × 100. Source: NYSED Enrollment and Student & Educator databases."
+g = (
+    cc.panel_for(cc.GRAPH_GROUP)  # 5 districts, 2018+
+    .select("district", "year_end", "num_teachers", "k12_enrollment")
+    .drop_nulls()
+    .with_columns(
+        (pl.col("num_teachers") / pl.col("k12_enrollment") * 100).alias(
+            "teachers_per_100_students"
+        )
+    )
+)
+cambridge = g.filter(pl.col("district") == cc.FOCUS)
+
+(
+    ggplot(g, aes("year_end", "teachers_per_100_students", color="district"))
+    + geom_line(size=1)
+    + geom_point(size=1.8)
+    + geom_line(cambridge, size=2.4)  # emphasize the focus district
+    + scale_color_manual(
+        values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
+    )
+    + scale_x_continuous(breaks=list(range(2018, 2026)))
+    + labs(
+        x="School year ending",
+        y="K–12 teachers per 100 students",
+        # Title states only the facts; the interpretive headline lives above the
+        # figure in the prose (see the project's graph-title convention).
+        title="Teachers per 100 students",
+    )
+    + cc.theme_ccs()
+)
+```
+
+This is the mirror image of the first chart: wherever a district's
+students-per-teacher ratio fell, its teachers-per-100-students rose. In 2017–18
+only Salem employed more teachers per 100 students than Cambridge. Cambridge's
+line then climbed — its K-12 enrollment fell about 15% while its teacher
+headcount held roughly steady — and by the two most recent years Cambridge has
+the **most** teachers per 100 students of the five (about 11.5 in 2024–25). The
+jump in reported teachers in 2023–24 pushed its 2024 figure especially high
+(12.2). The two larger districts, Schuylerville and Hoosick Falls, stay lowest,
+around 9 to 9.6 teachers per 100 students.
 
 ## The full comparison group
 
