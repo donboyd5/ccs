@@ -2,8 +2,10 @@
 
 A natural question is how crowded Cambridge's classrooms are compared with
 nearby districts. The measure most people picture is **class size** — the number
-of students in a typical classroom — but NYSED does not publish class size by
-district in the data used here. The closest available measure is **K-12 students
+of students in a typical classroom. NYSED does publish an *average class size*
+for each district, and we look at it first; but it is reported only for a handful
+of specific grades and subjects (there is no single official number) and only
+since 2018–19. So for a longer, more complete view we also use **K-12 students
 per teacher**: a district's K-12 enrollment divided by its number of teachers.
 
 Students per teacher is a useful staffing comparison, but it is **not** class
@@ -40,6 +42,57 @@ from great_tables import GT, loc, md, style
 
 import comparisons as cc
 ```
+
+## Average class size
+
+Start with the measure people actually picture. NYSED reports an **average class
+size** for each district — but only for a specific set of classes (the early
+elementary grades and the courses tied to State tests), and only since 2018–19.
+There is no single official "district class size," so the line below is the
+**median** across all of a district's reported classes each year: a robust
+middle value that a stray two-student elective can't throw off.
+
+**Cambridge has the smallest typical class size of the group.**
+
+```{python}
+#| label: fig-class-size
+#| fig-cap: "Median of NYSED's reported average class sizes across all measured classes (early elementary grades and courses aligned to State tests), by district and school year ending, 2019 (2018–19) through 2025 (2024–25). NYSED publishes class size only for these specific classes and only since 2018–19; the median summarizes them and resists small-section outliers. The 2020–21 (2021) figures are affected by pandemic reporting disruption — Salem's dip that year is a data artifact, not a real change. Source: NYSED Student & Educator (Average Class Size) database."
+g = cc.class_size_median_for(cc.GRAPH_GROUP).drop_nulls("median_class_size")
+cambridge = g.filter(pl.col("district") == cc.FOCUS)
+
+(
+    ggplot(g, aes("year_end", "median_class_size", color="district"))
+    + geom_line(size=1)
+    + geom_point(size=1.8)
+    + geom_line(cambridge, size=2.4)  # emphasize the focus district
+    + scale_color_manual(
+        values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
+    )
+    + scale_x_continuous(breaks=list(range(2019, 2026)))
+    + labs(
+        x="School year ending",
+        y="Median class size",
+        # Title states only the facts; the interpretive headline lives above the
+        # figure in the prose (see the project's graph-title convention).
+        title="Class size",
+    )
+    + cc.theme_ccs()
+)
+```
+
+Across these years Cambridge's median class size runs about 11 to 15 students —
+consistently the lowest or near-lowest of the five, and several students below
+Schuylerville, Salem and Hoosick Falls. (Salem's sharp dip in 2021 is a
+pandemic-year reporting artifact, not a real change.) That is the same story the
+staffing ratio tells next, seen at the level of actual classrooms: smaller
+classes, fewer students per teacher.
+
+Two cautions before leaning on it too hard. NYSED measures class size for only a
+handful of classes, and the counts are small — a single combined section or a
+lightly-enrolled elective can swing a small district's numbers from year to
+year. And the series only starts in 2018–19. For a longer, more complete view we
+turn to students per teacher — which exists for every district back to 2017–18,
+though, as the next section explains, it is a staffing ratio, not class size.
 
 ## Students per teacher, over time
 

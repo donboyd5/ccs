@@ -39,6 +39,7 @@ DATA_DIR = REPO_ROOT / "data"
 PANEL_PATH = DATA_DIR / "processed" / "district_enrollment_teachers_panel.parquet"
 CCD_PATH = DATA_DIR / "processed" / "ccd_pupil_teacher_ny.parquet"
 SPENDING_PATH = DATA_DIR / "processed" / "spending_per_pupil.parquet"
+CLASS_SIZE_PATH = DATA_DIR / "processed" / "class_size_by_district.parquet"
 
 
 # ---------------------------------------------------------------------------
@@ -303,6 +304,53 @@ def ccd_ratio_for(group: dict[str, str]) -> pl.DataFrame:
         .with_columns(pl.col("leaid").replace_strict(name_by_leaid).alias("district"))
         .with_columns(pl.col("district").replace_strict(region_by_name).alias("region"))
         .select("district", "region", "year_end", "ccd_students_per_teacher")
+        .sort("district", "year_end")
+    )
+
+
+def load_class_size() -> pl.DataFrame:
+    """Read the district-level NYSED 'Average Class Size' extract — one row per
+    district x year x reported class (e.g. Kindergarten, Grade 1, Mathematics
+    (grade 5), Biology ...).
+
+    Built by ``src/build_enrollment_teachers.py`` from the STUDED ``Average
+    Class Size`` table. It is **roster/section-based** (students in a section ÷
+    number of sections), reported via SIRS for school years 2018-19 onward
+    (``year_end >= 2019``); it is **not** derived from teacher counts. NYSED
+    publishes no single overall figure, so a per-district 'average class size'
+    must be aggregated across the reported classes (see
+    :func:`class_size_median_for`). See the source's ``SOURCE.md``.
+    """
+    return pl.read_parquet(CLASS_SIZE_PATH)
+
+
+def class_size_median_for(group: dict[str, str]) -> pl.DataFrame:
+    """Median NYSED average class size across all reported classes, per
+    district-year, for `group`.
+
+    The **median** (not mean) summarizes each district-year so the figure
+    resists small-section artifacts (e.g. a 2-student physics class, or a
+    pandemic-year reporting glitch) that distort an unweighted mean. Columns:
+    ``district``, ``region``, ``year_end``, ``median_class_size``, ``n_classes``
+    (how many reported classes the median is taken over).
+    """
+    region_by_cd = {
+        cd: ("Washington County" if cd in WASHINGTON_K12 else "Other comparison districts")
+        for cd in group
+    }
+    return (
+        load_class_size()
+        .filter(pl.col("district_cd").is_in(list(group)))
+        .group_by("district_cd", "year_end")
+        .agg(
+            pl.col("average_class_size").median().alias("median_class_size"),
+            pl.len().alias("n_classes"),
+        )
+        .with_columns(
+            pl.col("district_cd").replace_strict(group).alias("district"),
+            pl.col("district_cd").replace_strict(region_by_cd).alias("region"),
+        )
+        .select("district", "region", "year_end", "median_class_size", "n_classes")
         .sort("district", "year_end")
     )
 

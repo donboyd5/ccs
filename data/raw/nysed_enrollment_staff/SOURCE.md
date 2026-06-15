@@ -58,7 +58,31 @@ staffing measure, not class size.
 | `district_enrollment_teachers_panel.parquet` / `.csv` | one row per district × `year_end` | **primary deliverable** — enrollment + teachers + ratio + county/N-RC |
 | `enrollment_k12_by_district.parquet` | district × year | K-12 total **plus full grade detail** (PK…12, ungraded) |
 | `teachers_by_district.parquet` | district × year | staff counts + teacher attendance/turnover |
+| `class_size_by_district.parquet` | district × year × **reported class** | NYSED Average Class Size, long form (see below) |
 | `washington_area_enrollment_teachers.csv` | district × year | convenience subset: Washington Co. + neighbors (Warren, Saratoga, Rensselaer, Essex) |
+
+### `class_size_by_district.parquet`
+
+Long: one row per `district_cd` × `year_end` × `class_description`
+(`entity_cd`, `district_name`, `average_class_size`, `acs_source_year`). From the
+STUDED `Average Class Size` table; **roster/section-based** (students in a
+section ÷ number of sections), **not** teacher-derived (see above). Only rows
+NYSED flags `DATA_REPORTED='Y'` with a value are kept.
+
+- **Coverage `year_end` 2019–2025** (school years 2018-19 → 2024-25). The pre-2018-19
+  era is a **different format and method**: `STUDED_2018.mdb` stores this table in a
+  *wide* layout (`COMMON_BRANCH`, `GRADE_8_MATH`, … ; years 2016-2018) collected from
+  teacher forms. That file is **skipped with a logged reason** (non-comparable); all of
+  2019-2025 lives in the modern long-layout files.
+- **No single overall figure.** NYSED reports class size only for specific classes
+  (Kindergarten, Grades 1–2, and grade/subject courses aligned to State tests, ~18–27
+  per district-year). A per-district "average class size" must be **aggregated
+  downstream** — the book uses the **median** across reported classes (resists
+  small-section outliers); see `cc.class_size_median_for`.
+- **Small-N caution.** Values are NYSED-rounded to integers and volatile for small
+  districts (a lightly-enrolled elective swings them). **2020–21 (`year_end` 2021)
+  reporting is disrupted** — e.g. Salem's median drops to 8 that year (a pandemic
+  artifact, not a real change).
 
 ### Panel columns
 
