@@ -1,0 +1,17 @@
+# Enrollment
+
+TODO: This chapter will tell Cambridge's enrollment story — how many students the district serves, how that has changed over time, and how it compares to nearby districts. This is the starting point for understanding everything that follows: staffing, spending per pupil, and the district's fiscal trajectory.
+
+**Key question:** How has Cambridge's enrollment changed, and what does that mean for the district's future?
+
+**Planned content:**
+- K-12 enrollment trend over time (Cambridge + comparison group)
+- Where Cambridge stands relative to nearby districts
+- The decline in context (statewide trends, if relevant)
+- Grade-level breakdown (elementary vs. middle vs. high school)
+
+**Best measure:** K-12 enrollment from NYSED BEDS Day (first Wednesday of October).
+
+**Takeaway for readers:** TBD — working with Don to frame.
+
+*See the exploratory [Class size — all measures](../exploratory/class-size-all-measures.qmd) chapter for related staffing-ratio analysis.*

@@ -1,0 +1,19 @@
+# Student test results
+
+TODO: This chapter will show how Cambridge students perform on New York's grades 3–8 English Language Arts (ELA) and Mathematics tests, compared to nearby districts and to statewide benchmarks. The measure is the **percentage of students scoring at or above proficiency** (Performance Level 3 or higher).
+
+**Key question:** How do Cambridge students perform on state tests, and how does that compare to nearby districts?
+
+**Planned content:**
+- Proficiency rates over time (Cambridge + comparison group + statewide)
+- How Cambridge compares to nearby districts in the most recent year
+- A brief explanation of the three test eras (2015–17 Common Core, 2018–22 redesign, 2023–25 Next Generation) — scores compare *within* eras, not across them
+- Why 2020 is missing (tests cancelled) and 2021 is unusual (half participation)
+
+**Best measure:** Percent of students at/above proficiency on grades 3–8 ELA and Math tests (NYSED Report Card Database).
+
+**Takeaway for readers:** TBD — working with Don to frame, with attention to meaningful comparison groups (could be non-NYC districts, Washington/Warren/Saratoga counties, or a broader peer set).
+
+*Data source:* NYSED Report Card Database, ten years (2015–16 through 2024–25), stitched into one district-by-year panel.
+
+*This chapter is new — no exploratory version exists yet.*

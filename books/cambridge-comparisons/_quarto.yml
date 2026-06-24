@@ -9,10 +9,20 @@ book:
   date: today
   chapters:
     - index.qmd
-    - class-sizes.qmd
-    - spending.qmd
+    - part: "Cambridge in context"
+      chapters:
+        - front/enrollment.qmd
+        - front/class-size.qmd
+        - front/spending.qmd
+        - front/taxes.qmd
+        - front/test-results.qmd
+    - part: "Behind the numbers — exploratory analyses"
+      chapters:
+        - exploratory/class-size-all-measures.qmd
+        - exploratory/spending.qmd
   appendices:
-    - sources.qmd
+    - appendix/sources.qmd
+    - appendix/methods.qmd
   repo-url: https://github.com/donboyd5/ccs
   repo-subdir: books/cambridge-comparisons
   repo-branch: main

@@ -1,0 +1,17 @@
+# Spending per pupil
+
+TODO: This chapter will show how much Cambridge spends to educate each student, how that compares to nearby districts, and what the spending trend looks like over time. The measure is **current operating spending per pupil** — the cost of running schools in a year (salaries, benefits, classroom and BOCES services) divided by K-12 enrollment.
+
+**Key question:** How much does Cambridge spend per student, and how does that compare to nearby districts?
+
+**Planned content:**
+- Current operating spending per pupil over time (Cambridge + comparison group)
+- Where Cambridge ranks within the comparison group
+- A brief explanation of what's included (and excluded — capital projects, debt service, interfund transfers)
+- Why nominal dollars (not inflation-adjusted) are used for now
+
+**Best measure:** Current operating spending per K-12 pupil from NYS Comptroller data.
+
+**Takeaway for readers:** TBD — working with Don to frame, but Cambridge consistently ranks near the top of the group in spending per pupil.
+
+*See the exploratory [Spending](../exploratory/spending.qmd) chapter for additional detail.*

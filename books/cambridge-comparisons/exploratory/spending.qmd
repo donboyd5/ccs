@@ -93,7 +93,7 @@ cambridge = g.filter(pl.col("district") == cc.FOCUS)
 
 The two highest-spending districts per pupil — Cambridge and Salem — are also the
 two **smallest** by enrollment. That is the cost-side mirror of the
-[students-per-teacher](class-sizes.qmd) picture: a small district spreads fixed
+[students-per-teacher](class-size-all-measures.qmd) picture: a small district spreads fixed
 costs (a principal, a building, a bus run) over fewer students, so its spending
 *per pupil* runs high even when its total budget is modest. Every district's
 figure rises over the decade, but remember these are nominal dollars — much of

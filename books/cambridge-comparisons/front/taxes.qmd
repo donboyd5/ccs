@@ -1,0 +1,21 @@
+# Property taxes
+
+TODO: This chapter will explain how much property tax Cambridge raises, how heavily it taxes property, and how that compares to nearby districts. The data come from two NYS Comptroller sources: the **tax levy** (total property tax raised) and the **full-value tax rate** (levy per $1,000 of taxable full value, the standard way to compare tax effort across places).
+
+**Key question:** How much does Cambridge rely on property taxes, and how does its tax burden compare to nearby districts?
+
+**Planned content:**
+- Tax levy over time (Cambridge + comparison group)
+- Full-value tax rate over time
+- How Cambridge's tax effort compares to nearby districts
+- A brief note on the town-by-town breakdown (many districts straddle multiple towns)
+
+**Best measure:** TBD — working with Don to choose between levy, full-value rate, or both.
+
+**Takeaway for readers:** TBD — working with Don to frame.
+
+*Data sources:*
+- NYS Comptroller school-district tax levies (by district × town)
+- NYSED Property Tax Report Card (proposed budgets, levy limits)
+
+*This chapter is new — no exploratory version exists yet.*

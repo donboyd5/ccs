@@ -31,7 +31,7 @@ K-8 district -- it has no high school of its own and pays to send its high-schoo
 ## Data and a few cautions
 
 The underlying numbers come from NYSED's public downloads and other reputable sources; each chapter and the
-[Sources](sources.qmd) appendix give the specifics. A few things to keep in mind
+[Sources](appendix/sources.qmd) appendix give the specifics. A few things to keep in mind
 throughout:
 
 - **Year labels are school-year-ending years.** "2025" means the **2024–25**
@@ -43,6 +43,6 @@ throughout:
   divides K-12 enrollment by a district-wide teacher *headcount* (all grades,
   not full-time-equivalents). It is useful for comparison across districts and
   over time, but it is not NYSED's official pupil-teacher or average-class-size
-  figure. See the [Sources](sources.qmd) appendix for detail.
+  figure. See the [Sources](appendix/sources.qmd) appendix for detail.
 - **Charter schools are excluded** — they have no district-total row in the
   source data — so these are district-operated figures.
