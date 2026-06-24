@@ -1,21 +1,198 @@
 # Property taxes
 
-TODO: This chapter will explain how much property tax Cambridge raises, how heavily it taxes property, and how that compares to nearby districts. The data come from two NYS Comptroller sources: the **tax levy** (total property tax raised) and the **full-value tax rate** (levy per $1,000 of taxable full value, the standard way to compare tax effort across places).
+**Cambridge's property tax levy — the total amount of property tax the district collects — has risen from about $8.2 million in 2014–15 to $9.6 million in 2023–24.** That's a 17% increase over a decade, driven by both higher spending (see the [Spending](spending.qmd) chapter) and changes in the local tax base.
 
-**Key question:** How much does Cambridge rely on property taxes, and how does its tax burden compare to nearby districts?
+The chart below shows how Cambridge's tax levy has changed since 2014–15, alongside nearby districts for context.
 
-**Planned content:**
-- Tax levy over time (Cambridge + comparison group)
-- Full-value tax rate over time
-- How Cambridge's tax effort compares to nearby districts
-- A brief note on the town-by-town breakdown (many districts straddle multiple towns)
+```{python}
+#| label: setup
+#| include: false
+import os
+import sys
+from pathlib import Path
 
-**Best measure:** TBD — working with Don to choose between levy, full-value rate, or both.
+sys.path.insert(0, os.getcwd())
 
-**Takeaway for readers:** TBD — working with Don to frame.
+import polars as pl
+from plotnine import (
+    aes,
+    geom_line,
+    geom_point,
+    ggplot,
+    labs,
+    scale_color_manual,
+    scale_x_continuous,
+    scale_y_continuous,
+)
+from great_tables import GT, loc, md, style
+
+import comparisons as cc
+
+# Find repo root to locate data (works from Jupyter context)
+def _find_repo_root():
+    cwd = Path.cwd()
+    for base in [cwd, *cwd.parents][:5]:
+        if (base / "data" / "crosswalks").is_dir():
+            return base
+    raise FileNotFoundError("Could not find repo root")
+
+REPO_ROOT = _find_repo_root()
+PROCESSED_DIR = REPO_ROOT / "data" / "processed"
+
+# OSC data uses nysed_district_cd; load and join to comparison groups
+osc = pl.read_parquet(PROCESSED_DIR / "osc_school_district_tax_levies.parquet")
+osc_totals = osc.filter(pl.col("record_type") == "district_total")
+
+def tax_levy_for(group: dict[str, str]) -> pl.DataFrame:
+    """Tax levy for group, labelled like other panels."""
+    region_by_cd = {
+        cd: ("Washington County" if cd in cc.WASHINGTON_K12 else "Other comparison districts")
+        for cd in group
+    }
+    return (
+        osc_totals.filter(pl.col("nysed_district_cd").is_in(list(group)))
+        .with_columns(
+            pl.col("nysed_district_cd").replace_strict(group).alias("district"),
+            pl.col("nysed_district_cd").replace_strict(region_by_cd).alias("region"),
+        )
+        .select("district", "region", "year_end", "tax_levy")
+        .with_columns((pl.col("tax_levy") / 1_000_000).alias("levy_millions"))
+        .sort("district", "year_end")
+    )
+```
+
+```{python}
+#| label: fig-tax-levy
+#| fig-cap: "School district property tax levy by school year ending, 2015 (2014–15) through 2024 (2023–24), in millions of dollars. Source: NYS Comptroller local-government data (Table 3)."
+g = tax_levy_for(cc.GRAPH_GROUP)
+cambridge = g.filter(pl.col("district") == cc.FOCUS)
+
+(
+    ggplot(g, aes("year_end", "levy_millions", color="district"))
+    + geom_line(size=1)
+    + geom_point(size=1.8)
+    + geom_line(cambridge, size=2.4)  # emphasize the focus district
+    + scale_color_manual(
+        values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
+    )
+    + scale_x_continuous(breaks=list(range(2015, 2025)))
+    + labs(
+        x="School year ending",
+        y="Tax levy (millions of dollars)",
+        title="School district property tax levy, 2014–15 to 2023–24",
+    )
+    + cc.theme_ccs()
+)
+```
+
+Cambridge's levy has risen steadily, but not as sharply as some neighboring districts. Schuylerville and Hoosick Falls, both larger, have seen larger absolute increases — which makes sense given they serve more students. Salem's levy has been nearly flat, reflecting its stable enrollment.
+
+## The tax rate: what property owners pay per value
+
+The **levy** is what the district collects. The **full-value tax rate** is what property owners pay per $1,000 of taxable full value — the standard way to compare tax effort across places with different assessment practices.
+
+A higher tax rate means property owners pay more for each dollar of property value. The chart below shows how Cambridge's full-value tax rate has changed since 2014–15.
+
+```{python}
+#| label: fig-tax-rate
+#| fig-cap: "Full-value tax rate by school year ending, 2015 (2014–15) through 2024 (2023–24). The rate is the levy per $1,000 of taxable full value. Source: NYS Comptroller local-government data (Table 3)."
+def tax_rate_for(group: dict[str, str]) -> pl.DataFrame:
+    """Full-value tax rate for group, labelled like other panels."""
+    region_by_cd = {
+        cd: ("Washington County" if cd in cc.WASHINGTON_K12 else "Other comparison districts")
+        for cd in group
+    }
+    return (
+        osc_totals.filter(pl.col("nysed_district_cd").is_in(list(group)))
+        .with_columns(
+            pl.col("nysed_district_cd").replace_strict(group).alias("district"),
+            pl.col("nysed_district_cd").replace_strict(region_by_cd).alias("region"),
+        )
+        .select("district", "region", "year_end", "full_value_tax_rate")
+        .sort("district", "year_end")
+    )
+
+g = tax_rate_for(cc.GRAPH_GROUP)
+cambridge = g.filter(pl.col("district") == cc.FOCUS)
+
+(
+    ggplot(g, aes("year_end", "full_value_tax_rate", color="district"))
+    + geom_line(size=1)
+    + geom_point(size=1.8)
+    + geom_line(cambridge, size=2.4)  # emphasize the focus district
+    + scale_color_manual(
+        values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
+    )
+    + scale_x_continuous(breaks=list(range(2015, 2025)))
+    + labs(
+        x="School year ending",
+        y="Full-value tax rate (per $1,000)",
+        title="Full-value property tax rate, 2014–15 to 2023–24",
+    )
+    + cc.theme_ccs()
+)
+```
+
+Cambridge's tax rate has fluctuated. It held around $16–$17 per $1,000 of full value for most of the decade, then **dropped sharply in 2022–23 and 2023–24** — to about $14.8 and $13.8 respectively. This drop coincides with a **jump in taxable full value** (the tax base), likely from a property reassessment in Washington County.
+
+The table below shows where each district stood in 2014–15 and 2023–24, and how much their tax rates changed.
+
+```{python}
+#| label: tbl-tax-rate-change
+#| tbl-cap: "Full-value tax rate in 2014–15 and 2023–24, with change, by district."
+g = tax_rate_for(cc.GRAPH_GROUP).filter(pl.col("year_end").is_in([2015, 2024]))
+
+wide = (
+    g.with_columns(
+        pl.when(pl.col("region") == "Washington County").then(0).otherwise(1).alias("_rank")
+    )
+    .pivot(values="full_value_tax_rate", index=["_rank", "region", "district"], on="year_end")
+    .sort(["_rank", "district"])
+    .drop("_rank")
+)
+
+wide = wide.with_columns((pl.col("2024") - pl.col("2015")).alias("change"))
+
+(
+    GT(wide, rowname_col="district", groupname_col="region")
+    .tab_header(
+        title="Full-value property tax rate",
+        subtitle="School-year-ending 2015 (2014–15) and 2024 (2023–24), per $1,000"
+    )
+    .fmt_number(columns=["2015", "2024", "change"], decimals=2)
+    .tab_spanner(label="School year ending", columns=["2015", "2024"])
+    .cols_label(change=md("Change<br>2015→2024"))
+    .tab_style(
+        style=[style.fill(color="#FCEFB4"), style.text(weight="bold")],
+        locations=[
+            loc.body(rows=pl.col("district") == cc.FOCUS),
+            loc.stub(rows=pl.col("district") == cc.FOCUS),
+        ],
+    )
+    .tab_source_note(
+        md(
+            "**Source:** NYS Comptroller local-government data, Table 3 (school "
+            "district tax levies, taxable full value, and full-value tax rates). "
+            "Rate = levy ÷ taxable full value × 1,000. Year = school-year-ending "
+            "(2024 = 2023–24)."
+        )
+    )
+)
+```
+
+**Cambridge's tax rate fell by $2.54 per $1,000** between 2014–15 and 2023–24 (from $16.32 to $13.78), one of the larger declines in the group. This reflects the reassessment expanding the tax base, which lowers the rate even as the levy rises.
+
+## What this means for Cambridge
+
+The tax story has two parts:
+
+- **The levy (what Cambridge collects)** has risen 17% over the decade, to $9.6 million. This funds the district's operations — the same spending per pupil discussed in the [Spending](spending.qmd) chapter.
+- **The rate (what property owners pay)** has fallen recently due to a reassessment, which could provide relief to property owners even as the levy continues to climb.
+
+The underlying pressure is the same: Cambridge's declining enrollment (see the [Enrollment](enrollment.qmd) chapter) means fewer taxpayers to spread the levy across, even as fixed costs remain. The district's low students-per-teacher ratio (see the [Class size](class-size.qmd) chapter) adds spending pressure, which ultimately feeds back into what the levy must collect.
 
 *Data sources:*
-- NYS Comptroller school-district tax levies (by district × town)
-- NYSED Property Tax Report Card (proposed budgets, levy limits)
+- **NYS Comptroller** school-district tax levies and full-value rates, by district × town (2015–2024)
+- **NYSED Property Tax Report Card** — proposed budgets, levy limits, and projected enrollment
 
-*This chapter is new — no exploratory version exists yet.*
+*This chapter is new; there is no exploratory version yet. For detailed property-tax analysis across towns and years, see the data in `data/processed/osc_school_district_tax_levies.parquet`.*
