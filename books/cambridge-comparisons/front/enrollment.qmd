@@ -1,17 +1,123 @@
 # Enrollment
 
-TODO: This chapter will tell Cambridge's enrollment story — how many students the district serves, how that has changed over time, and how it compares to nearby districts. This is the starting point for understanding everything that follows: staffing, spending per pupil, and the district's fiscal trajectory.
+**Cambridge has fewer students than it used to — about 124 fewer K-12 students in 2024–25 than in 2015–16, a decline of roughly 14%.** This matters because fewer students mean less state aid, a smaller tax base to spread costs across, and tough choices about staffing and programs. Enrollment is the starting point for everything that follows: staffing levels, spending per pupil, and the district's fiscal health.
 
-**Key question:** How has Cambridge's enrollment changed, and what does that mean for the district's future?
+The chart below shows how Cambridge's K-12 enrollment has changed since 2015–16, alongside nearby districts for context.
 
-**Planned content:**
-- K-12 enrollment trend over time (Cambridge + comparison group)
-- Where Cambridge stands relative to nearby districts
-- The decline in context (statewide trends, if relevant)
-- Grade-level breakdown (elementary vs. middle vs. high school)
+```{python}
+#| label: setup
+#| include: false
+import os
+import sys
 
-**Best measure:** K-12 enrollment from NYSED BEDS Day (first Wednesday of October).
+sys.path.insert(0, os.getcwd())
 
-**Takeaway for readers:** TBD — working with Don to frame.
+import polars as pl
+from plotnine import (
+    aes,
+    geom_line,
+    geom_point,
+    ggplot,
+    labs,
+    scale_color_manual,
+    scale_x_continuous,
+    scale_y_continuous,
+)
+from great_tables import GT, loc, md, style
 
-*See the exploratory [Class size — all measures](../exploratory/class-size-all-measures.qmd) chapter for related staffing-ratio analysis.*
+import comparisons as cc
+```
+
+```{python}
+#| label: fig-enrollment
+#| fig-cap: "K–12 enrollment by school year ending, 2016 (2015–16) through 2025 (2024–25). Source: NYSED BEDS Day enrollment (first Wednesday of October)."
+g = (
+    cc.panel_for(cc.GRAPH_GROUP, since=2016)
+    .select("district", "year_end", "k12_enrollment")
+    .drop_nulls()
+)
+cambridge = g.filter(pl.col("district") == cc.FOCUS)
+
+(
+    ggplot(g, aes("year_end", "k12_enrollment", color="district"))
+    + geom_line(size=1)
+    + geom_point(size=1.8)
+    + geom_line(cambridge, size=2.4)  # emphasize the focus district
+    + scale_color_manual(
+        values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
+    )
+    + scale_x_continuous(breaks=list(range(2016, 2026)))
+    + scale_y_continuous(limits=(450, 1400), breaks=list(range(500, 1401, 200)))
+    + labs(
+        x="School year ending",
+        y="K–12 enrollment",
+        title="K-12 enrollment, 2015–16 to 2024–25",
+    )
+    + cc.theme_ccs()
+)
+```
+
+Cambridge's enrollment decline is real, but it is not alone. **The trend is regional.** Schuylerville and Greenwich have seen larger absolute losses (327 and 219 students respectively), while Hoosick Falls and Salem have held steadier. The pandemic year 2020–21 shows a sharp dip across districts, followed by partial recoveries that did not fully return to pre-pandemic levels.
+
+The table below shows where each district stood in 2015–16 and 2024–25, and how much they gained or lost over the decade.
+
+```{python}
+#| label: tbl-enrollment-change
+#| tbl-cap: "K–12 enrollment in 2015–16 and 2024–25, with change, by district."
+g = cc.panel_for(cc.GRAPH_GROUP, since=2016).filter(
+    pl.col("year_end").is_in([2016, 2025])
+)
+
+wide = (
+    g.with_columns(
+        pl.when(pl.col("region") == "Washington County").then(0).otherwise(1).alias("_rank")
+    )
+    .pivot(values="k12_enrollment", index=["_rank", "region", "district"], on="year_end")
+    .sort(["_rank", "district"])
+    .drop("_rank")
+)
+
+wide = wide.with_columns(
+    (pl.col("2025") - pl.col("2016")).alias("change"),
+    ((pl.col("2025") - pl.col("2016")) / pl.col("2016") * 100).alias("pct_change"),
+)
+
+(
+    GT(wide, rowname_col="district", groupname_col="region")
+    .tab_header(
+        title="K-12 enrollment change",
+        subtitle="School-year-ending 2016 (2015–16) and 2025 (2024–25), with change"
+    )
+    .fmt_number(columns=["2016", "2025", "change"], decimals=0)
+    .fmt_number(columns="pct_change", decimals=1, force_sign=True)
+    .tab_spanner(label="School year ending", columns=["2016", "2025"])
+    .cols_label(pct_change=md("% change"))
+    .tab_style(
+        style=[style.fill(color="#FCEFB4"), style.text(weight="bold")],
+        locations=[
+            loc.body(rows=pl.col("district") == cc.FOCUS),
+            loc.stub(rows=pl.col("district") == cc.FOCUS),
+        ],
+    )
+    .tab_source_note(
+        md(
+            "**Source:** NYSED BEDS Day enrollment database. K-12 enrollment as of "
+            "the first Wednesday of October. Year = school-year-ending (2025 = 2024–25)."
+        )
+    )
+)
+```
+
+**Cambridge lost 124 students (−14%)** over the decade, the second-largest decline among the five districts after Schuylerville's 327-student loss (−20%). Greenwich lost 219 students (−21%). Salem and Hoosick Falls held closer to flat.
+
+## What this means
+
+Enrollment decline sets the context for everything else in Cambridge's budget:
+
+- **State aid is tied to students.** Fewer students mean less foundation aid from New York State, unless the state adjusts its formulas.
+- **Fixed costs don't shrink.** A building, a bus route, a principal — these costs don't automatically fall when enrollment does. Spreading fixed costs over fewer students is part of why Cambridge's **spending per pupil** ranks high (see the [Spending](spending.qmd) chapter).
+- **Staffing choices get harder.** Cambridge now has the **fewest students per teacher** of the comparison group (see the [Class size](class-size.qmd) chapter) — a choice that preserves small classes but adds pressure at budget time.
+
+The enrollment trend is a regional challenge, not unique to Cambridge. But the scale of the decline — and the decisions it forces about what to preserve — is what Cambridge's community must grapple with.
+
+*See the exploratory [Class size — all measures](../exploratory/class-size-all-measures.qmd) chapter for deeper analysis of staffing ratios and class-size measures.*

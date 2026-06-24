@@ -1,17 +1,130 @@
 # Spending per pupil
 
-TODO: This chapter will show how much Cambridge spends to educate each student, how that compares to nearby districts, and what the spending trend looks like over time. The measure is **current operating spending per pupil** — the cost of running schools in a year (salaries, benefits, classroom and BOCES services) divided by K-12 enrollment.
+**Cambridge spends more per student than most nearby districts — consistently second only to Salem.** In 2024–25, Cambridge spent roughly **$31,000 per K-12 pupil** in current operating funds, compared to a group average of about $27,000. This measure — **current operating spending per pupil** — captures what the district actually spends to educate each student: salaries, benefits, classroom services, BOCES programs, and federally funded services.
 
-**Key question:** How much does Cambridge spend per student, and how does that compare to nearby districts?
+The chart below shows how spending per pupil has changed since 2015–16.
 
-**Planned content:**
-- Current operating spending per pupil over time (Cambridge + comparison group)
-- Where Cambridge ranks within the comparison group
-- A brief explanation of what's included (and excluded — capital projects, debt service, interfund transfers)
-- Why nominal dollars (not inflation-adjusted) are used for now
+```{python}
+#| label: setup
+#| include: false
+import os
+import sys
 
-**Best measure:** Current operating spending per K-12 pupil from NYS Comptroller data.
+sys.path.insert(0, os.getcwd())
 
-**Takeaway for readers:** TBD — working with Don to frame, but Cambridge consistently ranks near the top of the group in spending per pupil.
+import polars as pl
+from plotnine import (
+    aes,
+    geom_line,
+    geom_point,
+    ggplot,
+    labs,
+    scale_color_manual,
+    scale_x_continuous,
+    scale_y_continuous,
+)
+from great_tables import GT, loc, md, style
 
-*See the exploratory [Spending](../exploratory/spending.qmd) chapter for additional detail.*
+import comparisons as cc
+
+# Format axis/break values as whole dollars.
+def _dollars(breaks):
+    return [f"${v:,.0f}" if v is not None else "" for v in breaks]
+```
+
+```{python}
+#| label: fig-spending-per-pupil
+#| fig-cap: "Current operating spending per K–12 pupil (nominal dollars) by school year ending, 2016 (2015–16) through 2025 (2024–25). Source: NYS Comptroller local-government financial data; K-12 enrollment from NYSED."
+g = (
+    cc.spending_for(cc.GRAPH_GROUP)
+    .filter(pl.col("year_end") >= 2016)
+    .select("district", "year_end", "current_pp")
+    .drop_nulls()
+)
+cambridge = g.filter(pl.col("district") == cc.FOCUS)
+
+(
+    ggplot(g, aes("year_end", "current_pp", color="district"))
+    + geom_line(size=1)
+    + geom_point(size=1.8)
+    + geom_line(cambridge, size=2.4)  # emphasize the focus district
+    + scale_color_manual(
+        values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
+    )
+    + scale_x_continuous(breaks=list(range(2016, 2026)))
+    + scale_y_continuous(labels=_dollars)
+    + labs(
+        x="School year ending",
+        y="Current operating spending per pupil",
+        title="Current operating spending per K-12 pupil, 2015–16 to 2024–25",
+    )
+    + cc.theme_ccs()
+)
+```
+
+Every district's spending per pupil has risen over the decade. Part of this is inflation — the dollars are not adjusted for rising prices. But the **rank order is consistent**: Cambridge and Salem, the two smallest districts by enrollment, sit at the top year after year.
+
+## Why the smallest districts spend the most per pupil
+
+The pattern above is the cost-side mirror of the enrollment story. **Small districts spread fixed costs over fewer students.** A principal, a building, a bus route — these costs don't shrink linearly when enrollment drops. So a district with 500 students inevitably spends more per pupil than a district with 1,300 students, even if they offer similar programs.
+
+Cambridge and Salem are the smallest in the comparison group, so their higher spending per pupil is not a sign of inefficiency — it's the arithmetic of small scale. The question for Cambridge is whether its level of spending is sustainable given its enrollment decline and tax base (discussed in the [Taxes](taxes.qmd) chapter).
+
+## What this measure includes (and excludes)
+
+The chart uses **current operating spending**, which deliberately leaves out two categories that would make year-to-year comparisons misleading:
+
+- **Capital projects and debt.** Building a new school or paying off long-term debt arrives in large, irregular lumps. Including these would make spending per pupil volatile in ways that don't reflect the actual cost of educating students.
+- **Transfers between a district's own funds.** Moving money from one fund to another doesn't change total resources, so it's excluded to avoid double-counting.
+
+This is close to the "current spending per pupil" measure the U.S. Census and NCES use to compare districts and states. The dollars come from the New York State Comptroller's financial-reporting data and are **not adjusted for inflation**, so part of the upward drift reflects rising prices rather than rising real resources.
+
+The table below shows where each district stood in 2015–16 and 2024–25, and how much their spending per pupil changed.
+
+```{python}
+#| label: tbl-spending-per-pupil-change
+#| tbl-cap: "Current operating spending per K–12 pupil in 2015–16 and 2024–25, with change, by district (nominal dollars)."
+t = cc.spending_for(cc.GRAPH_GROUP).filter(pl.col("year_end").is_between(2016, 2025))
+
+wide = (
+    t.with_columns(
+        pl.when(pl.col("region") == "Washington County").then(0).otherwise(1).alias("_rank")
+    )
+    .pivot(values="current_pp", index=["_rank", "region", "district"], on="year_end")
+    .sort(["_rank", "district"])
+    .drop("_rank")
+)
+
+wide = wide.with_columns((pl.col("2025") - pl.col("2016")).alias("chg"))
+
+(
+    GT(wide, rowname_col="district", groupname_col="region")
+    .tab_header(
+        title="Current operating spending per pupil",
+        subtitle="School-year-ending 2016 (2015–16) and 2025 (2024–25), nominal dollars"
+    )
+    .fmt_currency(columns=["2016", "2025", "chg"], decimals=0)
+    .tab_spanner(label="School year ending", columns=["2016", "2025"])
+    .cols_label(chg=md("Change<br>2016→2025"))
+    .tab_style(
+        style=[style.fill(color="#FCEFB4"), style.text(weight="bold")],
+        locations=[
+            loc.body(rows=pl.col("district") == cc.FOCUS),
+            loc.stub(rows=pl.col("district") == cc.FOCUS),
+        ],
+    )
+    .tab_source_note(
+        md(
+            "**Source:** New York State Comptroller local-government financial "
+            "data (expenditures); K-12 enrollment from NYSED. Current operating "
+            "spending = General, Special Aid and School Lunch funds, excluding "
+            "capital outlay, debt service and interfund transfers. Nominal "
+            "dollars; year = school-year-ending (2025 = 2024–25)."
+        )
+    )
+)
+```
+
+**Cambridge's spending per pupil rose by about $11,000** (from roughly $20,000 to $31,000) over the decade — a similar increase to other districts in the group. What sets Cambridge apart is where it started (already high in 2015–16) and where it remains (near the top in 2024–25).
+
+*For additional detail on spending measures, see the exploratory [Spending](../exploratory/spending.qmd) chapter.*

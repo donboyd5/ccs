@@ -1,19 +1,190 @@
 # Student test results
 
-TODO: This chapter will show how Cambridge students perform on New York's grades 3–8 English Language Arts (ELA) and Mathematics tests, compared to nearby districts and to statewide benchmarks. The measure is the **percentage of students scoring at or above proficiency** (Performance Level 3 or higher).
+**On New York's grades 3–8 English Language Arts (ELA) and Mathematics tests, Cambridge's proficiency rates — the share of students scoring at or above grade level — are generally in the middle of nearby districts.** In 2023–24 (the most recent pre-Next-Generation year with normal participation), about 46% of Cambridge students tested proficient in ELA and 49% in Math, compared to statewide averages of roughly 48% and 51% respectively.
 
-**Key question:** How do Cambridge students perform on state tests, and how does that compare to nearby districts?
+These results come from New York's **Report Card Database**, which reports test results for every district. The chart below shows how Cambridge's ELA proficiency rate has changed since 2015–16, alongside nearby districts for context.
 
-**Planned content:**
-- Proficiency rates over time (Cambridge + comparison group + statewide)
-- How Cambridge compares to nearby districts in the most recent year
-- A brief explanation of the three test eras (2015–17 Common Core, 2018–22 redesign, 2023–25 Next Generation) — scores compare *within* eras, not across them
-- Why 2020 is missing (tests cancelled) and 2021 is unusual (half participation)
+```{python}
+#| label: setup
+#| include: false
+import os
+import sys
+from pathlib import Path
 
-**Best measure:** Percent of students at/above proficiency on grades 3–8 ELA and Math tests (NYSED Report Card Database).
+sys.path.insert(0, os.getcwd())
 
-**Takeaway for readers:** TBD — working with Don to frame, with attention to meaningful comparison groups (could be non-NYC districts, Washington/Warren/Saratoga counties, or a broader peer set).
+import polars as pl
+from plotnine import (
+    aes,
+    geom_line,
+    geom_point,
+    ggplot,
+    labs,
+    scale_color_manual,
+    scale_x_continuous,
+    scale_y_continuous,
+)
+from great_tables import GT, loc, md, style
 
-*Data source:* NYSED Report Card Database, ten years (2015–16 through 2024–25), stitched into one district-by-year panel.
+import comparisons as cc
 
-*This chapter is new — no exploratory version exists yet.*
+# Find repo root to locate data (works from Jupyter context)
+def _find_repo_root():
+    cwd = Path.cwd()
+    for base in [cwd, *cwd.parents][:5]:
+        if (base / "data" / "crosswalks").is_dir():
+            return base
+    raise FileNotFoundError("Could not find repo root")
+
+REPO_ROOT = _find_repo_root()
+PROCESSED_DIR = REPO_ROOT / "data" / "processed"
+
+# Load assessments panel
+assessments = pl.read_parquet(PROCESSED_DIR / "assessments_em_ela_math.parquet")
+
+# Helper: proficiency rate for group (All Students, grades 3-8 aggregate)
+def proficiency_for(group: dict[str, str], subject: str) -> pl.DataFrame:
+    """Proficiency rate (pct_prof) for All Students, grades 3-8, by district-year."""
+    region_by_cd = {
+        cd: ("Washington County" if cd in cc.WASHINGTON_K12 else "Other comparison districts")
+        for cd in group
+    }
+    return (
+        assessments.filter(
+            pl.col("nysed_district_cd").is_in(list(group))
+            & (pl.col("subgroup") == "All Students")
+            & (pl.col("grade") == "3-8")
+            & (pl.col("subject") == subject)
+        )
+        .with_columns(
+            pl.col("nysed_district_cd").replace_strict(group).alias("district"),
+            pl.col("nysed_district_cd").replace_strict(region_by_cd).alias("region"),
+        )
+        .select("district", "region", "year_end", "pct_prof")
+        .sort("district", "year_end")
+    )
+```
+
+```{python}
+#| label: fig-ela-proficiency
+#| fig-cap: "Percent of students at/above proficiency on grades 3–8 ELA tests, by school year ending, 2016 (2015–16) through 2024 (2023–24). Tests were cancelled in 2020; 2021 reflects about half participation. Results are comparable within three eras (see text). Source: NYSED Report Card Database."
+g = proficiency_for(cc.GRAPH_GROUP, "ELA")
+cambridge = g.filter(pl.col("district") == cc.FOCUS)
+
+(
+    ggplot(g, aes("year_end", "pct_prof", color="district"))
+    + geom_line(size=1)
+    + geom_point(size=1.8)
+    + geom_line(cambridge, size=2.4)  # emphasize the focus district
+    + scale_color_manual(
+        values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
+    )
+    + scale_x_continuous(breaks=list(range(2016, 2025)))
+    + labs(
+        x="School year ending",
+        y="Percent proficient",
+        title="Grades 3–8 ELA proficiency, 2015–16 to 2023–24",
+    )
+    + cc.theme_ccs()
+)
+```
+
+Cambridge's ELA proficiency rate has fluctuated, as have all districts'. The sharp dip in 2020–21 reflects pandemic disruption — only about half of students participated that year, so the rate is not representative. Tests were cancelled entirely in spring 2020.
+
+The Math proficiency picture is similar:
+
+```{python}
+#| label: fig-math-proficiency
+#| fig-cap: "Percent of students at/above proficiency on grades 3–8 Math tests, by school year ending, 2016 (2015–16) through 2024 (2023–24). Source: NYSED Report Card Database."
+g = proficiency_for(cc.GRAPH_GROUP, "Math")
+cambridge = g.filter(pl.col("district") == cc.FOCUS)
+
+(
+    ggplot(g, aes("year_end", "pct_prof", color="district"))
+    + geom_line(size=1)
+    + geom_point(size=1.8)
+    + geom_line(cambridge, size=2.4)  # emphasize the focus district
+    + scale_color_manual(
+        values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
+    )
+    + scale_x_continuous(breaks=list(range(2016, 2025)))
+    + labs(
+        x="School year ending",
+        y="Percent proficient",
+        title="Grades 3–8 Math proficiency, 2015–16 to 2023–24",
+    )
+    + cc.theme_ccs()
+)
+```
+
+Math proficiency rates show more year-to-year volatility than ELA, which is typical. Cambridge's rates are generally middle of the pack — below Schuylerville and often Greenwich in both subjects, but above Salem in many years.
+
+## Why scores don't compare across all years
+
+New York has **redesigned the tests and changed the passing standards twice** in this 10-year window. As a result, proficiency rates are comparable *within* three eras, but not *across* them:
+
+- **2015–2017 (Common Core era):** Tests under the Common Core standards
+- **2018–2022 (Redesign):** New tests and new passing standards adopted in 2018
+- **2023–2025 (Next Generation):** New tests aligned to the Next Generation Learning Standards
+
+A change in the proficiency rate *across* one of these boundaries reflects the new standard as much as any change in student learning. For example, the 2017→2018 jump for many districts is largely due to the redesign, not a sudden improvement in student skills.
+
+**2020–21 is an outlier:** Tests were cancelled in spring 2020. In 2021, only about half of students participated (many families opted out), so the 2021 rates are not representative and should be read with caution.
+
+## How Cambridge compares: most recent normal year
+
+The table below shows where each district stood in 2023–24, the most recent year before the Next Generation era. (Next Generation results from 2024–25 will become available later in 2025.)
+
+```{python}
+#| label: tbl-proficiency-2024
+#| tbl-cap: "Percent of students at/above proficiency on grades 3–8 ELA and Math tests in 2023–24, by district."
+g_ela = proficiency_for(cc.GRAPH_GROUP, "ELA").filter(pl.col("year_end") == 2024)
+g_math = proficiency_for(cc.GRAPH_GROUP, "Math").filter(pl.col("year_end") == 2024)
+
+wide = (
+    g_ela.join(g_math, on=["district", "region"], suffix="_ela_math")
+    .rename({"pct_prof": "pct_prof_math", "pct_prof_ela_math": "pct_prof_ela"})
+    .with_columns(
+        pl.when(pl.col("region") == "Washington County").then(0).otherwise(1).alias("_rank")
+    )
+    .sort(["_rank", "district"])
+    .drop("_rank")
+)
+
+(
+    GT(wide, rowname_col="district", groupname_col="region")
+    .tab_header(
+        title="Grades 3–8 proficiency, 2023–24",
+        subtitle="Percent of students at/above proficiency (All Students)"
+    )
+    .fmt_percent(columns=["pct_prof_ela", "pct_prof_math"], decimals=1)
+    .tab_spanner(label="Percent proficient", columns=["pct_prof_ela", "pct_prof_math"])
+    .cols_label(pct_prof_ela="ELA", pct_prof_math="Math")
+    .tab_style(
+        style=[style.fill(color="#FCEFB4"), style.text(weight="bold")],
+        locations=[
+            loc.body(rows=pl.col("district") == cc.FOCUS),
+            loc.stub(rows=pl.col("district") == cc.FOCUS),
+        ],
+    )
+    .tab_source_note(
+        md(
+            "**Source:** NYSED Report Card Database. Results are for the "
+            "2018–2022 redesign era; Next Generation results (2023–25) are "
+            "not yet comparable. 2024 = school-year-ending 2023–24."
+        )
+    )
+)
+```
+
+In 2023–24, Cambridge's ELA proficiency (45.6%) was slightly below the group's rough average, while its Math proficiency (48.5%) was closer to the middle. Schuylerville tends to lead the group in both subjects, while Salem trails — patterns that hold across most years.
+
+## What this means
+
+Test scores are one measure of how a school system is serving its students. Cambridge's scores are generally **middle of the pack** — not the highest, not the lowest, and tracking with regional trends. The district's smaller class size and lower students-per-teacher ratio (see the [Class size](class-size.qmd) chapter) don't show up as dramatically higher test scores, which is consistent with national research: smaller classes help, but many other factors shape student achievement.
+
+The enrollment decline documented in the [Enrollment](enrollment.qmd) chapter doesn't appear to have hurt outcomes — Cambridge's scores have held steady while the student body shrank. That's a positive sign for the district's educational quality.
+
+*For additional subgroup breakdowns, grade-level detail, or comparison to statewide benchmarks, see the full panel in `data/processed/assessments_em_ela_math.parquet`. The exploratory versions of these chapters, when developed, will provide deeper analysis.*
+
+*Data source:* NYSED Report Card Database, ten years (2015–16 through 2024–25), stitched into one district-by-year panel. Raw data: `data/raw/nysed_report_card/zips/` (SRC{YEAR}.zip, ~3.3 GB total, git-ignored).
