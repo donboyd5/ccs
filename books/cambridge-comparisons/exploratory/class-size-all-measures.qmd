@@ -14,7 +14,7 @@ size, and it is always lower than class size — because it counts *every* teach
 not just the teachers standing in front of a full classroom. Read it as a
 staffing ratio, not a count of children in a room.
 
-A reminder from the [Overview](index.qmd): the teacher figure is a district-wide
+A reminder from the [Overview](../index.qmd): the teacher figure is a district-wide
 *headcount* (all grades, not full-time-equivalents), so this is an approximate
 measure for comparing districts and tracking change over time. Lower means fewer
 students per teacher.

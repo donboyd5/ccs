@@ -1,0 +1,13 @@
+# Methods & measures {.unnumbered}
+
+TODO: This appendix will document the technical details behind the front-part chapters — how each measure is defined, what the data limitations are, and which alternative measures were considered. The goal is to keep the front chapters clean and narrative, while giving interested readers a full accounting here.
+
+## Planned sections
+
+- **Data sources and provenance** — summary of each dataset, publisher, coverage, and how to re-download
+- **Measure definitions** — precise definitions of key measures (students per teacher, class size, spending per pupil, etc.)
+- **Cross-checks and validation** — why we trust the numbers, including NYSED vs. NCES comparisons
+- **Why these measures** — for each front chapter, what alternatives were considered and why the chosen measure is the best one
+- **Limitations** — what the data can't tell us, and where comparisons break down
+
+Until this appendix is filled out, see the **[Sources](sources.qmd)** appendix for data-source details.

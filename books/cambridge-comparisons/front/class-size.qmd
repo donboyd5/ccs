@@ -1,0 +1,17 @@
+# Class size and staffing
+
+TODO: This chapter will explain how many students each teacher serves in Cambridge, how that compares to nearby districts, and what it means for the classroom experience. The measure is **students per teacher** — a district-wide staffing ratio, not official class size, but a fair way to compare districts and track change over time.
+
+**Key question:** Does Cambridge have more or fewer teachers per student than nearby districts, and how has that changed?
+
+**Planned content:**
+- Students per teacher over time (Cambridge + comparison group)
+- Teachers per 100 students (the mirror view, emphasizing staffing rather than crowding)
+- How enrollment decline and steady teacher counts shaped the ratio
+- A brief note on why this isn't NYSED's official class size (headcount vs. FTE, all grades vs. specific classes)
+
+**Best measure:** K-12 students per teacher (NYSED teacher headcount ÷ K-12 enrollment). This is the clean, long-running series that lets us track change from 2018 through 2025.
+
+**Takeaway for readers:** TBD — working with Don to frame, but the data show Cambridge now has the lowest students-per-teacher ratio of the comparison group.
+
+*See the exploratory [Class size — all measures](../exploratory/class-size-all-measures.qmd) chapter for the full multi-measure analysis (median class size, grades 3–8 core, high school courses, NYSED vs. NCES cross-check).*
