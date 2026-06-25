@@ -19,7 +19,7 @@ book:
         - front/spending.qmd
         - front/taxes.qmd
         - front/reserves.qmd
-        - front/contingency_budgets.qmd
+        - front/contingency-budgets.qmd
     - part: "Academic performance"
       chapters:
         - front/test-results.qmd
