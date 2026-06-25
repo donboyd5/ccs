@@ -3,24 +3,35 @@ project:
   output-dir: _book
 
 book:
-  title: "Cambridge in Comparison"
-  subtitle: "How Cambridge CSD compares with nearby New York school districts"
+  title: "Cambridge Central School District"
+  subtitle: "Issues and comparisons"
   author: "Don Boyd"
   date: today
   chapters:
     - index.qmd
-    - part: "Cambridge in context"
+    - part: "Cambridge and the challenges it faces"
       chapters:
+        - front/demographics.qmd
         - front/enrollment.qmd
         - front/class-size.qmd
+    - part: "Cambridge and the issues it faces"
+      chapters:
         - front/spending.qmd
         - front/taxes.qmd
-        - front/test-results.qmd
-    - part: "Behind the numbers — exploratory analyses"
+        - front/reserves.qmd
+        - front/contingency_budgets.qmd
+    - part: "Academic performance"
       chapters:
-        - exploratory/class-size-all-measures.qmd
-        - exploratory/spending.qmd
+        - front/test-results.qmd
+    - part: "Options"
+      chapters:
+        - front/mergers.qmd
+        - front/regionalization.qmd
+        - front/cuts.qmd
+
   appendices:
+    - exploratory/class-size-all-measures.qmd
+    - exploratory/spending.qmd
     - appendix/sources.qmd
     - appendix/methods.qmd
   repo-url: https://github.com/donboyd5/ccs
@@ -60,10 +71,12 @@ format:
     code-tools: true
     fig-align: center
     tbl-cap-location: top
+    reference-location: document   # or: block | section | margin
 
 execute:
   echo: true
   warning: false
   message: false
+  freeze: auto
 
 jupyter: python3
