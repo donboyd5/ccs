@@ -1,0 +1,371 @@
+# Contingency budgets
+
+Every May, each New York school district puts its proposed budget to a public
+vote. If a budget is **defeated** — fewer than half of voters say yes — the
+district gets a second chance: it may hold a **re-vote** in June. If the budget
+fails again, or the district decides not to try again, the district must operate
+the next year on a **contingency budget** — a pared-back spending plan set by
+state rules, with no new programs and tight limits on spending growth.
+
+One rule shapes most of what follows. New York's property-tax cap says a district
+may raise its tax levy by only a small amount each year without special
+permission. A district that wants to go **above the cap** must win a 60%
+supermajority at the polls. A budget **at or below the cap** needs only a simple
+majority (more than 50%). That higher, 60% bar is why above-cap budgets fail more
+often — and why the tax cap and contingency budgets are linked.
+
+This chapter uses NYSED's statewide *School District Budget Voting Results* to
+count, year by year, how many districts defeat a budget, hold a re-vote, and end
+up on a contingency budget — and where Cambridge and its neighbors fit in.
+
+## How often budgets fail
+
+```{python}
+#| label: setup
+#| include: false
+import os
+import sys
+
+sys.path.insert(0, os.getcwd())
+
+import polars as pl
+from plotnine import (
+    aes, geom_col, ggplot, labs, position_dodge, scale_fill_manual,
+    scale_x_continuous, scale_y_continuous, theme,
+)
+from great_tables import GT, loc, md, style
+
+import comparisons as cc
+
+# --- classify each first vote and, where there was one, the re-vote ---
+bv = cc.load_budget_votes()
+
+
+def _passed(yes, no, above_cap):
+    """A budget passes at >=60% yes if it was above the cap, else >50%."""
+    share = yes / (yes + no)
+    return pl.when(above_cap).then(share >= 0.60).otherwise(share > 0.50)
+
+
+first = (
+    bv.filter(pl.col("kind") == "vote")
+    .with_columns(
+        (pl.col("yes") / (pl.col("yes") + pl.col("no"))).alias("share1"),
+        _passed(pl.col("yes"), pl.col("no"), pl.col("above_cap")).alias("passed1"),
+    )
+)
+second = (
+    bv.filter(pl.col("kind") == "revote")
+    .with_columns(
+        (pl.col("yes") / (pl.col("yes") + pl.col("no"))).alias("share2"),
+        _passed(pl.col("yes"), pl.col("no"), pl.col("above_cap")).alias("passed2"),
+    )
+    .select("year", "district_key", pl.col("above_cap").alias("above_cap2"),
+            "share2", "passed2")
+)
+
+# Start from districts that FAILED the first vote, and attach their re-vote.
+panel = (
+    first.filter(pl.col("passed1") == False)  # noqa: E712
+    .join(second, on=["year", "district_key"], how="left")
+    .with_columns(pl.col("passed2").is_not_null().alias("revote_held"))
+    .with_columns(
+        pl.when(pl.col("revote_held") & (pl.col("passed2") == True))  # noqa: E712
+        .then(pl.lit("Passed on revote"))
+        .when(pl.col("revote_held") & (pl.col("passed2") == False))  # noqa: E712
+        .then(pl.lit("Contingency (failed revote)"))
+        .when(~pl.col("revote_held"))
+        .then(pl.lit("Contingency (no revote)"))
+        .otherwise(pl.lit("Unresolved"))
+        .alias("outcome")
+    )
+)
+```
+
+**Budget defeats are rare, and most districts that fail once recover.** Across
+the 14 votes from 2012 through 2025, only **198 of roughly 9,400 district-votes**
+ended in a first-vote defeat — about two per 100. Of those 198 defeats, **125
+districts (63%) passed their budget on the June re-vote**, and **73 (37%) went on
+to a contingency budget**. Defeats cluster in single digits most years, with 2025
+(24 defeats) the highest since 2013.
+
+```{python}
+#| label: fig-defeats
+#| fig-cap: "First-vote budget defeats and contingency budgets by vote year, 2012–2025. A 'defeat' is a budget that failed the May vote; 'on contingency' is the smaller subset that did not pass a June re-vote. Source: NYSED statewide budget voting results."
+yearly = (
+    panel.group_by("year")
+    .agg(
+        pl.len().alias("Failed first vote"),
+        pl.col("outcome").str.starts_with("Contingency").sum().alias("On contingency"),
+    )
+    .sort("year")
+    .unpivot(index="year", variable_name="measure", value_name="count")
+)
+
+(
+    ggplot(yearly, aes("year", "count", fill="measure"))
+    + geom_col(position=position_dodge(width=0.75), width=0.7)
+    + scale_fill_manual(
+        values={"Failed first vote": "#C8102E", "On contingency": "#2C6E9B"}, name=""
+    )
+    + scale_x_continuous(breaks=list(range(2012, 2026)))
+    + scale_y_continuous(breaks=list(range(0, 36, 5)))
+    + labs(
+        x="Vote year (the May vote)",
+        y="Number of districts",
+        title="Budget defeats and contingency budgets, 2012–2025",
+    )
+    + cc.theme_ccs()
+    + theme(figure_size=(9, 4.5))
+)
+```
+
+The gap between the two bars is the share of defeated districts that recovered
+on a re-vote. Contingency budgets — the red bar's smaller companion — are
+consistently a handful of districts each year. **2020 stands out as unusual**:
+votes were conducted entirely by absentee ballot during the pandemic, with a
+shifted June re-vote date, so its pattern (12 of 12 defeated districts ending on
+contingency) is not comparable to other years.
+
+## Defeats, re-votes, and contingency budgets by year
+
+```{python}
+#| label: tbl-yearly
+#| tbl-cap: "First-vote defeats, re-votes held, budgets passed on re-vote, and districts on a contingency budget, by vote year. Source: NYSED statewide budget voting results (computed)."
+yearly_tbl = (
+    panel.group_by("year")
+    .agg(
+        pl.len().alias("Failed first vote"),
+        pl.col("revote_held").sum().alias("Held a re-vote"),
+        (pl.col("outcome") == "Passed on revote").sum().alias("Passed on re-vote"),
+        pl.col("outcome").str.starts_with("Contingency").sum().alias("On contingency"),
+    )
+    .sort("year")
+    .with_columns(pl.col("year").cast(pl.Utf8),
+                  pl.col("Failed first vote", "Held a re-vote", "Passed on re-vote", "On contingency").cast(pl.Int64))
+)
+totals = pl.DataFrame(
+    {
+        "year": ["Total"],
+        "Failed first vote": [yearly_tbl["Failed first vote"].sum()],
+        "Held a re-vote": [yearly_tbl["Held a re-vote"].sum()],
+        "Passed on re-vote": [yearly_tbl["Passed on re-vote"].sum()],
+        "On contingency": [yearly_tbl["On contingency"].sum()],
+    }
+)
+yearly_tbl = pl.concat([yearly_tbl, totals], how="vertical")
+
+(
+    GT(yearly_tbl, rowname_col="year")
+    .tab_header(
+        title="Budget defeats and contingency budgets by year",
+        subtitle=f"Vote years {panel['year'].min()}–{panel['year'].max()}",
+    )
+    .tab_options(row_striping_include_table_body=True)
+    .tab_style(
+        style=[style.text(weight="bold"), style.fill(color="#EAEAEA")],
+        locations=loc.body(rows=pl.col("year") == "Total"),
+    )
+    .tab_source_note(
+        md(
+            "**Source:** NYSED statewide *School District Budget Voting Results*. "
+            "A district is 'on contingency' if it failed the first vote and then "
+            "either failed the re-vote or held no re-vote. Vote year = the calendar "
+            "year of the May vote (the budget adopted is for the following school year)."
+        )
+    )
+)
+```
+
+## The 60% threshold
+
+The tax cap's 60% supermajority rule is the mechanism behind most above-cap
+defeats. The table below follows the **198 districts that failed a first vote**
+and asks, for their second try: was the budget they put up **above the cap**
+(needing 60%) or **at or below the cap** (needing only a simple majority), and
+did it pass or send the district to contingency?
+
+```{python}
+#| label: tbl-cap-outcome
+#| tbl-cap: "Outcome of the second vote (re-vote budget, or the original if no re-vote was held) by whether that budget was above or below the tax cap. Pooled across 2012–2025."
+# Cap status of the budget governing the second event: the re-vote's flag if a
+# re-vote was held, else the first vote's flag. Null where no 60% flag was
+# reported (older files).
+cap_outcome = (
+    panel.with_columns(pl.coalesce(["above_cap2", "above_cap"]).alias("cap2"))
+    .with_columns(
+        pl.when(pl.col("cap2").is_null())
+        .then(pl.lit("No 60% flag in file"))
+        .when(pl.col("cap2"))
+        .then(pl.lit("Above cap — 60% required"))
+        .otherwise(pl.lit("At/below cap — simple majority"))
+        .alias("cap_status")
+    )
+    .group_by("cap_status", "outcome")
+    .len()
+    .pivot("outcome", index="cap_status", values="len", aggregate_function="sum")
+    .fill_null(0)
+)
+
+# Stable row order and tidy outcome columns.
+order = ["Above cap — 60% required", "At/below cap — simple majority", "No 60% flag in file"]
+cap_outcome = (
+    cap_outcome.with_columns(pl.col("cap_status").replace_strict({k: i for i, k in enumerate(order)}).alias("_o"))
+    .sort("_o")
+    .drop("_o")
+)
+for c in ["Passed on revote", "Contingency (failed revote)", "Contingency (no revote)"]:
+    if c not in cap_outcome.columns:
+        cap_outcome = cap_outcome.with_columns(pl.lit(0, dtype=pl.Int64).alias(c))
+cap_outcome = cap_outcome.select("cap_status", "Passed on revote",
+                                 "Contingency (failed revote)", "Contingency (no revote)")
+
+(
+    GT(cap_outcome, rowname_col="cap_status")
+    .tab_header(
+        title="Second-vote outcomes by tax-cap status",
+        subtitle="Districts that failed the first vote, 2012–2025",
+    )
+    .tab_spanner(label="Passed", columns=["Passed on revote"])
+    .tab_spanner(label="Went to contingency", columns=["Contingency (failed revote)", "Contingency (no revote)"])
+    .tab_source_note(
+        md(
+            "**Source:** NYSED statewide budget voting results (computed). Cap "
+            "status comes from NYSED's 60%-required flag, the only cap signal these "
+            "files carry (they include no levy figures). 'No 60% flag in file' covers "
+            "older files that did not report the flag."
+        )
+    )
+)
+```
+
+Even a simple-majority budget can fall: **23 districts that brought an at-or-
+below-cap budget to a second vote still could not reach 50% and went to
+contingency.** But above-cap budgets, which must clear the higher 60% bar, are the
+harder case — **39 of them ended on contingency.**
+
+## Cambridge and its neighbors
+
+Cambridge's own record is uneventful, which is itself worth noting.
+
+```{python}
+#| label: tbl-local
+#| tbl-cap: "Cambridge Central School District's first budget vote, every year on record. All passed; none were above the tax cap."
+cam = (
+    first.filter(pl.col("district_key") == "CAMBRIDGE")
+    .select(
+        pl.col("year").cast(pl.Utf8).alias("Vote year"),
+        pl.col("yes").alias("Yes"),
+        pl.col("no").alias("No"),
+        (100 * pl.col("share1")).round(1).alias("% yes"),
+    )
+    .sort("Vote year")
+)
+(
+    GT(cam, rowname_col="Vote year")
+    .tab_header(title="Cambridge's first-vote record, 2012–2025")
+    .fmt_number(columns="% yes", decimals=1)
+    .tab_source_note(
+        md(
+            "**Source:** NYSED statewide budget voting results (computed). Every "
+            "Cambridge budget passed on the first vote; none were above the cap."
+        )
+    )
+)
+```
+
+**Cambridge Central School District has passed its budget on the first vote in
+every one of the 14 years on record (2012–2025).** Its closest call came in 2023,
+when 53% of voters said yes — a comfortable simple-majority win, but Cambridge's
+narrowest margin in the period. None of Cambridge's budgets were above the cap
+(the 60% rule has never been in play), so each needed only a bare majority.
+
+Two Washington County neighbors have not been so steady:
+
+- **Fort Edward** operated on a **contingency budget in both 2018 and 2020.** In
+  2020 it brought an above-cap budget to the re-vote and fell short of the 60%
+  threshold (about 53% yes). Its 2018 re-vote also failed; the source file does
+  not report a 60%-flag value for it, so that year's cap status is unknown.
+- **Salem** failed its first vote in **May 2024** — about 59% yes, but the budget
+  was above the cap, so it needed 60%. Salem then reduced the budget below the cap
+  for the **June re-vote**, where 71% voted yes, and passed.
+
+No other Washington County district in this book's comparison group (Greenwich,
+Granville, Hudson Falls, Whitehall, and the rest) defeated a budget in any year on
+record.
+
+```{python}
+#| label: tbl-neighbor-detail
+#| tbl-cap: "Washington County comparison districts that failed a first vote, 2012–2025, with the outcome."
+nbrs = (
+    panel.filter(pl.col("district_key").is_in(["SALEM", "FORT EDWARD"]))
+    .select(
+        pl.col("district").alias("District"),
+        pl.col("year").cast(pl.Utf8).alias("Vote year"),
+        pl.col("outcome").alias("Outcome"),
+    )
+    .sort("District", "Vote year")
+)
+(
+    GT(nbrs, rowname_col="District")
+    .tab_header(title="Neighbors that defeated a budget")
+    .tab_source_note(md("**Source:** NYSED statewide budget voting results (computed)."))
+)
+```
+
+## Who ends up on contingency
+
+The districts that reach a contingency budget are a small, rotating set —
+statewide, **73 districts across 14 years**, never more than a handful in one
+year. A few recur: **East Ramapo** (Rockland County), the state's most fiscally
+troubled large district, went to contingency in both 2020 and 2022. The table
+below lists every district that ended on contingency in the most recent six vote
+years.
+
+```{python}
+#| label: tbl-contingency-recent
+#| tbl-cap: "Districts that operated on a contingency budget, 2020–2025, with the reason."
+recent_cont = (
+    panel.filter((pl.col("year") >= 2020) & pl.col("outcome").str.starts_with("Contingency"))
+    .select(pl.col("district").alias("District"),
+            pl.col("year").cast(pl.Utf8).alias("Vote year"),
+            pl.col("outcome").alias("How it happened"))
+    .sort("Vote year", "District")
+)
+(
+    GT(recent_cont, rowname_col="District")
+    .tab_header(title="Districts on a contingency budget, 2020–2025")
+    .cols_label(**{"Vote year": "Vote year", "How it happened": "How it happened"})
+    .tab_options(row_striping_include_table_body=True)
+    .tab_source_note(
+        md(
+            '**Source:** NYSED statewide budget voting results (computed). "Failed '
+            'revote" = held a June re-vote and lost; "no revote" = adopted contingency '
+            "directly after the first defeat."
+        )
+    )
+)
+```
+
+## Notes on the data
+
+- **What "year" means.** This chapter indexes by the **vote's calendar year** (the
+  May 2024 vote is "2024"). The budget adopted at that vote funds the **following**
+  school year (the May 2024 vote adopts the 2024–25 budget). That is one off from
+  the school-year-ending label used elsewhere in this book.
+- **No levy figures.** NYSED's vote files carry **no tax-levy data** — only a "60%
+  required" flag marking budgets above the cap. Cap status here comes entirely from
+  that flag; the actual levy percentages live in a different source (the OSC / tax
+  report-card data used in the [Taxes](taxes.qmd) chapter).
+- **Re-vote linking is best-effort.** A first vote and its re-vote are matched by
+  district name within the year. NYSED spells district names inconsistently across
+  files (and used all-caps in the older files), so a handful of re-votes each year
+  do not link to a first-vote record; counts of re-vote outcomes are therefore
+  approximate for the older years and reliable from about 2020 on.
+- **Pre-2012.** The tax cap took effect in 2012, so the above/below-cap split is
+  undefined before then; earlier years are omitted.
+- **Validation.** The computed first-vote defeat counts match NYSED's own published
+  statewide totals exactly for 2021–2025 (and within one for the anomalous 2020).
+
+*Data pipeline: [`src/download_budget_votes.py`](https://github.com/donboyd5/ccs/blob/main/src/download_budget_votes.py) fetches the workbooks;
+[`src/build_budget_votes.py`](https://github.com/donboyd5/ccs/blob/main/src/build_budget_votes.py) parses them into `data/processed/budget_votes.parquet`. See the [data sources](../appendix/sources.qmd) appendix.*

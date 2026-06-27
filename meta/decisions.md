@@ -2,6 +2,50 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-06-27 — NYSED budget vote / contingency-budget dataset (R→Python port)
+
+- **Adopted NYSED's statewide *School District Budget Voting Results*** (May vote
+  + June re-vote, budget-span years 2013–2026 → vote calendar years 2012–2025) as
+  the source for the **contingency-budgets** chapter. Built the standard pipeline:
+  [`src/download_budget_votes.py`](../src/download_budget_votes.py) (exact-URL
+  `REGISTRY`) + [`src/build_budget_votes.py`](../src/build_budget_votes.py) →
+  `data/processed/budget_votes.parquet`. The 27 raw files were already on disk;
+  the gap this closes is **reproducibility from tracked code** (they were
+  previously downloaded inline by a standalone R notebook).
+- **Faithful R→Python port of the heuristic layout detector.** NYSED changes the
+  headers/format/layout every year, so each sheet is reduced to a schema
+  (`year`, `kind`, `district`, `district_key`, `yes`, `no`, `above_cap`) by
+  inferring the name / Yes-No / 60%-flag columns. Two fixes beyond the original R:
+  (a) reject a "SCHOOL DISTRICT" column whose data is mostly numeric (a merged
+  title over a leading code column had fooled it on the 2014 re-vote); (b) drop
+  `FIRST VOTE:` / `REVOTE:` section-label rows the sectioned re-vote files leak.
+- **Validated against NYSED's own statewide totals:** computed first-vote defeat
+  counts match NYSED's published P/D statewide totals **exactly for 2021–2025**
+  (within 1 for the anomalous 2020 COVID year); the `% Yes` reconciliation is
+  0.0000 wherever a `% Yes` column exists. Stronger than the source notebook's
+  vague "19" claim (which was the 2024 figure).
+- **Names, not codes; no levy data.** These files carry district *names* and only
+  a "60% required" flag — **no BEDS codes, no levy figures** — so they are **not
+  joinable** to the `nysed_district_cd` crosswalk. A normalized `district_key`
+  (upper-cased, suffix-stripped) links a first vote to its re-vote across NYSED's
+  inconsistent name forms (~100% from 2020 on, best-effort older). `year` is the
+  **vote calendar year** (May 2024 → 2024), one off from the book's
+  school-year-ending label — documented in the chapter.
+- **Local findings surfaced in the chapter:** Cambridge's budget has **passed on
+  the first vote every year (2012–2025)** (closest call 2023, 53%); Washington
+  County neighbor **Fort Edward** went to contingency in **both 2018 and 2020**;
+  **Salem** failed May 2024 at ~59% (above the cap, needing 60%) and passed the
+  June re-vote at 71%. Chapter stays in `front/` (statewide/exploratory in
+  flavor); Don may later relocate or focus it more on Cambridge.
+- **Fixed the reorg's stale-`comparisons.py` import.** Moving chapters into
+  `front/`-style subdirs had been coped with by **copying** `comparisons.py` into
+  each subdir, which silently went stale (the copies lacked new helpers). Replaced
+  the `front/`, `exploratory/`, and `appendix/` copies with **symlinks to the book
+  root `comparisons.py`** — one source of truth, the fix the reorg plan itself
+  suggested. Verified all sibling chapters still render.
+- See [`data/raw/nysed_budget_votes/SOURCE.md`](../data/raw/nysed_budget_votes/SOURCE.md)
+  for full provenance, the URL registry, and known data-quality notes.
+
 ## 2026-06-15 — Book strategy: exploratory now, polished summary later
 
 - **`books/cambridge-comparisons` is an exploratory book.** We deliberately keep

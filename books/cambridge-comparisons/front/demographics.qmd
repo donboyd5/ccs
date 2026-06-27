@@ -1,0 +1,21 @@
+# Demographics: Rural aging and population decline
+
+**Cambridge is caught in a storm buffeting rural school districts throughout New York**
+
+Population is declining in rural areas throughout New York.
+
+[go to the popfc (population forecast) project home\donboyd5\Documents\python_projects\popfc and get population history data there for washingon, warren, saratoga, and rensselaer counties and do an indexed plot of total population for (I think) 1995–2020, with 2000 = 100. It would be great if you can add Bennington and Rutland counties in vermont, too. You will have to get those data.
+
+Make a second plot of the 4 NY counties with the same data for 2020–2035, with 2020 = 100.
+
+You do not need to write interpretie text about these plots - I will do taht.
+
+then do a table for washington county showing the annual components of change for 2020-2035 -- years in rows, components in columns births, deaths, domestic migration, international migration, total change
+
+]
+
+The main reasons for this decline are:
+
+-  Declines in the number of births, which is a statewide trend
+-  Out-migration of younger adults, leading to an aging population
+-  Economic factors that make rural areas less attractive for new residents

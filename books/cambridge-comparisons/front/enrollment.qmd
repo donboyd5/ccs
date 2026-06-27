@@ -1,8 +1,16 @@
-# Enrollment
+# Enrollment is declining
 
-**Cambridge has fewer students than it used to — about 124 fewer K-12 students in 2024–25 than in 2015–16, a decline of roughly 14%.** This matters because fewer students mean less state aid, a smaller tax base to spread costs across, and tough choices about staffing and programs. Enrollment is the starting point for everything that follows: staffing levels, spending per pupil, and the district's fiscal health.
+**Cambridge has fewer students than it used to — about 124 fewer K-12 students in 2024–25 than in 2015–16, a decline of roughly 14%.**
 
-The chart below shows how Cambridge's K-12 enrollment has changed since 2015–16, alongside nearby districts for context.
+Fewer students mean:
+
+-
+
+
+
+ This matters because fewer students mean less state aid, a smaller tax base to spread costs across, and tough choices about staffing and programs. Enrollment is the starting point for everything that follows: staffing levels, spending per pupil, and the district's fiscal health.
+
+The figure below shows how Cambridge's K-12 enrollment has changed since 2015–16, alongside nearby districts for context.
 
 ```{python}
 #| label: setup
@@ -15,6 +23,7 @@ sys.path.insert(0, os.getcwd())
 import polars as pl
 from plotnine import (
     aes,
+    geom_hline,
     geom_line,
     geom_point,
     ggplot,
@@ -52,6 +61,47 @@ cambridge = g.filter(pl.col("district") == cc.FOCUS)
         x="School year ending",
         y="K–12 enrollment",
         title="K-12 enrollment, 2015–16 to 2024–25",
+    )
+    + cc.theme_ccs()
+)
+```
+
+The districts differ greatly in size, which is why the chart above clips Schuylerville (1,645 students in 2016) off the top while bunching Salem (512) near the bottom. Setting each district's 2016 enrollment equal to 100 puts them on one shared scale, so the lines compare **rates** of change rather than size:
+
+```{python}
+#| label: fig-enrollment-indexed
+#| fig-cap: "K–12 enrollment indexed to 2016 (= 100); 90 means a 10% decline. Dashed line marks the 2016 baseline. Source: NYSED BEDS Day enrollment."
+g = (
+    cc.panel_for(cc.GRAPH_GROUP, since=2016)
+    .select("district", "year_end", "k12_enrollment")
+    .drop_nulls()
+)
+# set each district's 2016 enrollment equal to 100
+base = (
+    g.filter(pl.col("year_end") == 2016)
+    .select("district", "k12_enrollment")
+    .rename({"k12_enrollment": "base_2016"})
+)
+idx = g.join(base, on="district").with_columns(
+    (pl.col("k12_enrollment") / pl.col("base_2016") * 100).alias("index")
+)
+cambridge = idx.filter(pl.col("district") == cc.FOCUS)
+
+(
+    ggplot(idx, aes("year_end", "index", color="district"))
+    + geom_hline(yintercept=100, linetype="dashed", color="#999999")
+    + geom_line(size=1)
+    + geom_point(size=1.8)
+    + geom_line(cambridge, size=2.4)  # emphasize the focus district
+    + scale_color_manual(
+        values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
+    )
+    + scale_x_continuous(breaks=list(range(2016, 2026)))
+    + scale_y_continuous(limits=(75, 110), breaks=list(range(75, 111, 5)))
+    + labs(
+        x="School year ending",
+        y="K–12 enrollment, indexed (2016 = 100)",
+        title="K-12 enrollment indexed to 2016 (= 100)",
     )
     + cc.theme_ccs()
 )
@@ -102,7 +152,7 @@ wide = wide.with_columns(
     .tab_source_note(
         md(
             "**Source:** NYSED BEDS Day enrollment database. K-12 enrollment as of "
-            "the first Wednesday of October. Year = school-year-ending (2025 = 2024–25)."
+            "the first Wednesday of October."
         )
     )
 )

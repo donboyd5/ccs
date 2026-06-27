@@ -21,7 +21,7 @@ Years are **school-year-ending** (2025 = 2024–25).
 | Audited financial reports | Federal Audit Clearinghouse | Cambridge CSD audited statements (PDF) | 2020–2025 | Reference |
 | Property Tax Report Card | NYSED | proposed budget, tax levy & limit, projected enrollment | 2020–2027 | **Adding** |
 | School district property taxes | NYS Comptroller (OSC) | tax levy, taxable full value & full-value tax rate, by district × town | 2015–2025 | **Adding** |
-| Budget vote results | NYSED | district budget vote / re-vote outcomes | 2013–2026 | Related analysis |
+| Budget vote results | NYSED | budget vote & re-vote outcomes: defeats, contingency budgets, 60%-above-cap flag | 2012–2025 (vote yr) | **In use** |
 | State school aid | NYS (data.ny.gov `9pb8-dg53`) | state aid to each district by year | 1996– | Candidate |
 | Real property tax rates & levies | NYS (data.ny.gov `iq85-sdzs`) | tax levies and rates by municipality | varies | Candidate |
 
@@ -126,6 +126,21 @@ put before voters each May. These are *proposed/budgeted* figures (forward-
 looking), in contrast to the Comptroller's *actual* spending. Provenance and the
 year-by-year download list:
 [`data/raw/nysed_property_tax_report_card/SOURCE.md`](https://github.com/donboyd5/ccs/blob/main/data/raw/nysed_property_tax_report_card/SOURCE.md).
+
+## Budget vote results (NYSED)
+
+NYSED posts statewide **School District Budget Voting Results** each year
+(<https://www.p12.nysed.gov/mgtserv/votingresults/>): the May **vote** (every
+district) and the June **re-vote** (districts that failed the first vote). From
+these the project derives, per district and vote, the Yes/No counts and a
+**60%-required flag** marking budgets above the tax cap (which must win a
+supermajority). Together these identify budget **defeats**, **re-votes**, and
+**contingency budgets** — the subject of the [Contingency budgets](../front/contingency-budgets.qmd)
+chapter. These files carry district *names* (not codes) and **no levy figures**
+(only the 60% flag), so they are not joinable to the district crosswalk; cap
+status comes entirely from the flag. Provenance, the year-by-year URL list, and
+the heuristic layout-detection parser:
+[`data/raw/nysed_budget_votes/SOURCE.md`](https://github.com/donboyd5/ccs/blob/main/data/raw/nysed_budget_votes/SOURCE.md).
 
 ## School district property taxes (NYS Comptroller)
 
