@@ -19,7 +19,7 @@ Years are **school-year-ending** (2025 = 2024–25).
 | Pupil–teacher FTE (CCD) | NCES, via Urban Institute | FTE-based pupil-teacher ratio (cross-check) | 2016–2025 | **In use** |
 | School district finance | NYS Comptroller (OSC) | revenue & expenditure by account code → per-pupil spending | 2013–2025 | **In use** |
 | Audited financial reports | Federal Audit Clearinghouse | Cambridge CSD audited statements (PDF) | 2020–2025 | Reference |
-| Property Tax Report Card | NYSED | proposed budget, tax levy & limit, projected enrollment | 2020–2027 | **Adding** |
+| Property Tax Report Card | NYSED | proposed budget, tax levy, levy limit (the cap), permissible exclusions, fund balances | 2015–2027 | **In use** |
 | School district property taxes | NYS Comptroller (OSC) | tax levy, taxable full value & full-value tax rate, by district × town | 2015–2025 | **Adding** |
 | Budget vote results | NYSED | budget vote & re-vote outcomes: defeats, contingency budgets, 60%-above-cap flag | 2012–2025 (vote yr) | **In use** |
 | State school aid | NYS (data.ny.gov `9pb8-dg53`) | state aid to each district by year | 1996– | Candidate |

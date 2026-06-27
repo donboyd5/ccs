@@ -69,9 +69,13 @@ COLS: list[tuple[int, str]] = [
 #: "to support budget" / library-debt / nonexcludable-proposition / tax-cap-reserve
 #: parts (only a single "Total Proposed Tax Levy"). We map the 14 measures that DO
 #: exist by position — the budget-year value is the *second* of each prior/budget
-#: pair, proven by the identity ``levy_vs_limit == proposed_levy_wo - levy_limit_wo``
-#: holding for every district — and leave the 4 absent measures null. (column index
-#: in the 29-col sheet, output name.)
+#: pair, proven (for year_end 2015) by the identity
+#: ``levy_vs_limit == proposed_levy_wo - levy_limit_wo`` holding for every district
+#: — and leave the 4 absent measures null. NOTE: NYSED **flips the sign** of the
+#: ``levy_vs_limit`` field from year_end 2016 on (it becomes ``limit - proposed``),
+#: so the stored column is **not sign-comparable across years**; compute
+#: ``proposed - limit`` from the two component columns for a consistent over/under
+#: gap. (column index in the 29-col sheet, output name.)
 COLS_2015: list[tuple[int, str]] = [
     (5, "proposed_spending"),
     (6, "spending_pct_change"),

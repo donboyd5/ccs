@@ -93,8 +93,13 @@ selecting the **budget-year** value of each pair **by column position** (header 
 carries shifting year labels and stray spaces). **SY 2014-15 (year_end 2015)** is an
 earlier **29-column** layout (header on the 4th row, no levy breakout) read by a
 dedicated parser (`read_2015` / `COLS_2015`); its budget-year column map is verified
-by the identity `levy_vs_limit == proposed_levy_wo - levy_limit_wo` holding for every
-district. The 6-digit BEDS code is joined to
+(for year_end 2015) by the identity `levy_vs_limit == proposed_levy_wo - levy_limit_wo`
+holding for every district. ⚠ **Sign gotcha:** NYSED **flips the sign** of the
+`levy_vs_limit_wo_exclusions` field from year_end 2016 on — in 2015 it is
+`proposed − limit` (positive = over the cap), but from 2016 it is `limit − proposed`
+(positive = under). The stored column is therefore **not sign-comparable across
+years**; compute `proposed_tax_levy_wo_exclusions − tax_levy_limit_wo_exclusions`
+when you need a consistent over/under gap. The 6-digit BEDS code is joined to
 `data/crosswalks/district_crosswalk.csv` to attach `nysed_district_cd`. Workbooks
 that match no known layout are **skipped with a logged reason** (see the "Downloaded
 but NOT in the panel" table above), never silently dropped.
