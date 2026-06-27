@@ -8,16 +8,17 @@ Educational Management Services.
 |---|---|
 | publisher | NYSED, Educational Management Services |
 | source index | <https://www.p12.nysed.gov/mgtserv/> (budget vote results) |
-| coverage | vote years **2013–2026** (+ re-votes most years) |
+| coverage | vote years **2013–2026** (+ re-votes most years; 2018 has no published re-vote) |
 | grain | one row per district, per vote |
+| time convention | on-disk `year` = budget **span-end** year (NYSED "2024-25" → 2025); the builder relabels to the vote's **calendar** year (`year − 1`) |
 
-## Filenames — original → on-disk (this is a generated cache, not a hand-rename)
+## Filenames — original → on-disk
 
-The on-disk names `<year>_<vote|revote>.<ext>` are **generated deterministically**
-by the download step in [`nys_contingency_budgets.qmd`](../../../nys_contingency_budgets.qmd)
-(`sprintf("%d_%s%s", year, kind, ext)`), which keeps the **original NYSED URL** for
-every file in its `registry` table. So the mapping back to source is preserved in
-code. The originals (note NYSED's wildly inconsistent naming):
+The on-disk names `<year>_<vote|revote>.<ext>` (where `<year>` is the budget
+span-end year and `<ext>` follows the source URL) are **generated deterministically
+by [`src/download_budget_votes.py`](../../../src/download_budget_votes.py)**, which
+keeps the **original NYSED URL** for every file in its `REGISTRY`. The original
+NYSED filenames are wildly inconsistent:
 
 | on-disk | original NYSED URL |
 |---|---|
@@ -49,23 +50,57 @@ code. The originals (note NYSED's wildly inconsistent naming):
 | `2013_vote.xls`    | …/votingresults/docs/2012budgetvoteresults.xls |
 | `2013_revote.xls`  | …/votingresults/docs/2012budgetdefeat-1.xls |
 
-(All under `https://p12.nysed.gov/mgtserv/`. Full table with `download: true` to
-refresh is in the notebook's `registry` chunk.)
+(All under `https://p12.nysed.gov/mgtserv/`. The full URL table lives in the
+`REGISTRY` of `download_budget_votes.py`; re-run with `--force` to refresh.)
 
-## Time convention
+## Processing pipeline
 
-NYSED labels a file by the budget **span end** year (the May-2025 vote is in the
-"2025-26" file). The notebook **relabels `year` to the vote's calendar year**
-(`year = year - 1L`), so `2026_vote.xlsx` carries `year = 2025` downstream (its
-embedded vote date is 2025-05-20). Watch this when joining to other tables.
+1. **Download** — [`src/download_budget_votes.py`](../../../src/download_budget_votes.py)
+   fetches each year's vote and re-vote workbook (browser user-agent; NYSED blocks
+   the default urllib agent on some paths). Existing files are skipped unless
+   `--force`.
+2. **Build** — [`src/build_budget_votes.py`](../../../src/build_budget_votes.py)
+   parses the 27 workbooks into one tidy panel,
+   `data/processed/budget_votes.parquet`. NYSED changes the column headers, file
+   format, and layout every year, so each sheet is reduced to a standard schema by
+   **heuristic layout detection** (ported from the original R notebook): it infers
+   the district-name column, the Yes/No count columns, and the 60%-supermajority
+   flag column, then drops title/section/total rows. The build prints a per-file
+   summary and a `% Yes` reconciliation check (where a "% Yes" column exists, the
+   detected Yes/No counts rebuild it to 0.0000 median error).
+
+**Schema** (`budget_votes.parquet`): `year` (vote calendar year), `kind`
+(`vote`/`revote`), `district` (name, whitespace-squashed), `district_key`
+(normalized name — upper-cased, punctuation removed, district-type suffix stripped
+— used to join a first vote to its re-vote across NYSED's inconsistent name
+forms), `yes`, `no`, and `above_cap` (True = the budget needed a 60%
+supermajority, i.e. was above the tax cap).
+
+### Known data-quality notes
+
+- **No codes, no levy.** These files carry district *names* (not BEDS codes) and
+  **no levy figures** — only the "60% required" flag. They are therefore **not
+  joinable** to the project's `nysed_district_cd` crosswalk, and cap status comes
+  entirely from the flag.
+- **Name-form drift.** Older files (through ~2021) list districts in ALL CAPS;
+  newer files use Title Case; the same district appears as e.g. "Corning-Painted
+  Post Area SD" in one file and "...CSD" in another. The `district_key` normalizes
+  this; re-vote linking is ~100% from 2020 on, and best-effort (a handful of
+  misses per year) in the older files.
+- **Year convention.** `year` is the vote's *calendar* year (the May 2024 vote is
+  `2024`); the budget adopted funds the *following* school year. Do not
+  double-count when merging with school-year-ending series.
+- **2020 was atypical** (all-absentee voting, shifted June re-vote date).
+- **Pre-2012 omitted** — no tax cap, so the above/below-cap split is undefined.
 
 ## Also here
 
 `djb_revotes.xlsx` — a small **hand-curated** workbook (author: Don Boyd), not a
-NYSED download; used by the notebook's re-vote cross-checks.
+NYSED download; kept for reference.
 
-## Processing
+## Provenance
 
-[`nys_contingency_budgets.qmd`](../../../nys_contingency_budgets.qmd) (R / `readxl`)
-downloads, caches here, parses the inconsistent annual layouts, and analyzes
-contingency budgets. Set its `download: true` param to refresh from NYSED.
+This source and its parser were ported from a standalone R notebook
+(`nys_contingency_budgets.qmd`, since retired) into the project's standard
+`src/` download + build pipeline. The original heuristic layout detection is
+preserved (faithful port) in `build_budget_votes.py`.

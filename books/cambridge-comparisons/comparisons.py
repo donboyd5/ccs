@@ -40,6 +40,7 @@ PANEL_PATH = DATA_DIR / "processed" / "district_enrollment_teachers_panel.parque
 CCD_PATH = DATA_DIR / "processed" / "ccd_pupil_teacher_ny.parquet"
 SPENDING_PATH = DATA_DIR / "processed" / "spending_per_pupil.parquet"
 CLASS_SIZE_PATH = DATA_DIR / "processed" / "class_size_by_district.parquet"
+BUDGET_VOTES_PATH = DATA_DIR / "processed" / "budget_votes.parquet"
 
 
 # ---------------------------------------------------------------------------
@@ -395,6 +396,23 @@ def load_spending() -> pl.DataFrame:
     ``CALENDAR_YEAR`` and the NYSED school-year-ending label.
     """
     return pl.read_parquet(SPENDING_PATH)
+
+
+def load_budget_votes() -> pl.DataFrame:
+    """Read the NYSED budget vote & re-vote panel.
+
+    Built by ``src/build_budget_votes.py`` from NYSED's statewide *School
+    District Budget Voting Results* workbooks. One row per district × vote:
+    ``year`` (the vote's *calendar* year — the May vote, NOT the budget-end
+    year), ``kind`` (``"vote"`` = May, ``"revote"`` = June), ``district`` and
+    ``district_key`` (a normalized name for joining vote↔revote across NYSED's
+    inconsistent name forms), ``yes`` / ``no`` counts, and ``above_cap``
+    (True = the budget needed a 60% supermajority to pass). These files carry
+    district *names*, not codes, and **no levy data** — only the 60% flag — so
+    the panel is not joinable to the ``nysed_district_cd`` crosswalk. See the
+    source's ``SOURCE.md`` for provenance and the year convention.
+    """
+    return pl.read_parquet(BUDGET_VOTES_PATH)
 
 
 def spending_for(group: dict[str, str]) -> pl.DataFrame:
