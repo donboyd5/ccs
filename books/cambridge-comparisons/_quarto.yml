@@ -9,12 +9,12 @@ book:
   date: today
   chapters:
     - index.qmd
-    - part: "Cambridge and the challenges it faces"
+    - part: "CCS and the challenges it faces"
       chapters:
         - front/demographics.qmd
         - front/enrollment.qmd
         - front/class-size.qmd
-    - part: "Cambridge and the issues it faces"
+    - part: "CCS finances"
       chapters:
         - front/spending.qmd
         - front/taxes.qmd
