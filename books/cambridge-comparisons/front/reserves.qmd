@@ -63,6 +63,68 @@ purposes. The 4% rule constrains only the flexible money a district can keep on
 hand.^[The cap on the property-tax *levy* itself is a separate rule, covered in
 the Taxes chapter and the contingency-budgets chapter.]
 
+## Why districts build specific reserves
+
+Each reserve fund exists to set aside money for a **specific, often lumpy or
+unpredictable cost** the district is legally required to pay — smoothing a bill
+that would otherwise hit the budget all at once. The clearest example is the
+**retirement reserve**. A district's pension cost depends on an annually-set
+employer contribution rate that swings widely: NYSTRS's teachers'-system rate has
+ranged from roughly **6% to 17.5% of payroll** since 2014-15 (it was **16.25% for
+2023-24**, for example).^[NYSTRS employer contribution rate history,
+<https://www.nystrs.org/employers/employer-contribution-rate/>. The rate is
+smoothed over several years of investment returns, so market shocks feed in
+slowly — hence the run-up to 16.25% after the 2022 market decline.] By
+contributing to the reserve in lower-rate years, a district builds a cushion it
+can draw on when the rate spikes — instead of cutting programs or sharply raising
+taxes that year. The same logic runs through the other reserves: each earmarks
+savings for a cost that is mandatory, large, and hard to time — tax-refund
+judgments, insurance or workers'-comp claims, capital projects.
+
+A second reason matters under the tax cap: **restricted reserve funds are not
+subject to the 4% unassigned-fund-balance limit**. Building reserves is therefore
+the main way a district holds savings *beyond* that 4% flexible ceiling — the
+trade-off being that the money is locked to its specific purpose.
+
+## Using reserves for budget relief
+
+A district spends down a reserve by **appropriating** it — booking a planned draw
+as a revenue source in the coming year's budget. When, say, $X is appropriated
+from the TRS reserve toward that year's pension bill, the budget needs $X less
+from taxes and state aid for the TRS line, **freeing room for other spending, for
+tax relief, or to rebuild other reserves**. Cambridge's board did this for
+2025-26, appropriating **$625,000 from the capital reserve** and **$200,119 from
+the employee-benefit reserve**.
+
+Two points keep this honest:
+
+- **It is not new money.** The reserve was funded from *prior* years' taxes, so
+  drawing it shifts cost backward and leaves less cushion for the next shock — it
+  smooths timing; it does not create resources.
+- **It works within the cap.** Using reserves as a revenue source lowers the levy
+  the budget requires — a key lever for staying under the tax cap, though leaning
+  on it too hard erodes the buffer.
+
+Reserve funds can be spent **only for their statutory purpose** — a TRS reserve
+cannot buy a roof, and a capital reserve cannot pay a pension bill. Several carry
+extra rules (from the chart of accounts and Cambridge's audited reports):
+
+- **Capital reserve (Education Law §3651):** both establishing it *and* every
+  expenditure from it require voter approval by proposition.
+- **Tax certiorari reserve (General Municipal Law §3651.1-a):** mandatory to fund;
+  the balance may not exceed anticipated judgments and claims, and any unused
+  amount must be returned to the General Fund by the first day of the fourth
+  fiscal year after deposit. (Cambridge was flagged in 2024-25 for over-funding
+  this reserve; it was corrected.)
+- **Retirement reserve (General Municipal Law §6-r):** a board may contribute up
+  to **2% of covered salaries** per year, with the TRS sub-fund capped at **10%**
+  of covered salaries.
+- **Employee benefit reserve (General Municipal Law §6-p):** established by board
+  vote; for accrued benefits payable on termination.
+
+The **unassigned** balance, by contrast, has no purpose restriction — it is the
+flexible money — which is precisely why the state caps it at 4%.
+
 ## Fund balance across districts vs. the cap
 
 ```{python}
