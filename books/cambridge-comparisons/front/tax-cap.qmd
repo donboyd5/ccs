@@ -39,8 +39,8 @@ sys.path.insert(0, os.getcwd())
 
 import polars as pl
 from plotnine import (
-    aes, geom_col, geom_hline, geom_line, geom_point, ggplot, labs,
-    scale_color_manual, scale_x_continuous, scale_y_continuous, theme,
+    aes, geom_col, geom_line, geom_point, ggplot, labs,
+    scale_color_manual, scale_x_continuous, theme,
 )
 from great_tables import GT, loc, md, style
 
