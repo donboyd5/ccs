@@ -2,6 +2,22 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-06-28 — Methods appendix
+
+- **Filled in `appendix/methods.qmd`** (was a TODO stub) — a reader-facing
+  reference consolidating the measure definitions, caveats, year conventions, and
+  cross-checks that were scattered across the front chapters. Sections: conventions
+  (school-year-ending label + the vote-year exception; comparison groups; nominal
+  dollars; the `nysed_district_cd` join key); measure definitions + caveats by
+  topic (enrollment/teachers, class size, test results, spending, taxes, tax cap,
+  reserves, contingency budgets); cross-checks (NYSED headcount vs NCES FTE;
+  contingency defeats vs NYSED totals; OSC ST-3 vs audited FAC; PTRC % Yes); and
+  limitations (no inflation adjustment; small-district volatility; per-pupil scale
+  effect; name-based vote matching; era/tax-cap breaks).
+- Lets the front chapters stay narrative while pointing here for the "how." Dataset
+  *provenance* stays in the Sources appendix + per-source `SOURCE.md` files; this
+  appendix covers *how measures are defined and where comparisons break down*.
+
 ## 2026-06-28 — Reserves & fund-balance chapter
 
 - **Filled in `front/reserves.qmd`** (was a stub) — the reserve-funds vs. fund-
