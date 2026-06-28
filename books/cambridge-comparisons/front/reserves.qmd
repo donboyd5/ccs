@@ -163,6 +163,64 @@ sits above 4% in some years (the top of the band reaches about 6% in the early
 given year. **Cambridge tracks right at the cap** (about 3–4.6%), a typical
 position.
 
+## Total reserves vs. other districts
+
+The 4% chart above covers only the *unassigned* balance. A district's **total**
+fund balance — the restricted reserve funds plus assigned and unassigned balance —
+is a fuller measure of its savings. As a share of the budget, Cambridge sits
+**below** the typical New York district.
+
+```{python}
+#| label: fig-total-fb-comparative
+#| fig-cap: "Total General Fund fund balance (restricted reserve funds + assigned + unassigned) as a percent of each district's budget, school years ending 2015–2027. Shaded band = middle 50% of districts; solid line = median; Cambridge is the red line. Source: NYSED Property Tax Report Card."
+tfb = (
+    pl.read_parquet(PTRC_PATH)
+    .with_columns(
+        (pl.col("fund_balance_restricted").fill_null(0)
+         + pl.col("fund_balance_assigned_appropriated").fill_null(0)
+         + pl.col("fund_balance_unrestricted").fill_null(0)).alias("total_fb"),
+    )
+    .filter(pl.col("proposed_spending") > 0)
+    .with_columns((pl.col("total_fb") / pl.col("proposed_spending") * 100).alias("fb_pct"))
+)
+band2 = (
+    tfb.group_by("year_end").agg(
+        pl.col("fb_pct").quantile(0.25).alias("p25"),
+        pl.col("fb_pct").median().alias("median"),
+        pl.col("fb_pct").quantile(0.75).alias("p75"),
+    ).sort("year_end")
+)
+cam2 = (
+    tfb.filter(pl.col("nysed_district_cd") == "64161004")
+    .select("year_end", "fb_pct").sort("year_end")
+)
+
+(
+    ggplot()
+    + geom_ribbon(band2, aes("year_end", ymax="p75", ymin="p25"), fill="#C8D9E6", alpha=0.8)
+    + geom_line(band2, aes("year_end", "median"), color="#2C6E9B", size=1)
+    + geom_line(cam2, aes("year_end", "fb_pct"), color="#C8102E", size=1.6)
+    + geom_point(cam2, aes("year_end", "fb_pct"), color="#C8102E", size=1.8)
+    + scale_x_continuous(breaks=list(range(2015, 2028)))
+    + scale_y_continuous(breaks=list(range(0, 61, 10)))
+    + labs(
+        x="School year ending",
+        y="Total fund balance (% of budget)",
+        title="Total fund balance vs. other districts, 2014–15 to 2026–27",
+    )
+    + cc.theme_ccs()
+    + theme(figure_size=(9, 4.5))
+)
+```
+
+The typical New York district holds total fund balance worth **about a quarter
+of its budget** (the median rose from ~19% in 2014–15 to ~26% by the mid-2020s).
+Districts broadly built up savings over the period. **Cambridge sits below that
+median** — about 11% of budget in 2014–15, rising to ~19% by 2024–25, around the
+**27th percentile statewide**. Cambridge's reserves grew *faster* than the typical
+district's over the decade, but from a thinner base, so they remain **comparatively
+modest**.
+
 ## Cambridge's reserves by type, over time
 
 ```{python}
