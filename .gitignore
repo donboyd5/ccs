@@ -12,6 +12,8 @@ data/*.csv
 data/*.parquet
 data/**/*.csv
 data/**/*.parquet
+# Downloader caches of large upstream files (regenerable; e.g. Census bulk CSVs)
+data/**/_cache/
 
 # Exception: track curated, hand-maintainable crosswalks (small + diffable).
 # The generated parquet stays ignored; the CSV is the tracked source of truth.

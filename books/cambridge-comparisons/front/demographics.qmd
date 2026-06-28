@@ -1,21 +1,209 @@
-# Demographics: Rural aging and population decline
+---
+title: "Demographics: Rural aging and population decline"
+---
 
-**Cambridge is caught in a storm buffeting rural school districts throughout New York**
+**Cambridge is caught in a storm buffeting rural school districts throughout New York.**
 
 Population is declining in rural areas throughout New York.
-
-[go to the popfc (population forecast) project home\donboyd5\Documents\python_projects\popfc and get population history data there for washingon, warren, saratoga, and rensselaer counties and do an indexed plot of total population for (I think) 1995–2020, with 2000 = 100. It would be great if you can add Bennington and Rutland counties in vermont, too. You will have to get those data.
-
-Make a second plot of the 4 NY counties with the same data for 2020–2035, with 2020 = 100.
-
-You do not need to write interpretie text about these plots - I will do taht.
-
-then do a table for washington county showing the annual components of change for 2020-2035 -- years in rows, components in columns births, deaths, domestic migration, international migration, total change
-
-]
 
 The main reasons for this decline are:
 
 -  Declines in the number of births, which is a statewide trend
 -  Out-migration of younger adults, leading to an aging population
 -  Economic factors that make rural areas less attractive for new residents
+
+The charts below put Cambridge's county — **Washington County** — alongside its
+neighbors on both sides of the state line. Each county's population is shown
+**relative to its own starting point** (indexed to 100), so the lines compare
+*trends*, not sizes. Washington County is the red line in each chart.
+
+```{python}
+#| label: setup
+#| include: false
+import os
+import sys
+from pathlib import Path
+
+sys.path.insert(0, os.getcwd())
+
+import polars as pl
+from plotnine import (
+    aes,
+    annotate,
+    geom_line,
+    geom_vline,
+    ggplot,
+    labs,
+    scale_color_manual,
+    scale_x_continuous,
+    scale_y_continuous,
+)
+from great_tables import GT, loc, md, style
+
+import comparisons as cc
+
+
+def _find_repo_root() -> Path:
+    cwd = Path.cwd()
+    for base in [cwd, *cwd.parents][:5]:
+        if (base / "data" / "crosswalks").is_dir():
+            return base
+    raise FileNotFoundError("Could not find repo root")
+
+
+REPO_ROOT = _find_repo_root()
+PROCESSED_DIR = REPO_ROOT / "data" / "processed"
+
+pop = pl.read_parquet(PROCESSED_DIR / "demographics_county_pop.parquet")
+components = pl.read_parquet(PROCESSED_DIR / "demographics_washington_components.parquet")
+
+#: Short, state-tagged labels for the chart legends (VT counties tagged so a
+#: reader sees the chart spans two states; NY counties are the default context).
+COUNTY_LABEL: dict[str, str] = {
+    "Washington": "Washington",
+    "Warren": "Warren",
+    "Saratoga": "Saratoga",
+    "Rensselaer": "Rensselaer",
+    "Bennington County": "Bennington (VT)",
+    "Rutland County": "Rutland (VT)",
+}
+COUNTY_PALETTE: dict[str, str] = {
+    "Washington": "#C8102E",      # bold red — Cambridge's county, the focus
+    "Warren": "#2C6E9B",
+    "Saratoga": "#3F9C5A",
+    "Rensselaer": "#8156A7",
+    "Bennington County": "#E08214",
+    "Rutland County": "#6C757D",
+}
+
+
+def _indexed(df: pl.DataFrame, base_year: int) -> pl.DataFrame:
+    """Add an ``index`` column = population / county's ``base_year`` value × 100."""
+    base = (
+        df.filter(pl.col("year") == base_year)
+        .select("geoid", pl.col("population").alias("_base"))
+    )
+    return (
+        df.join(base, on="geoid")
+        .with_columns((pl.col("population") / pl.col("_base") * 100).alias("index"))
+        .drop("_base")
+        .with_columns(pl.col("geography").replace_strict(COUNTY_LABEL).alias("county"))
+    )
+```
+
+```{python}
+#| label: fig-pop-history
+#| fig-cap: "Total population indexed to 2000 (=100), 2000–2020. Values below 100 mean a county ended the period smaller than it began. NY counties from the popfc forecast project (reconciled Census/NYSDOL series); Bennington and Rutland from the U.S. Census Bureau (Population Estimates Program). The 2020 uptick for the two Vermont counties is the 2020 Census rebenchmark — the census counted more residents than the prior estimates had shown."
+g = _indexed(pop.filter(pl.col("year").is_between(2000, 2020)), base_year=2000)
+order = [COUNTY_LABEL[c] for c in ["Washington", "Saratoga", "Warren", "Rensselaer",
+                                   "Bennington County", "Rutland County"]]
+
+(
+    ggplot(g, aes("year", "index", color="county"))
+    + geom_line(size=1)
+    + scale_color_manual(values={COUNTY_LABEL[k]: v for k, v in COUNTY_PALETTE.items()},
+                         limits=order)
+    + scale_x_continuous(breaks=list(range(2000, 2021, 5)))
+    + scale_y_continuous(limits=(80, 120), breaks=list(range(80, 121, 5)))
+    + labs(
+        x=None, y="Population (2000 = 100)",
+        title="Population by county, indexed to 2000",
+        subtitle="2000–2020 (100 = each county's 2000 population)",
+    )
+    + cc.theme_ccs()
+)
+```
+
+```{python}
+#| label: fig-pop-forecast
+#| fig-cap: "Total population indexed to 2020 (=100), 2020–2035. Solid lines are history (through 2024); dashed lines are the popfc baseline forecast (2025–2035). NY counties only — Vermont has no forecast in popfc."
+g = _indexed(pop.filter(pl.col("year").is_between(2020, 2035)), base_year=2020)
+order = [COUNTY_LABEL[c] for c in ["Washington", "Saratoga", "Warren", "Rensselaer"]]
+
+hist = g.filter(pl.col("period") == "history")          # 2020–2024
+# Forecast segment, anchored at the 2024 point so the dashed line meets the solid one:
+fc = pl.concat([g.filter(pl.col("year") == 2024), g.filter(pl.col("period") == "forecast")])
+
+(
+    ggplot()
+    + geom_line(hist, aes("year", "index", color="county"), size=1)
+    + geom_line(fc, aes("year", "index", color="county"), linetype="dashed", size=1)
+    + geom_vline(xintercept=2024.5, color="#999999", size=0.6)
+    + annotate("text", x=2025, y=118.5, label="forecast →",
+               ha="left", color="#666666", size=9)
+    + scale_color_manual(values={COUNTY_LABEL[k]: v for k, v in COUNTY_PALETTE.items()},
+                         limits=order)
+    + scale_x_continuous(breaks=list(range(2020, 2036, 5)))
+    + scale_y_continuous(limits=(85, 120), breaks=list(range(85, 121, 5)))
+    + labs(
+        x=None, y="Population (2020 = 100)",
+        title="Projected population by county, indexed to 2020",
+        subtitle="2020–2035 (solid = history, dashed = forecast)",
+    )
+    + cc.theme_ccs()
+)
+```
+
+The table below breaks Washington County's annual **components of change** into
+its parts — births, deaths, and migration — so the decline can be traced to its
+drivers. Negative migration means more people moved out than in.
+
+```{python}
+#| label: tbl-components
+#| tbl-cap: "Washington County annual components of population change, 2021–2035. Births and deaths are counts; migration and total change are signed (negative = loss). Domestic and international migration are shown separately for 2021–2025 (Census Bureau); from 2026 on (forecast) only total net migration is projected, so the two split columns are blank."
+tbl = (
+    components
+    .filter(pl.col("year") >= 2021)           # 2020 is a partial Census period (see note)
+    .with_columns(
+        pl.col("births").round(0).cast(pl.Int64),
+        pl.col("deaths").round(0).cast(pl.Int64),
+        pl.col("domestic_mig").round(0).cast(pl.Int64),
+        pl.col("international_mig").round(0).cast(pl.Int64),
+        pl.col("net_mig").round(0).cast(pl.Int64),
+        pl.col("pop_change").round(0).cast(pl.Int64),
+        pl.when(pl.col("period") == "forecast").then(pl.lit(" (fc)")).otherwise(pl.lit(""))
+        .alias("tag"),
+    )
+    .with_columns((pl.col("year").cast(pl.Utf8) + pl.col("tag")).alias("year"))
+    .drop("tag", "period")
+)
+
+mig_cols = ["domestic_mig", "international_mig", "net_mig", "pop_change"]
+
+(
+    GT(tbl, rowname_col="year")
+    .tab_header(
+        title="Washington County: components of population change",
+        subtitle="Annual, 2021–2035 (signed; negative = loss)",
+    )
+    .tab_spanner(label="Migration", columns=["domestic_mig", "international_mig", "net_mig"])
+    .cols_label(
+        births="Births", deaths="Deaths",
+        domestic_mig="Domestic", international_mig="International",
+        net_mig="Net", pop_change="Total change",
+    )
+    .fmt_integer(columns=["births", "deaths"])
+    .fmt_integer(columns=mig_cols, rows=pl.col("year").is_not_null())
+    # Forecast years have no domestic/international split → show "—" not "None".
+    .sub_missing(columns=["domestic_mig", "international_mig"], missing_text="—")
+    .cols_align(columns=mig_cols, align="right")
+    .tab_source_note(
+        md(
+            "**Source:** Washington County components from the **popfc** forecast "
+            "project (history: U.S. Census Bureau Population Estimates Program, "
+            "v2025 vintage, 2021–2025; forecast: popfc baseline cohort-component "
+            "model, 2026–2035). **2020 is omitted** because the 2020 Census "
+            "boundary makes that year a partial April–July period in the source. "
+            "Domestic/international migration are not projected separately beyond "
+            "2025, so only net migration is shown for forecast years."
+        )
+    )
+)
+```
+
+*Data sources:*
+
+- **popfc** (Washington County, NY Population Forecast, sibling project) — NY county population history (reconciled Census PEP / NYSDOL) and baseline forecast; Washington County components of change.
+- **U.S. Census Bureau, Population Estimates Program** — Bennington and Rutland county (Vermont) history, 2000–2020.
+
+See the [Sources](../appendix/sources.qmd) appendix for provenance.
