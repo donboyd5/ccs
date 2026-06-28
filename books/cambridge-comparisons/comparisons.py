@@ -41,6 +41,7 @@ CCD_PATH = DATA_DIR / "processed" / "ccd_pupil_teacher_ny.parquet"
 SPENDING_PATH = DATA_DIR / "processed" / "spending_per_pupil.parquet"
 CLASS_SIZE_PATH = DATA_DIR / "processed" / "class_size_by_district.parquet"
 BUDGET_VOTES_PATH = DATA_DIR / "processed" / "budget_votes.parquet"
+PTRC_PATH = DATA_DIR / "processed" / "property_tax_report_card.parquet"
 
 
 # ---------------------------------------------------------------------------
@@ -413,6 +414,45 @@ def load_budget_votes() -> pl.DataFrame:
     source's ``SOURCE.md`` for provenance and the year convention.
     """
     return pl.read_parquet(BUDGET_VOTES_PATH)
+
+
+def load_ptrc() -> pl.DataFrame:
+    """Read the NYSED Property Tax Report Card panel (one row per district-year).
+
+    Built by ``src/build_ptrc.py`` from NYSED's PTRC workbooks. Carries the
+    **proposed** figures put before voters each May: proposed spending and tax
+    levy, the tax-levy **limit** (the cap), **permissible exclusions**, the
+    levy-vs-limit gap, fund balances, and projected enrollment. ``year_end`` is
+    the budget-span end (the school year the budget funds).
+
+    ⚠ The stored ``levy_vs_limit_wo_exclusions`` column's **sign flips at 2016**
+    (see the source's ``SOURCE.md``): in 2015 it is ``proposed − limit``; from 2016
+    it is ``limit − proposed``. Compute ``proposed_tax_levy_wo_exclusions −
+    tax_levy_limit_wo_exclusions`` for a consistent over/under gap.
+    """
+    return pl.read_parquet(PTRC_PATH)
+
+
+def ptrc_for(group: dict[str, str]) -> pl.DataFrame:
+    """PTRC proposed-budget / tax-cap measures for `group`, labelled like the other
+    panels (short ``district`` name + ``region``). Keeps the cap-relevant columns;
+    callers compute the over/under gap as ``proposed_tax_levy_wo_exclusions −
+    tax_levy_limit_wo_exclusions`` (positive = over the cap) because the stored
+    ``levy_vs_limit`` sign is inconsistent across years.
+    """
+    region_by_cd = {
+        cd: ("Washington County" if cd in WASHINGTON_K12 else "Other comparison districts")
+        for cd in group
+    }
+    return (
+        load_ptrc()
+        .filter(pl.col("nysed_district_cd").is_in(list(group)))
+        .with_columns(
+            pl.col("nysed_district_cd").replace_strict(group).alias("district"),
+            pl.col("nysed_district_cd").replace_strict(region_by_cd).alias("region"),
+        )
+        .sort("district", "year_end")
+    )
 
 
 def spending_for(group: dict[str, str]) -> pl.DataFrame:

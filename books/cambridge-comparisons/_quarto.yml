@@ -18,6 +18,7 @@ book:
       chapters:
         - front/spending.qmd
         - front/taxes.qmd
+        - front/tax-cap.qmd
         - front/reserves.qmd
         - front/contingency-budgets.qmd
     - part: "Academic performance"

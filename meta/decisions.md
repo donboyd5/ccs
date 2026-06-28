@@ -2,6 +2,33 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-06-27 — Tax-cap chapter (PTRC data) + a sign-correction
+
+- **Added `front/tax-cap.qmd`** (the property-tax cap), the first chapter to use
+  the built-but-unused `property_tax_report_card.parquet` (NYSED PTRC: proposed
+  levy, levy **limit**, permissible exclusions, fund balances). It completes the
+  finances arc — `spending → taxes → tax-cap → reserves → contingency-budgets` —
+  and gives the contingency chapter the levy/limit context it lacked. Added
+  `load_ptrc()` + `ptrc_for()` to `comparisons.py`; placed after `taxes` in
+  `_quarto.yml`; flipped the PTRC row in `sources.qmd` to **In use**.
+- **Found and documented a sign bug in the stored `levy_vs_limit_wo_exclusions`
+  field:** NYSED **flips its sign at year_end 2016** (2015 = `proposed − limit`,
+  2016+ = `limit − proposed`), so it is **not sign-comparable across years**. The
+  chapter computes the gap itself (`proposed − limit`, positive = over). Corrected
+  the (2015-only) identity claim in `build_ptrc.py`, the PTRC `SOURCE.md`, and
+  this file. (The 2015 identity is valid *for 2015*; the cross-year flip is the
+  gotcha.)
+- **Exclusions nuance:** a district whose proposed levy is above its base limit
+  may still be **within the cap** once permissible exclusions (capital, pension,
+  PILOT) are applied. The chapter's "over the cap" measure is `proposed − limit −
+  permissible_exclusions > 0` (3–23 districts/yr statewide), and it defers to the
+  vote-file 60%-flag for actual override outcomes — consistent with the
+  contingency chapter.
+- **Cambridge:** at or **under** its levy limit every year 2014–15 → 2025–26
+  (proposing right at the cap), then for **2026–27 proposed ~$1.1M (≈12%) over**
+  the limit — ~$0.5M over even after exclusions, which would require 60% approval.
+  Interpretation kept light (Don writes the stakes).
+
 ## 2026-06-27 — NYSED budget vote / contingency-budget dataset (R→Python port)
 
 - **Adopted NYSED's statewide *School District Budget Voting Results*** (May vote
@@ -106,8 +133,12 @@ Newest first. Each entry: the decision, and why.
 - **2015 is the practical floor.** 2016–2027 share the modern 35-column layout;
   **SY 2014-15 (year_end 2015)** uses an earlier 29-column layout (header on the 4th
   row, levy not yet broken out) handled by a dedicated reader (`read_2015` /
-  `COLS_2015`). Its budget-year column map is **proven** by the identity
-  `levy_vs_limit == proposed_levy_wo - levy_limit_wo` holding for every district.
+  `COLS_2015`). Its budget-year column map is **proven** (for year_end 2015) by the
+  identity `levy_vs_limit == proposed_levy_wo - levy_limit_wo` holding for every
+  district. ⚠ **Sign gotcha (found 2026-06-27):** NYSED **flips the sign** of
+  `levy_vs_limit_wo_exclusions` from year_end 2016 on (2015 = `proposed − limit`,
+  2016+ = `limit − proposed`), so it is **not sign-comparable across years** —
+  compute `proposed − limit` from the component columns.
   Earlier years are left undone: year_end ≤ 2014 use narrower pre-tax-cap layouts and
   the 2007-08…2012-13 `.xls` files crash the calamine reader → would need per-year
   parsing. The raw files are kept locally so that work can start from disk.
