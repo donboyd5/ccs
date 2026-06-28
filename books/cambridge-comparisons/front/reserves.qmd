@@ -1,7 +1,334 @@
-# School district reserves and fund balances
+# Reserves and fund balance
 
-What they are, what they're for
+A school district's **reserves** and **fund balance** are its savings — money set
+aside from prior years that is not yet spent. They are a buffer for cash-flow
+gaps, a cushion against unexpected costs, and a way to save for planned future
+expenses. The size of a district's reserves is also one of the clearest signs of
+its fiscal health: too little leaves it exposed; the state limits how much of the
+flexible kind a district may hold.
 
-relationship to appropriated fund balance
+This chapter explains the different kinds of reserves a New York school district
+keeps, the legal cap on the flexible part, how districts across the state sit
+relative to that cap, and how Cambridge's own reserves have changed. It draws on
+the official chart of accounts (kept in this repo's [`docs/`](https://github.com/donboyd5/ccs/tree/main/docs)
+folder), NYSED's Property Tax Report Card, OSC school-district finance data, and
+Cambridge's audited annual financial reports.
 
-Cambridge reserves
+## Two kinds of "reserves": reserve funds and fund balance
+
+The word "reserves" gets used two ways, and the distinction matters.
+
+**Reserve funds** are accounts created under specific state laws, each for a
+specific purpose. The money in them is **restricted** — it can only be used for
+that purpose. A New York school district's main reserve funds are:
+
+| Reserve fund | Account code | Legal basis | Purpose |
+|---|---|---|---|
+| Capital reserve | A878 | Education Law §3651 | Cost of items for which bonds may be issued (requires voter approval) |
+| Tax certiorari reserve | A864 | General Municipal Law §3651.1-a | Property-tax refund judgments (mandatory; capped at anticipated claims) |
+| Retirement contribution reserve (ERS / TRS) | A827 / A828 | General Municipal Law §6-r | Pension contributions to the state retirement systems |
+| Employee benefit accrued liability reserve | A867 | General Municipal Law §6-p | Accrued employee benefits payable on termination |
+| Insurance reserve | A863 | General Municipal Law §6-m | Liability, property, and casualty deductibles/losses |
+| Repair reserve | A878-type | General Municipal Law §6-d | Non-recurring repairs to capital improvements |
+| Unemployment insurance reserve | A815 | — | Unemployment-insurance claims |
+| Workers' compensation reserve | A814 | — | Workers'-compensation claims |
+| Reserve for debt | A884 | — | Debt-service requirements |
+
+**Fund balance** is the broader accounting term for the net resources of a fund
+after liabilities. The General Fund's fund balance is classified into:
+
+- **Restricted** — the reserve funds above (each legally earmarked).
+- **Committed** — set aside by board action for a specific purpose.
+- **Assigned** — intended for a particular use (e.g., **appropriated** into the
+  next year's budget, or **unappropriated**).
+- **Unassigned** — the residual, general-purpose balance with no specific
+  designation. This is the flexible "rainy-day" money.
+
+So the relationship is: **reserve funds are the *restricted* portion of fund
+balance.** A district can hold large amounts in restricted reserves and still
+have little *unassigned* balance — and it is the unassigned balance that the law
+caps.
+
+## The 4% cap
+
+New York's property-tax-cap law (Real Property Tax Law §2-c / Education Law
+§2023-a) limits a school district's **unassigned (unexpended-surplus) fund
+balance** to **4% of the prior year's budget**. This is the measure NYSED reports
+in the Property Tax Report Card as `fund_balance_unrestricted_pct_of_budget`.
+
+The cap applies **only to the unassigned balance**, not to the restricted reserve
+funds. That is why a district with substantial capital, retirement, or tax-
+certiorari reserves is not "over the cap" — those are restricted for their
+purposes. The 4% rule constrains only the flexible money a district can keep on
+hand.^[The cap on the property-tax *levy* itself is a separate rule, covered in
+the Taxes chapter and the contingency-budgets chapter.]
+
+## Fund balance across districts vs. the cap
+
+```{python}
+#| label: setup
+#| include: false
+import os
+import sys
+from pathlib import Path
+
+sys.path.insert(0, os.getcwd())
+
+import polars as pl
+from plotnine import (
+    aes, geom_hline, geom_line, geom_point, geom_ribbon, ggplot, labs,
+    scale_x_continuous, scale_y_continuous, theme,
+)
+from great_tables import GT, loc, md, style
+
+import comparisons as cc
+
+# Locate the repo's data/ dir (Quarto may run from the book dir or project root).
+
+
+def _find_repo_root() -> Path:
+    cwd = Path.cwd()
+    for base in (cwd, *cwd.parents):
+        if (base / "data" / "crosswalks").is_dir():
+            return base
+    raise FileNotFoundError("Could not find repo root")
+
+
+REPO_ROOT = _find_repo_root()
+PTRC_PATH = REPO_ROOT / "data" / "processed" / "property_tax_report_card.parquet"
+CAM_FINANCE_PATH = REPO_ROOT / "data" / "processed" / "cambridge_finance.parquet"
+
+#: account code -> reserve type label (OSC chart of accounts, A8xx)
+RESERVE_CODES = {
+    "A815": "Unemployment insurance",
+    "A827": "Retirement — ERS",
+    "A828": "Retirement — TRS",
+    "A864": "Tax certiorari",
+    "A867": "Employee benefit accrued liability",
+    "A878": "Capital reserve",
+    "A884": "Reserve for debt",
+}
+```
+
+**Most New York districts hold their unassigned fund balance right at the 4%
+ceiling.** The chart below shows, for each year, the middle half of districts
+(shaded band) and the median, against the 4% cap and Cambridge.
+
+```{python}
+#| label: fig-fund-balance-vs-cap
+#| fig-cap: "Unassigned (unexpended-surplus) fund balance as a percent of each district's budget, school years ending 2015–2027. Shaded band = middle 50% of districts; solid line = median; the dashed line is the 4% legal cap. Cambridge is the red line. Source: NYSED Property Tax Report Card."
+fb = pl.read_parquet(PTRC_PATH).select(
+    "year_end", "nysed_district_cd", "fund_balance_unrestricted_pct_of_budget"
+).drop_nulls("fund_balance_unrestricted_pct_of_budget")
+
+band = (
+    fb.group_by("year_end").agg(
+        pl.col("fund_balance_unrestricted_pct_of_budget").quantile(0.25).alias("p25"),
+        pl.col("fund_balance_unrestricted_pct_of_budget").median().alias("median"),
+        pl.col("fund_balance_unrestricted_pct_of_budget").quantile(0.75).alias("p75"),
+    ).sort("year_end")
+)
+cam = (
+    pl.read_parquet(PTRC_PATH)
+    .filter(pl.col("nysed_district_cd") == "64161004")
+    .select("year_end", "fund_balance_unrestricted_pct_of_budget")
+    .sort("year_end")
+)
+
+(
+    ggplot()
+    + geom_ribbon(band, aes("year_end", ymax="p75", ymin="p25"), fill="#C8D9E6", alpha=0.8)
+    + geom_line(band, aes("year_end", "median"), color="#2C6E9B", size=1)
+    + geom_hline(yintercept=4, linetype="dashed", color="#555555")
+    + geom_line(cam, aes("year_end", "fund_balance_unrestricted_pct_of_budget"),
+                color="#C8102E", size=1.6)
+    + geom_point(cam, aes("year_end", "fund_balance_unrestricted_pct_of_budget"),
+                 color="#C8102E", size=1.8)
+    + scale_x_continuous(breaks=list(range(2015, 2028)))
+    + scale_y_continuous(breaks=list(range(0, 11, 2)))
+    + labs(
+        x="School year ending",
+        y="Unassigned fund balance (% of budget)",
+        title="District unassigned fund balance vs. the 4% cap, 2014–15 to 2026–27",
+    )
+    + cc.theme_ccs()
+    + theme(figure_size=(9, 4.5))
+)
+```
+
+The **median district reports exactly 4% every year** — the cap binds, and
+districts keep the maximum flexible balance the law allows. A meaningful tail
+sits above 4% in some years (the top of the band reaches about 6% in the early
+2020s), and roughly **a quarter to a third of districts report over 4%** in a
+given year. **Cambridge tracks right at the cap** (about 3–4.6%), a typical
+position.
+
+## Total reserves vs. other districts
+
+The 4% chart above covers only the *unassigned* balance. A district's **total**
+fund balance — the restricted reserve funds plus assigned and unassigned balance —
+is a fuller measure of its savings. As a share of the budget, Cambridge sits
+**below** the typical New York district.
+
+```{python}
+#| label: fig-total-fb-comparative
+#| fig-cap: "Total General Fund fund balance (restricted reserve funds + assigned + unassigned) as a percent of each district's budget, school years ending 2015–2027. Shaded band = middle 50% of districts; solid line = median; Cambridge is the red line. Source: NYSED Property Tax Report Card."
+tfb = (
+    pl.read_parquet(PTRC_PATH)
+    .with_columns(
+        (pl.col("fund_balance_restricted").fill_null(0)
+         + pl.col("fund_balance_assigned_appropriated").fill_null(0)
+         + pl.col("fund_balance_unrestricted").fill_null(0)).alias("total_fb"),
+    )
+    .filter(pl.col("proposed_spending") > 0)
+    .with_columns((pl.col("total_fb") / pl.col("proposed_spending") * 100).alias("fb_pct"))
+)
+band2 = (
+    tfb.group_by("year_end").agg(
+        pl.col("fb_pct").quantile(0.25).alias("p25"),
+        pl.col("fb_pct").median().alias("median"),
+        pl.col("fb_pct").quantile(0.75).alias("p75"),
+    ).sort("year_end")
+)
+cam2 = (
+    tfb.filter(pl.col("nysed_district_cd") == "64161004")
+    .select("year_end", "fb_pct").sort("year_end")
+)
+
+(
+    ggplot()
+    + geom_ribbon(band2, aes("year_end", ymax="p75", ymin="p25"), fill="#C8D9E6", alpha=0.8)
+    + geom_line(band2, aes("year_end", "median"), color="#2C6E9B", size=1)
+    + geom_line(cam2, aes("year_end", "fb_pct"), color="#C8102E", size=1.6)
+    + geom_point(cam2, aes("year_end", "fb_pct"), color="#C8102E", size=1.8)
+    + scale_x_continuous(breaks=list(range(2015, 2028)))
+    + scale_y_continuous(breaks=list(range(0, 61, 10)))
+    + labs(
+        x="School year ending",
+        y="Total fund balance (% of budget)",
+        title="Total fund balance vs. other districts, 2014–15 to 2026–27",
+    )
+    + cc.theme_ccs()
+    + theme(figure_size=(9, 4.5))
+)
+```
+
+The typical New York district holds total fund balance worth **about a quarter
+of its budget** (the median rose from ~19% in 2014–15 to ~26% by the mid-2020s).
+Districts broadly built up savings over the period. **Cambridge sits below that
+median** — about 11% of budget in 2014–15, rising to ~19% by 2024–25, around the
+**27th percentile statewide**. Cambridge's reserves grew *faster* than the typical
+district's over the decade, but from a thinner base, so they remain **comparatively
+modest**.
+
+## Cambridge's reserves by type, over time
+
+```{python}
+#| label: tbl-cambridge-reserves
+#| tbl-cap: "Cambridge Central School District reserve fund balances by type, school years ending 2013–2025, in thousands of dollars. Source: NYS Comptroller school-district finance data (ST-3 account codes A8xx). Blank = reserve not held that year."
+fin = pl.read_parquet(CAM_FINANCE_PATH)
+years = list(range(2013, 2026))
+
+
+def _amt(code: str, year: int):
+    """End-of-year balance ($, or None) for one account code in one year."""
+    s = fin.filter((pl.col("ACCOUNT_CODE") == code) & (pl.col("CALENDAR_YEAR") == year)).select("AMOUNT").to_series()
+    return s.first() if s.len() else None
+
+
+rows = []
+for code, label in RESERVE_CODES.items():
+    rows.append({"Reserve": label, **{str(y): (_amt(code, y) or 0) / 1000 for y in years}})
+
+res_df = pl.DataFrame(rows)
+res_df = pl.concat([
+    res_df,
+    pl.DataFrame([{"Reserve": "Total restricted reserves",
+                   **{str(y): sum(filter(None, (_amt(c, y) for c in RESERVE_CODES))) / 1000
+                      for y in years}}]),
+    pl.DataFrame([{"Reserve": "Unassigned (4%-capped)",
+                   **{str(y): (_amt("A917", y) or 0) / 1000 for y in years}}]),
+    pl.DataFrame([{"Reserve": "Total General Fund balance",
+                   **{str(y): (_amt("A8029", y) or 0) / 1000 for y in years}}]),
+], how="vertical")
+
+year_cols = [str(y) for y in years]
+bold_rows = pl.col("Reserve").is_in(["Total restricted reserves", "Total General Fund balance"])
+
+(
+    GT(res_df, rowname_col="Reserve")
+    .tab_header(
+        title="Cambridge's reserve funds by type",
+        subtitle="School years ending 2013 (2012–13) through 2025 (2024–25), $ thousands",
+    )
+    .fmt_number(columns=year_cols, decimals=0)
+    .tab_style(
+        style=[style.text(weight="bold"), style.fill(color="#FCEFB4")],
+        locations=loc.body(rows=bold_rows),
+    )
+    .tab_source_note(
+        md(
+            "**Source:** NYS Comptroller local-government finance data (ST-3), account "
+            "codes A814–A884 (reserve funds), A917 (unassigned), A8029 (total General "
+            "Fund fund balance, end of year). Year = school-year-ending (2025 = 2024–25). "
+            "Figures are as-filed (unaudited); they reconcile with Cambridge's audited "
+            "reports (see below)."
+        )
+    )
+)
+```
+
+Cambridge's reserves have **grown and diversified** over the decade:
+
+- The **total General Fund balance roughly doubled**, from about **$2.5 million
+  in 2012–13 to $5.2 million in 2024–25**.
+- The district **added reserves it previously did not hold** — a **TRS
+  (teachers') retirement** reserve from 2020–21, an **employee-benefit accrued
+  liability** reserve, and a substantial **capital reserve** (~$1.1 million) from
+  2021–22.
+- The **ERS retirement** reserve roughly doubled (to ~$884,000 in 2024–25); the
+  **reserve for debt** was drawn down to zero as debt retired.
+- The **unassigned, 4%-capped** balance — the flexible part — has been about
+  **$1.0–1.2 million** in recent years, sitting at the cap.
+
+## What Cambridge's audited reports show
+
+Cambridge's audited annual financial reports (filed with the Federal Audit
+Clearinghouse) confirm and add color to these figures. For **2024–25** they report
+**total restricted fund equity of about $2.95 million**, broken down as:
+
+| Reserve (2024–25) | Amount |
+|---|---|
+| Capital reserves | $1,105,710 |
+| Retirement contribution — ERS | $884,019 |
+| Retirement contribution — TRS | $663,060 |
+| Employee benefit accrued liability | $147,207 |
+| Tax certiorari | $138,351 |
+| School lunch (encumbrances) | $8,098 |
+| **Total restricted** | **$2,946,445** |
+
+This reconciles with the ST-3 figures in the table above (the audited total is
+~$8,000 higher, the school-lunch encumbrance). The reports also note the reserves
+the board has **appropriated** (budgeted to spend) for 2025–26: **$625,000 from
+the capital reserve** and **$200,119 from the employee-benefit reserve**.
+
+The audits flagged two reserve-related items, both since corrected:
+
+- **Tax-certiorari reserve over-funding (finding 2024-002).** The reserve
+  exceeded the amount of anticipated tax-certiorari claims. General Municipal Law
+  §3651.1-a caps this reserve at anticipated judgments and refunds, and any
+  unused balance must be returned to the General Fund. Cambridge corrected the
+  over-funding.
+- A **capital-assets / net-debt** presentation issue (finding 2024-001, also
+  corrected), where invested-in-capital-assets-net-of-related-debt appeared
+  negative.
+
+Taken together, Cambridge's reserves are healthy and growing, concentrated in
+restricted funds tied to specific future costs (capital projects, pensions),
+while its flexible unassigned balance is held at the legal 4% ceiling.
+
+*Sources: OSC [Accounting & Reporting Manual](https://www.osc.ny.gov/files/local-government/publications/pdf/accounting-and-reporting-manual-for-school-districts.pdf)
+(chart of accounts); NYSED Property Tax Report Card; NYS Comptroller school-
+district finance data (ST-3); Cambridge CSD audited annual financial reports
+(Federal Audit Clearinghouse, 2020–2025). Reference copies are in the repo's
+[`docs/`](https://github.com/donboyd5/ccs/tree/main/docs) folder.*

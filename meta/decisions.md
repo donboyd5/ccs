@@ -2,6 +2,35 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-06-28 — Reserves & fund-balance chapter
+
+- **Filled in `front/reserves.qmd`** (was a stub) — the reserve-funds vs. fund-
+  balance distinction, the **4% cap** on unassigned fund balance, a statewide
+  median-vs-cap chart, a Cambridge reserves-by-type table (2013–2025), and what
+  Cambridge's audited reports show. Sits in the "CCS finances" arc.
+- **Added a `docs/` folder** of primary-source reference manuals (tracked): OSC's
+  *Accounting and Reporting Manual for School Districts* (the Uniform System of
+  Accounts / chart of accounts, with the reserve-fund codes A814–A884 and
+  fund-balance classes A913–A917) and NYSED's *Guide to the Headings of the
+  Fiscal Profile* (defines the 4%-capped **Total Unexpended Surplus Funds,
+  AT0994**). README notes provenance/source URLs.
+- **Key distinction explained:** reserve funds are the *restricted* part of fund
+  balance; the 4% cap (RPTL §2-c / Ed Law §2023-a) applies only to the
+  *unassigned* portion — so a district can hold large restricted reserves and
+  still be "at the cap" on its flexible balance.
+- **Findings:** the **statewide median district reports exactly 4%** unrestricted
+  fund balance every year (the cap binds), with ~¼–⅓ over 4%; **Cambridge tracks
+  right at the cap** (3.0–4.6%). Cambridge's total General Fund balance roughly
+  **doubled ($2.5M→$5.2M, 2013→2025)**, adding TRS-retirement, employee-benefit,
+  and capital reserves; the debt reserve retired. The 2024–25 audit flagged
+  **tax-certiorari reserve over-funding** (GML §3651.1-a; corrected).
+- **Data sources:** PTRC `fund_balance_unrestricted_pct_of_budget` (statewide),
+  `cambridge_finance.parquet` reserve A-codes (Cambridge time series), and the
+  FAC annual reports (audited snapshot + findings). OSC ST-3 and audited figures
+  reconcile (~$2.94M vs $2.95M restricted, 2024–25). Read parquets directly in the
+  qmd (the `taxes.qmd` pattern); no `comparisons.py` change. Interpretation kept
+  light.
+
 ## 2026-06-27 — Tax-cap chapter (PTRC data) + a sign-correction
 
 - **Added `front/tax-cap.qmd`** (the property-tax cap), the first chapter to use
