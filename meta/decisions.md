@@ -2,6 +2,42 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-06-28 — Demographics chapter (popfc + Census PEP)
+
+- **Filled in `front/demographics.qmd`** (was a stub with a bracketed instruction)
+  — two **indexed** county-population charts and a Washington County
+  components-of-change table. Per the user's instruction, **no interpretive text**
+  was written (he writes it); only factual chart/table introductions and captions.
+  Plot 1: total population indexed to 2000 (=100), 2000–2020, for Washington,
+  Warren, Saratoga, Rensselaer (NY) + Bennington & Rutland (VT). Plot 2: indexed
+  to 2020 (=100), 2020–2035, NY counties only, with **history solid / forecast
+  dashed**. Washington County (Cambridge's county) is the red focus line.
+- **New York data read in place from the sibling `popfc` project**
+  (`~/Documents/python_projects/popfc`, commit `6a42d26`). History = its
+  `population_reconciled` series (Census PEP v2025 / NYSDOL, 2000–2024); forecast
+  = `county_forecast_totals` baseline (2025–2050). Per `.gitignore`, raw data
+  under `data/` is not tracked, so popfc is **cited, not vendored** —
+  `build_demographics.py` reads its working tree (path overridable via
+  `POPFC_DIR`); provenance in `data/raw/popfc/SOURCE.md`. This makes the
+  demographics rebuild depend on popfc being present locally.
+- **Vermont counties fetched fresh from the Census Bureau** (Bennington/Rutland
+  are not in popfc). `src/download_census_vt.py` stitches three PEP sources, all
+  July-1: the 2000s intercensal **API** (2000–2009, needs a `CENSUS_API_KEY`) +
+  the key-free bulk files `co-est2019-alldata.csv` (2010–2019) and
+  `co-est2024-alldata.csv` (2020). Output: `data/raw/census_pep/vt_county_population.csv`.
+- **Three honest limits surfaced in the chapter:** (1) the **domestic vs
+  international migration split exists only for history (through 2025)**; the
+  forecast carries only net migration — so the Washington components table shows
+  the full split 2021–2025 (—"—" for 2026–2035). User chose **option (a)**.
+  (2) **2020 is omitted from the components table**: the 2020 Census boundary
+  makes PEP's first vintage year a partial April–July period (births ≈ 142, not a
+  full year). (3) the **VT 2020 uptick** is the 2020 Census rebenchmark (the
+  census counted more than prior estimates) — noted in the chart caption.
+- **Convention note:** demographics is the book's only **calendar-year** chapter
+  (July-1 population estimates); all other chapters use school-year-ending. The
+  forecast uses the **baseline** scenario. Sources appendix + methods appendix
+  updated accordingly.
+
 ## 2026-06-28 — Methods appendix
 
 - **Filled in `appendix/methods.qmd`** (was a TODO stub) — a reader-facing

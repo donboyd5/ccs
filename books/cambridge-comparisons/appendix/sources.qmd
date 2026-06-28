@@ -14,6 +14,7 @@ Years are **school-year-ending** (2025 = 2024–25).
 
 | Dataset | Publisher | What it provides | Years | Status |
 |---|---|---|---|---|
+| County population & forecast | popfc (NY) + U.S. Census Bureau PEP (VT) | county total population (history + baseline forecast); Washington County components of change | 2000–2050 (NY), 2000–2020 (VT) — **calendar years** | **In use** |
 | Enrollment & staff | NYSED | K-12 enrollment; teacher/staff headcounts; average class size | 2016–2025 (staff 2018–2025; class size 2019–2025) | **In use** |
 | Student test results (grades 3-8) | NYSED | grades 3-8 ELA & Math: % at/above proficiency, mean score, by district & subgroup | 2015–2025 (no 2020) | **Adding** |
 | Pupil–teacher FTE (CCD) | NCES, via Urban Institute | FTE-based pupil-teacher ratio (cross-check) | 2016–2025 | **In use** |
@@ -180,6 +181,28 @@ and the title *"Financial report."* They are the same series of district audits.
 
 - FY2020 [@ccsd_fin_2020], FY2021 [@ccsd_fin_2021], FY2022 [@ccsd_fin_2022]
 - FY2023 [@ccsd_fin_2023], FY2024 [@ccsd_fin_2024], FY2025 [@ccsd_fin_2025]
+
+## County population and forecast (popfc; Census Bureau)
+
+The [Demographics](../front/demographics.qmd) chapter places Cambridge in its
+regional population context. **New York** county population — history and a
+cohort-component forecast through 2050 — comes from **popfc**, a sibling
+Washington County population-forecast project (a cohort-component model whose
+methodology is documented in its own repository). The **baseline** scenario is
+used. **Vermont's** Bennington and Rutland counties are not in popfc (it is
+NYS-only), so their history (2000–2020) is pulled directly from the **U.S.
+Census Bureau's Population Estimates Program** (PEP), July-1 estimates. Unlike
+the rest of this book, these figures use **calendar years** (July 1 of each
+year), not the school-year-ending convention.
+
+Two honest limits shape the chapter: the **domestic vs international migration
+split is available only for history (through 2025)** — the forecast projects
+only total net migration — so the Washington County components-of-change table
+shows the split through 2025 and net migration thereafter; and the forecast
+launches from **2024**. Full provenance:
+[`data/raw/popfc/SOURCE.md`](https://github.com/donboyd5/ccs/blob/main/data/raw/popfc/SOURCE.md)
+and
+[`data/raw/census_pep/SOURCE.md`](https://github.com/donboyd5/ccs/blob/main/data/raw/census_pep/SOURCE.md).
 
 ## Candidate sources under consideration
 

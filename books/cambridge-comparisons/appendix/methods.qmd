@@ -29,6 +29,23 @@ see the [Sources](sources.qmd) appendix and the tracked `SOURCE.md` files under
 
 ## Measures and their caveats
 
+### Demographics (county population)
+
+- **County population** is the July-1 resident total (Census Bureau basis),
+  shown **indexed** to a base year (2000 = 100, or 2020 = 100) so the lines
+  compare *trends* across counties of very different sizes, not raw counts.
+- **New York** history and forecast come from the sibling *popfc* cohort-
+  component project (baseline scenario); **Vermont** counties (Bennington,
+  Rutland) come straight from the Census Bureau, which has no popfc forecast.
+  These are the book's only **calendar-year** figures — the one place that
+  departs from the school-year-ending convention.
+- **Components of change** (births, deaths, migration) are shown for Washington
+  County only. The **domestic vs international migration split is available only
+  for history (through 2025)**; the forecast projects just total net migration,
+  so the split columns are blank for forecast years. **2020 is omitted** from the
+  components table because the 2020 Census boundary makes that year a partial
+  April–July period in the source. Forecast lines (from 2025) are dashed.
+
 ### Enrollment and teachers
 
 - **K-12 enrollment** — BEDS-day count (above).
