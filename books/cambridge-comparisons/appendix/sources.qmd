@@ -23,7 +23,7 @@ Years are **school-year-ending** (2025 = 2024–25).
 | Property Tax Report Card | NYSED | proposed budget, tax levy, levy limit (the cap), permissible exclusions, fund balances | 2015–2027 | **In use** |
 | School district property taxes | NYS Comptroller (OSC) | tax levy, taxable full value & full-value tax rate, by district × town | 2015–2025 | **Adding** |
 | Budget vote results | NYSED | budget vote & re-vote outcomes: defeats, contingency budgets, 60%-above-cap flag | 2012–2025 (vote yr) | **In use** |
-| State school aid | NYS (data.ny.gov `9pb8-dg53`) | state aid to each district by year | 1996– | Candidate |
+| State school aid | NYS (data.ny.gov `9pb8-dg53`) | state aid by category & district (incl. Foundation Aid — the merger-incentive base) | 1997–2026 | **In use** |
 | Real property tax rates & levies | NYS (data.ny.gov `iq85-sdzs`) | tax levies and rates by municipality | varies | Candidate |
 
 ## NYSED data files
@@ -209,9 +209,6 @@ and
 These are not yet used on the website but are likely additions, both from New
 York's open-data portal (<https://data.ny.gov>):
 
-- **State school aid** (dataset `9pb8-dg53`) — state aid to each school district
-  by year, back to the mid-1990s. Would let the spending chapter separate
-  state-funded from locally-funded dollars.
 - **Real property tax rates & levy data by municipality** (dataset `iq85-sdzs`) —
   tax levies and rates by municipality, useful for putting each district's school
   tax levy in the context of total local property taxes.

@@ -2,6 +2,36 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-06-28 — Mergers chapter (state-aid dataset; research-sourced)
+
+- **Filled in `front/mergers.qmd`** (was a 9-line outline) — the first Options
+  chapter. Factual scaffolding only; **no recommendation** (Don writes the
+  verdict). Covers: the three reorganization forms (centralization, annexation,
+  city annexation) + tuitioning; the ~year-long process (straw vote →
+  Commissioner's order → statutory vote); the centralization-vs-annexation **vote
+  asymmetry** (centralization needs yes in both districts; annexation final after
+  60 days, one yes carries it); **RIOA** (40% of combined Foundation Aid for 5
+  years, −4 pts/yr, 14-year cap; the 2024 change pegged it to Foundation Aid and
+  ~tripled it) + Building Aid; the Cambridge illustration; two real cases
+  (Central Valley/Ilion-Mohawk 2013 ≈$42M, now at its aid cliff; Boquet
+  Valley/Elizabethtown-Lewis-Westport 2019, $6M old vs $18M new formula); the
+  research (savings largest for smallest districts, mixed academic effects); and
+  Cambridge's position.
+- **Adopted the NYS state-aid dataset** (`data.ny.gov 9pb8-dg53`) — flipped from
+  Candidate to **In use**. `src/download_state_aid.py` pulls the 13 comparison
+  districts (via Socrata API, `beds_code` = `nysed_district_cd[:6]`, so no new
+  crosswalk); `src/build_state_aid.py` → `data/processed/state_aid.parquet`. Used
+  for **Foundation Aid** (Cambridge $9.55M, 2025-26 — the RIOA base) and to show
+  every comparison district's **reorganization-incentive aid is $0** (none has
+  merged). Provenance in `data/raw/state_aid/SOURCE.md`.
+- **The RIOA chart is illustrative, not actual:** it applies the formula to
+  Cambridge's *own* Foundation Aid as a base, so it understates a real
+  Cambridge-centered merger (which would use the larger combined base). Labeled
+  as such in the caption and prose; the "long-dormant limit" caveat is noted.
+- **Sources cited inline** (NYSED Primer 2024, NYSSBA *On Board* Apr 2025, the
+  consolidation research review) rather than added to `references.bib` — a web
+  chapter; prose links + a Sources footer, matching the `taxes.qmd` style.
+
 ## 2026-06-28 — Demographics chapter (popfc + Census PEP)
 
 - **Filled in `front/demographics.qmd`** (was a stub with a bracketed instruction)
