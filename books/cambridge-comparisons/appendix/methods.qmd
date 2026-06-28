@@ -1,13 +1,155 @@
 # Methods & measures {.unnumbered}
 
-TODO: This appendix will document the technical details behind the front-part chapters — how each measure is defined, what the data limitations are, and which alternative measures were considered. The goal is to keep the front chapters clean and narrative, while giving interested readers a full accounting here.
+This appendix documents **how each measure in the book is defined and its caveats**,
+so the chapters can stay narrative while interested readers can verify the
+underlying choices. For dataset provenance (publisher, coverage, download lists),
+see the [Sources](sources.qmd) appendix and the tracked `SOURCE.md` files under
+`data/raw/`.
 
-## Planned sections
+## Conventions used throughout
 
-- **Data sources and provenance** — summary of each dataset, publisher, coverage, and how to re-download
-- **Measure definitions** — precise definitions of key measures (students per teacher, class size, spending per pupil, etc.)
-- **Cross-checks and validation** — why we trust the numbers, including NYSED vs. NCES comparisons
-- **Why these measures** — for each front chapter, what alternatives were considered and why the chosen measure is the best one
-- **Limitations** — what the data can't tell us, and where comparisons break down
+- **Year labels are school-year-ending.** "2025" means the **2024–25** school year.
+  The one exception is the [budget-vote](../front/contingency-budgets.qmd) chapter,
+  which indexes by the vote's *calendar* year (the May 2024 vote is "2024"); the
+  budget adopted there funds the *following* school year.
+- **Enrollment is the BEDS-day count** — students enrolled on the first Wednesday
+  of October.
+- **Comparison groups.** Charts use a 5-district graph group; tables use a
+  12-district group (every Washington County K-12 district plus Schuylerville and
+  Hoosick Falls). Putnam CSD is excluded because it is K-8 with no high school.
+  See the [overview](../index.qmd).
+- **Charter schools are excluded** — they have no district-total row in the source
+  data, so all figures are district-operated.
+- **Dollars are nominal** — not adjusted for inflation — unless noted. Part of any
+  upward drift in money measures reflects rising prices, not rising real resources.
+- **`nysed_district_cd`** (the 8-digit NYSED district code) is the stable join key
+  across datasets; each source's native id maps to it through a tracked crosswalk.
+  (The budget-vote files are the exception — they carry district *names*, not
+  codes — so the vote chapter's Cambridge/neighbor surfacing is by name match.)
 
-Until this appendix is filled out, see the **[Sources](sources.qmd)** appendix for data-source details.
+## Measures and their caveats
+
+### Enrollment and teachers
+
+- **K-12 enrollment** — BEDS-day count (above).
+- **Teacher counts** — a NYSED **headcount** (the number of people employed as
+  teachers, all grades K-12), **not** full-time-equivalents. Teacher counts are
+  available from **2017–18**, so any series that depends on them (such as students
+  per teacher) begins at school-year-ending **2018**, even though enrollment runs
+  back to 2015–16.
+- **Students per teacher** = K-12 enrollment ÷ teacher headcount. It is an
+  **approximation for cross-district and over-time comparison, not NYSED's official
+  class-size figure** and not a count of children in a typical classroom.
+
+### Class size
+
+- **NYSED "average class size"** is **roster/section-based** — students in a
+  section ÷ number of sections — reported only for a handful of specific grades and
+  subjects, and **only since 2018–19**. Where the book summarizes it, it takes the
+  **median across the reported classes** to resist small-section artifacts (a
+  2-student physics class, a pandemic-year glitch).
+- It is distinct from the headcount-based *students per teacher* (above) and the
+  FTE-based NCES ratio (below).
+
+### Student test results (grades 3–8 ELA & Math)
+
+- **Proficiency rate** = (students at levels 3+4+5) ÷ (students tested). This
+  reproduces NYSED's own reported proficiency rate exactly in the modern-layout
+  years.
+- **Comparability has limits.** New York reset its tests and passing standards
+  twice, so rates compare only **within three eras** — 2015–17 (Common Core),
+  2018–22 (redesign), 2023–25 (Next Generation) — **not across** them. A change
+  across an era boundary reflects the new standard as much as any change in
+  learning.
+- **2020 is absent** (tests cancelled) and **2021 is anomalous** (only about half
+  of students participated; not representative).
+
+### Spending per pupil
+
+- **Current operating spending per pupil** = (General + Special Aid + School Lunch
+  funds) **minus** capital outlay, debt service, and interfund transfers, divided
+  by K-12 enrollment. It captures salaries, benefits, classroom and BOCES services,
+  food service, and federally funded programs.
+- **What it excludes, and why:** capital projects and the debt that funds them
+  arrive in large, irregular lumps (they would make spending per pupil volatile),
+  and interfund transfers would otherwise be counted twice.
+- This is close to the "current spending per pupil" measure the U.S. Census and
+  NCES use. **Dollars are nominal.**
+
+### Property taxes
+
+- **Tax levy** — the total property tax the district collects.
+- **Full-value tax rate** = levy ÷ taxable full value × 1,000 — the standard way
+  to compare tax effort across places with different assessment practices.
+- The rate can move sharply with a **reassessment** (which expands the tax base and
+  lowers the rate even as the levy rises) — e.g., Washington County's reassessment
+  around 2022–23.
+
+### Property-tax cap
+
+- A district may raise its levy by the **lesser of 2% or CPI** without special
+  action; to exceed it the budget must win a **60% supermajority**.
+- Each district's annual **levy limit** is set by the state formula; certain growth
+  (pension contributions, capital projects, court-ordered payments) can be
+  **excluded** from the cap.
+- The over/under **gap is computed here as proposed levy − levy limit** (both
+  excluding permissible exclusions). The source workbook's stored `levy_vs_limit`
+  field is **not used** because NYSED flips its sign at year_end 2016.
+
+### Reserves and fund balance
+
+- **Reserve funds** are restricted accounts (A814–A884), each created under a
+  specific statute for a specific purpose. **Fund balance** is classified
+  restricted / committed / assigned (appropriated or not) / **unassigned**.
+- The **4% cap** (tax-cap law) applies to the **unassigned** fund balance only —
+  not to the restricted reserve funds. So a district can hold large restricted
+  reserves and still be "at the cap."
+- Per-reserve **legal restrictions** govern use: the capital reserve requires
+  voter approval to establish **and** to expend; the tax-certiorari reserve is
+  mandatory, capped at anticipated claims, with unused funds returned to the
+  General Fund; the retirement reserve may be funded up to 2% of covered salaries
+  per year (TRS sub-fund capped at 10%).
+
+### Budget votes and contingency budgets
+
+- A budget **passes** at **≥60% yes** if it is above the cap, else at a **simple
+  majority (>50%)**. A district is **on contingency** if it failed the first vote
+  and then either failed the re-vote or held none.
+- **Cap status comes from NYSED's "60% required" flag** — the vote files carry no
+  levy figures, only that flag.
+- **Pre-2012 is omitted** (the tax cap took effect in 2012, so the above/below-cap
+  split is undefined before then), and **2020 is atypical** (all-absentee,
+  shifted re-vote date).
+
+## Cross-checks and validation
+
+- **NYSED headcount vs NCES FTE (students per teacher).** The book's NYSED
+  headcount-based ratio and the independent NCES CCD full-time-equivalent ratio
+  never differ by more than about two-thirds of a student per teacher, and both
+  show the same sharp 2023–24 decline — so that turning point is not an artifact of
+  how NYSED counts teachers.
+- **Contingency defeats vs NYSED's statewide totals.** Computed first-vote defeat
+  counts match NYSED's own published P/D statewide totals exactly for 2021–2025
+  (within one for the anomalous 2020).
+- **OSC ST-3 vs audited reports (reserves).** The as-filed OSC account-code
+  reserve balances reconcile with Cambridge's audited annual financial reports
+  (the ~$8,000 difference is a school-lunch encumbrance).
+- **PTRC `% Yes` reconciliation.** Where NYSED's vote/levy workbooks include a
+  "% Yes" column, the parsed Yes/No counts rebuild it to 0.0000 median error.
+
+## Limitations — where comparisons break down
+
+- **No inflation adjustment** in money measures — part of the upward drift is
+  prices, not real growth.
+- **Small districts are volatile.** Cambridge, Salem, and the other small peers
+  have small counts in some cuts of the data (high-school sections, single test
+  grades), so individual values can swing; the book prefers medians and notes this
+  where it matters.
+- **Per-pupil spending is mechanically higher for small districts** because fixed
+  costs (a principal, a building, a bus route) spread over fewer students — a
+  structural feature of scale, not inefficiency, and central to Cambridge's story.
+- **Name-based matching** for budget votes (no codes) means a handful of re-votes
+  each year don't link to a first-vote record in the older files; re-vote-outcome
+  counts are therefore reliable from ~2020 on and approximate before.
+- **Test-score eras and the tax cap** each create discrete breaks in their series
+  (above) — trends must be read within an era, not across.
