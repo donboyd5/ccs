@@ -20,12 +20,11 @@ output joins cleanly to the rest of the project.
 Output (data/raw/, git-ignored, regenerable):
     state_aid/state_aid_comparison.csv
 
-Usage:  python src/download_state_aid.py   [--force]
+Usage:  python src/download_state_aid.py
 """
 
 from __future__ import annotations
 
-import argparse
 import csv
 import json
 import urllib.parse
@@ -63,7 +62,7 @@ _UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
        "Chrome/124.0 Safari/537.36")
 
 
-def fetch(*, force: bool) -> list[dict]:
+def fetch() -> list[dict]:
     codes = "', '".join(COMPARISON_BEDS6)
     where = f"beds_code IN ('{codes}')"
     params = urllib.parse.urlencode({"$where": where, "$limit": "50000",
@@ -77,9 +76,9 @@ def fetch(*, force: bool) -> list[dict]:
     return rows
 
 
-def main(*, force: bool) -> None:
+def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    rows = fetch(force=force)
+    rows = fetch()
     if not rows:
         raise RuntimeError("No rows returned from the state-aid API")
     cols = ["event", "beds_code", "county", "district", "aid_category",
@@ -93,7 +92,4 @@ def main(*, force: bool) -> None:
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--force", action="store_true", help="re-download even if cached")
-    args = ap.parse_args()
-    main(force=args.force)
+    main()
