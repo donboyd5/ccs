@@ -2,9 +2,11 @@
 
 Audited annual financial statements for **Cambridge Central School District**,
 fiscal years ending June 30, **2020–2025** (6 PDFs), retrieved from the **Federal
-Audit Clearinghouse** (<https://app.fac.gov/>). Held for reference and
-hand-checking the account-code finance numbers; not yet parsed into any processed
-dataset.
+Audit Clearinghouse** (<https://app.fac.gov/>). Used by the
+[`reserves`](../../books/cambridge-comparisons/front/reserves.qmd) chapter for the
+audited reserve-fund snapshot, the legal descriptions of each reserve, and the
+reserve-related audit findings (still read by hand — not parsed into a dataset).
+Also held for general hand-checking of the account-code finance numbers.
 
 The Clearinghouse was operated by the **U.S. Census Bureau** through ~2022 and by
 the **U.S. General Services Administration** from 2023 on — which is why the
