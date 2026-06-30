@@ -2,6 +2,43 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-06-30 — Enrollment series extended back to 2005-06 (SRC databases)
+
+- **The 2016 floor was artificial.** NYSED's standalone Enrollment database
+  begins SY 2017-18 (year_end 2018); the panel only reached 2016 because each
+  ENROLL file carries ~3 years. The same BEDS-day K-12 count lives in the
+  **Report Card (SRC)** Access databases back to SY 1999-00 — we just hadn't
+  downloaded the older SRC files.
+- **Extended enrollment to year_end 2005** (now **2005-06 → 2024-25, 21 yrs**)
+  by reading **SRC2005-2017** in `build_enrollment_teachers.py` (Enrollment DB
+  still supplies 2016-2025; latest-source-wins keeps it on the 2016-17 overlap).
+  Cambridge now shows a clean two-decade decline: **1,089 (2005) → 865 (2016) →
+  741 (2025)**. Teachers unchanged (2017-18+ only).
+- **Chose 2005 as the floor, not 1999-00.** SRC2005-2017 use 12-digit BEDS
+  coding identical to the Enrollment DB; SRC2000-2004 use a 6-digit code +
+  different layout with an unresolved `YEAR` convention (start- vs end-year) and
+  a likely gap at year_end 2000. The pre-2005 messiness wasn't worth it — nothing
+  else in the book predates 2013, and 2005-2025 already spans two decades. Those
+  files are downloaded but not parsed.
+- **Three era-boundaries handled:** SRC2018+ dropped enrollment entirely (moved
+  to the standalone DB); SRC2005-2017 use 12-digit `ENTITY_CD`/`bedscode`
+  (used); SRC2000-2004 use 6-digit (not used). Within SRC2005-2017, SRC2005 is
+  wide with `bedscode` + zero-padded grades and SRC2006-17 are the modern
+  `BEDS Day Enrollment` layout — both normalized to one schema.
+- **Two correctness traps caught by validation:** (1) SRC `BEDS Day Enrollment`
+  holds statewide/county/NRC **aggregate rows** that end in `0000` and leak past
+  the `…0000` district filter (inflated statewide sums 2-20×) — fixed by keeping
+  only `Institution Grouping` `GROUP_CODE=5` rows, the same method
+  `build_assessments.py` uses; (2) a few SRC files code **charter aggregates** as
+  district-level rows — fixed by excluding LEA type 86.
+- **Seam validated to zero.** SRC vs Enrollment DB agree exactly at 2016-17:
+  max |ΔK12| = **0.0** across ~2,884 district-cells. K-12 computed uniformly as
+  K+grades 1-12+ungraded matches NYSED's native `K12` (Δ=0). Statewide district
+  K-12: 2.78M (2005) → 2.52M (2016) → 2.24M (2025).
+- Provenance in `data/raw/nysed_enrollment_staff/SOURCE.md`;
+  `src/download_report_card.py` REGISTRY extended to SRC2000-2025 (report-card
+  `SOURCE.md` updated). Done on `feature/enrollment-longer-series`.
+
 ## 2026-06-28 — Mergers chapter (state-aid dataset; research-sourced)
 
 - **Filled in `front/mergers.qmd`** (was a 9-line outline) — the first Options

@@ -33,6 +33,9 @@ Usage:
 from __future__ import annotations
 
 import re
+import subprocess
+import tempfile
+import zipfile
 from pathlib import Path
 
 import polars as pl
@@ -44,6 +47,16 @@ RAW_DIR = PROJECT_ROOT / "data" / "raw" / "nysed_enrollment_staff"
 OUT_DIR = PROJECT_ROOT / "data" / "processed"
 ENROLL_DIR = RAW_DIR / "enrollment"
 STUDED_DIR = RAW_DIR / "studed"
+
+# NYSED's standalone Enrollment Database begins year_end 2018 (ENROLL_2018+); for
+# the earlier years the same BEDS-day K-12 count lives inside the Report Card
+# (SRC) Access databases. SRC2005-SRC2017 carry district enrollment in 12-digit
+# BEDS coding (...0000 == district total), identical in definition to the
+# Enrollment DB (validated at the 2016-17 overlap). They extend the enrollment
+# series back to year_end 2005. (SRC2000-2004 use a 6-digit code + a different
+# layout and are NOT used.)
+SRC_ZIP_DIR = PROJECT_ROOT / "data" / "raw" / "nysed_report_card" / "zips"
+SRC_ENROLL_YEARS = list(range(2005, 2018))   # SRC2005 .. SRC2017 (year_end of file)
 
 # Washington County (64) plus its NY neighbors for the convenience view.
 # Cambridge CSD straddles Washington (64) and Rensselaer (49).
@@ -179,25 +192,163 @@ def is_district() -> pl.Expr:
     )
 
 
+# --- SRC (Report Card) enrollment, pre-2018 --------------------------------
+def _extract_src_mdb(zip_path: Path, tmpdir: Path) -> Path | None:
+    """Extract the .mdb member of an SRC zip to tmpdir.
+
+    Some SRC zips use Deflate64, which the stdlib zipfile cannot read, so fall
+    back to the system ``unzip`` (mirrors build_assessments.py). Returns the path
+    to the extracted database, or None if the zip holds no Access database.
+    """
+    with zipfile.ZipFile(zip_path) as zf:
+        names = zf.namelist()
+        member = next((n for n in names if n.lower().endswith(".mdb")), None) \
+                 or next((n for n in names if n.lower().endswith(".accdb")), None)
+        if member is None:
+            return None
+        try:
+            return Path(zf.extract(member, path=tmpdir))
+        except NotImplementedError:   # Deflate64
+            pass
+    subprocess.run(["unzip", "-o", "-j", str(zip_path), member, "-d", str(tmpdir)],
+                   check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return tmpdir / Path(member).name
+
+
+def _src_enrollment_table(cat: list[str]) -> str | None:
+    """Locate the district enrollment table in an SRC db, across its layouts.
+
+    Era C (SRC2006-2017): 'BEDS Day Enrollment' (sometimes year-suffixed, e.g.
+    'BEDS Day Enrollment 2005-06'). Era B (SRC2005): 'Fall_YYYY_Enrollment_-
+    District'. Both are 12-digit-coded, one row per entity/district.
+    """
+    beds = [t for t in cat if t.strip().lower().startswith("beds day enrollment")]
+    if beds:
+        return beds[0]
+    cands = [t for t in cat if "ENROLLMENT" in t.upper() and "DISTRICT" in t.upper()
+             and "SCHOOL" not in t.upper()]
+    return cands[0] if cands else None
+
+
+def read_src_enrollment(zip_path: Path, source_year: int) -> pl.DataFrame:
+    """One SRC zip -> all-string enrollment frame in the Enrollment-DB schema.
+
+    Normalizes the two 12-digit layouts to the same columns the Enrollment DB
+    uses: ENTITY_CD (from ENTITY_CD or 'bedscode'), ENTITY_NAME (absent in
+    SRC2005), and grade columns named '1'..'12' (Era B ships them zero-padded
+    '01'..'12'). K12 is computed downstream in build_enrollment().
+
+    Era C 'BEDS Day Enrollment' also holds statewide/county/Need-Resource-
+    Capacity aggregate rows, some of which end in '0000' and would leak past the
+    …0000 district filter used downstream. We keep only true district rows via
+    the db's 'Institution Grouping' table (GROUP_CODE 5). Era B (SRC2005) is
+    district-only and may lack that table, in which case all rows are kept.
+    """
+    with tempfile.TemporaryDirectory() as td:
+        mdb = _extract_src_mdb(zip_path, Path(td))
+        if mdb is None:
+            raise FileNotFoundError(f"no Access db in {zip_path.name}")
+        db = AccessParser(str(mdb))
+        tbl = _src_enrollment_table(list(db.catalog))
+        if tbl is None:
+            raise LookupError(f"no district enrollment table in {zip_path.name}")
+        df = mdb_table(mdb, tbl)
+        if "Institution Grouping" in db.catalog:
+            ig = mdb_table(mdb, "Institution Grouping")
+            district_entities = {
+                cd for cd, gc in zip(ig["ENTITY_CD"], ig["GROUP_CODE"])
+                if cd and str(gc).strip().rstrip(".") == "5"
+            }
+            idcol0 = "ENTITY_CD" if "ENTITY_CD" in df.columns else next(
+                (c for c in df.columns if "beds" in c.lower()), None)
+            if district_entities and idcol0:
+                mask = pl.col(idcol0).cast(pl.Utf8).is_in(district_entities)
+                kept = df.filter(mask).height
+                if 0 < kept < df.height:   # drop aggregate rows; bail if codes unexpected
+                    df = df.filter(mask)
+    idcol = "ENTITY_CD" if "ENTITY_CD" in df.columns else next(
+        c for c in df.columns if "beds" in c.lower())
+    if idcol != "ENTITY_CD":
+        df = df.rename({idcol: "ENTITY_CD"})
+    zp = {f"{g:02d}": str(g) for g in range(1, 13)}        # '01'..'12' -> '1'..'12'
+    df = df.rename({c: zp[c] for c in df.columns if c in zp})
+    # drop charter schools (LEA type 86 = ENTITY_CD digits 7-8). The Enrollment
+    # DB series excludes charters; a few SRC files code charter aggregates as
+    # district-level (...0000) rows that would otherwise leak in.
+    df = df.filter(pl.col("ENTITY_CD").str.slice(6, 2) != "86")
+    return df
+
+
 # --- builders --------------------------------------------------------------
 def build_enrollment() -> tuple[pl.DataFrame, pl.DataFrame]:
-    """Return (district K-12 enrollment, statewide reconciliation by year)."""
+    """Return (district K-12 enrollment, statewide reconciliation by year).
+
+    Year_end 2016-2025 comes from the standalone Enrollment Database
+    (ENROLL_*.mdb, table 'BEDS Day Enrollment'); year_end 2005-2017 from the
+    Report Card (SRC) databases SRC2005-SRC2017, which carry the same BEDS-day
+    K-12 count in identical 12-digit BEDS coding. The two sources agree exactly
+    at the 2016-17 overlap (Cambridge 865 == 865), checked below.
+
+    K-12 is computed uniformly as K + grades 1-12 + ungraded elementary/secondary
+    (excludes PK), so the two sources share one definition. The Enrollment DB
+    also ships a precomputed K12 column; kept as K12_NATIVE to confirm the
+    grade-sum definition matches NYSED's own.
+    """
     grade_cols = ["KHALF", "KFULL", *[str(g) for g in range(1, 13)], "UGE", "UGS",
                   "PK", "PKHALF", "PKFULL"]
-    frames = []
+    k12_cols = ["KHALF", "KFULL", *[str(g) for g in range(1, 13)], "UGE", "UGS"]
+
+    frames: list[pl.DataFrame] = []
+    # --- standalone Enrollment DB (year_end 2016-2025) ---
     for path in sorted(ENROLL_DIR.glob("ENROLL_*.mdb")):
         df = mdb_table(path, "BEDS Day Enrollment")
+        if "K12" in df.columns:
+            df = df.rename({"K12": "K12_NATIVE"})
         df = df.with_columns(pl.lit(year_end_from_filename(path)).alias("source_year"))
         frames.append(df)
         print(f"  enroll {path.name}: {df.height:>7,} rows")
-    allrows = pl.concat(frames, how="vertical_relaxed")
+    # --- SRC Report Card databases (year_end 2005-2017) ---
+    for yr in SRC_ENROLL_YEARS:
+        zp = SRC_ZIP_DIR / f"SRC{yr}.zip"
+        if not zp.exists():
+            print(f"  src    SRC{yr}.zip: not on disk, skipped")
+            continue
+        df = read_src_enrollment(zp, yr)
+        df = df.with_columns(
+            pl.lit(None).cast(pl.Utf8).alias("K12_NATIVE"),
+            pl.lit(yr).alias("source_year"),
+        )
+        frames.append(df)
+        print(f"  src    SRC{yr}.zip: {df.height:>7,} rows")
+    allrows = pl.concat(frames, how="diagonal_relaxed")
 
-    cleaned = allrows.with_columns(
-        num("YEAR").cast(pl.Int32).alias("year_end")
-    ).with_columns([num(c) for c in ["K12", *grade_cols]])
+    cleaned = allrows.with_columns(num("YEAR").cast(pl.Int32).alias("year_end"))
+    cleaned = cleaned.with_columns(
+        [num(c) for c in [*k12_cols, "PK", "PKHALF", "PKFULL", "K12_NATIVE"]]
+    )
+    cleaned = cleaned.with_columns(
+        pl.sum_horizontal([pl.col(c) for c in k12_cols]).alias("K12")
+    )
 
-    # Each (entity, year) appears in up to 3 source files. Flag any revisions,
-    # then keep the value from the most recent file (single source of truth).
+    # Seam check: SRC vs Enrollment DB on the overlapping years (2016, 2017).
+    is_src = pl.col("source_year").is_in(SRC_ENROLL_YEARS)
+    seam = (
+        cleaned.filter(is_src & pl.col("year_end").is_in([2016, 2017]))
+        .select("ENTITY_CD", "year_end", pl.col("K12").alias("k12_src"))
+        .join(
+            cleaned.filter(~is_src & pl.col("year_end").is_in([2016, 2017]))
+            .select("ENTITY_CD", "year_end", pl.col("K12").alias("k12_db")),
+            on=["ENTITY_CD", "year_end"],
+        )
+        .with_columns((pl.col("k12_src") - pl.col("k12_db")).abs().alias("diff"))
+    )
+    if seam.height:
+        print(f"  seam SRC vs Enrollment DB (2016-17): {seam.height} districts, "
+              f"max |ΔK12| = {seam['diff'].max()}")
+
+    # Each (entity, year) appears in up to 3 files per source, and in both sources
+    # at the 2016-17 overlap. Flag revisions, then keep the most recent source_year
+    # (the Enrollment DB, being later, wins the overlap — single source of truth).
     dups = (
         cleaned.filter(is_district())
         .group_by("ENTITY_CD", "year_end")
@@ -211,8 +362,17 @@ def build_enrollment() -> tuple[pl.DataFrame, pl.DataFrame]:
         .unique(subset=["ENTITY_CD", "year_end"], keep="first", maintain_order=True)
     )
 
+    # Definition check: computed K12 vs the Enrollment DB's native K12 column.
+    defn = (
+        cleaned.filter(is_district() & pl.col("K12_NATIVE").is_not_null())
+        .with_columns((pl.col("K12") - pl.col("K12_NATIVE")).abs().alias("d"))
+    )
+    print(f"  K12(computed) vs K12_NATIVE max |Δ| = {defn['d'].max()} (expect 0)")
+
     # Reconciliation: statewide row vs sum of districts vs charters (charters
     # have no district-aggregate row, so they are absent from the district sum).
+    # NB: SRC-era years may lack a statewide aggregate row, so statewide_k12 can
+    # be null for year_end < 2016 while district_sum_k12 is still populated.
     recon = (
         dedup.group_by("year_end")
         .agg(

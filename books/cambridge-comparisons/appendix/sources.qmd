@@ -15,7 +15,7 @@ Years are **school-year-ending** (2025 = 2024–25).
 | Dataset | Publisher | What it provides | Years | Status |
 |---|---|---|---|---|
 | County population & forecast | popfc (NY) + U.S. Census Bureau PEP (VT) | county total population (history + baseline forecast); Washington County components of change | 2000–2050 (NY), 2000–2020 (VT) — **calendar years** | **In use** |
-| Enrollment & staff | NYSED | K-12 enrollment; teacher/staff headcounts; average class size | 2016–2025 (staff 2018–2025; class size 2019–2025) | **In use** |
+| Enrollment & staff | NYSED | K-12 enrollment; teacher/staff headcounts; average class size | Enrollment 2005–2025 (staff 2018–2025; class size 2019–2025) | **In use** |
 | Student test results (grades 3-8) | NYSED | grades 3-8 ELA & Math: % at/above proficiency, mean score, by district & subgroup | 2015–2025 (no 2020) | **Adding** |
 | Pupil–teacher FTE (CCD) | NCES, via Urban Institute | FTE-based pupil-teacher ratio (cross-check) | 2016–2025 | **In use** |
 | School district finance | NYS Comptroller (OSC) | revenue & expenditure by account code → per-pupil spending | 2013–2025 | **In use** |

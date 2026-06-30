@@ -12,7 +12,7 @@ public school district, built from NYSED's public downloads. Built by
 
 | metric | source dataset | coverage (school years) |
 |---|---|---|
-| K-12 enrollment | NYSED **Enrollment** database, table `BEDS Day Enrollment` | **2015-16 → 2024-25** (10 yrs) |
+| K-12 enrollment | NYSED **Enrollment** DB, table `BEDS Day Enrollment` (2017-18→2024-25) **+ Report Card (SRC)** DBs SRC2005-17, same table (2005-06→2016-17) | **2005-06 → 2024-25** (21 yrs) |
 | number of teachers (+ principals, counselors, social workers, turnover) | NYSED **Student & Educator** ("STUDED") database, table `Staff` | **2017-18 → 2024-25** (8 yrs) |
 | county / BOCES / Need-Resource-Capacity crosswalk | Enrollment database, table `BOCES and N/RC` | — |
 
@@ -21,6 +21,39 @@ Source page: https://data.nysed.gov/downloads.php
 `.mdb`/`.accdb`). The raw archives/databases live next to this file in
 `enrollment/` and `studed/` and are git-ignored (too large for GitHub); re-download
 by hand from the source page above into those folders.
+
+### Pre-2018 enrollment comes from the Report Card (SRC) databases
+
+NYSED's standalone Enrollment database begins school year **2017-18** (year_end
+2018); for the earlier years the same BEDS-day K-12 count lives inside the
+statewide **Report Card (SRC)** Access databases. `build_enrollment_teachers.py`
+reads **SRC2005-SRC2017** (in `../nysed_report_card/zips/`, downloaded by
+`src/download_report_card.py`) for year_end **2005-2017** and the Enrollment DB
+for **2016-2025**; the two overlap at 2016-17 and latest-source-wins keeps the
+Enrollment DB there. The SRC enrollment table is the *same* `BEDS Day Enrollment`
+table in the 12-digit-coded files (SRC2005 uses `bedscode` + zero-padded grades
+`01`..`12`; SRC2006-17 use `ENTITY_CD` + `1`..`12`), so K-12 is computed once as
+K + grades 1-12 + ungraded (excl. PK) for every year — matching NYSED's own
+precomputed `K12` column exactly (max |Δ| = 0).
+
+**District rows only.** The SRC `BEDS Day Enrollment` table also holds
+statewide / county / Need-Resource-Capacity aggregate rows, some of which end in
+`0000` and would leak past the `…0000` district filter. The build keeps only true
+district rows via each DB's `Institution Grouping` table (`GROUP_CODE` 5) and
+drops charters (LEA type 86). A side effect: SRC-era years have no retained
+statewide/charter row, so the build's reconciliation diagnostic shows
+`statewide_k12 = 0` (and a large negative residual) for year_end < 2016 — the
+**district sum** is the figure of record and is correct.
+
+**Seam validated.** SRC vs Enrollment DB agree exactly at the 2016-17 overlap —
+max |ΔK12| = **0.0** across ~2,884 district-cells. Statewide district K-12:
+**2.78M (2005) → 2.52M (2016) → 2.24M (2025)**.
+
+> ⚠ **Not used: SRC2000-2004 (year_end 1997-2004).** The oldest SRC files use a
+> 6-digit district code (`GRP_CD`/`DISTRICT_CD`) and a different table layout
+> (long-format for SRC2000), with an unresolved `YEAR` convention (start- vs
+> end-year) and a likely gap at year_end 2000. They are downloaded and kept on
+> disk but not parsed. See "Extending further back" below.
 
 ## Time convention
 
@@ -127,8 +160,9 @@ stacking + de-duplicating (latest file wins) is lossless.
 
 Things to keep in mind:
 
-1. **Different spans.** Enrollment covers 2015-16→2024-25; teachers only
-   2017-18→2024-25. In the panel, 2016 & 2017 rows have `num_teachers = null`.
+1. **Different spans.** Enrollment covers 2005-06→2024-25; teachers only
+   2017-18→2024-25. In the panel, pre-2018 rows have `num_teachers = null`
+   (and therefore no `k12_students_per_teacher`).
 
 2. **"By district" excludes charter schools.** Charters have no district-total
    (`…0000`) row, so they are absent from this district series. Reconciliation to
@@ -168,10 +202,16 @@ pip install -r requirements.txt          # adds access-parser
 python src/build_enrollment_teachers.py  # re-reads raw/*.mdb, rewrites outputs
 ```
 
-## Extending further back (not yet built)
+## Extending further back
 
-Teachers before 2017-18 and enrollment before 2015-16 are available in the NYSED
-**Report Card (SRC)** Access databases (`reportcards/` + `essa/` on the downloads
-page, **1999-00 → 2024-25**). These would extend the series to match the finance
-data (2013-2025) but use a different schema and definitions (a documented
-noncomparability) and are large (~300 MB/yr for recent years).
+**Enrollment is now built back to 2005-06** via SRC2005-SRC2017 (see above).
+Going further back to **1999-00 (year_end 2000)** is possible — SRC2000-SRC2004
+are downloaded in `../nysed_report_card/zips/` — but those files use a 6-digit
+district code (`GRP_CD`/`DISTRICT_CD`, needing a crosswalk to the 8-digit
+`nysed_district_cd`) and a different table layout (SRC2000 is long-format, one
+row per grade). They also have an unresolved `YEAR` time convention (the file
+"SRC2000" carries `YEAR` 1997-99 — ambiguous whether that is year_end 1997-99 or
+1998-2000) with a likely gap at year_end 2000. Readable by `access-parser` but
+left undone deliberately (low marginal value: nothing else in the book predates
+2013, and the 2005-2025 series already spans two decades). Teachers before
+2017-18 are not available in these tables.
