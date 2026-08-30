@@ -1,33 +1,43 @@
-"""Download Vermont county (Bennington, Rutland) July-1 population, 2000–2020.
+"""Download Vermont county (Bennington, Rutland) population, 1970–2024.
 
 The Cambridge comparisons book's demographics chapter plots regional population
 history. New York county history comes from the sibling ``popfc`` forecast
 project (its reconciled Census-PEP / NYSDOL series); Vermont counties are not in
 popfc (it is NYS-only), so this script pulls the two neighboring Vermont
-counties — **Bennington (50003)** and **Rutland (50021)** — directly from the
-U.S. Census Bureau's Population Estimates Program (PEP).
+counties — **Bennington (50003)** and **Rutland (50021)** — from the U.S. Census
+Bureau's Population Estimates Program (PEP) and its legacy files.
 
-PEP rebenchmarks at each census, so no single file spans 2000–2020. We stitch
-three sources, all **July-1 resident population** (matching the July-1 basis of
-popfc's NY series, so the two are comparable in one indexed chart):
+No single file spans 1970–2024, so we stitch four sources:
 
+  - **1970–1999:** NBER's consolidated county intercensal file
+    (``county_population.csv``), which merges the Census Bureau's legacy 1970s /
+    1980s / 1990s county-intercensal releases into one CSV. The legacy releases
+    themselves are awkward (fixed-width 1970s totals; 1980s annual county totals
+    only inside a 34 MB age-sex-race file; 1990s totals published as PDF), and
+    the machine-readable pieces are consistent with it. Values are intercensal
+    estimates; **census-year columns (1970, 1980, 1990) are April-1 census
+    counts, other years are July-1** — the legacy convention. 1970s values are
+    rounded to hundreds, as published.
   - **2000–2009:** Census PEP 2000s intercensal — the
     ``2000/pep/int_population`` API endpoint (``DATE_`` 2–11 = 7/1/2000…7/1/2009).
     **Requires a Census API key** in the ``CENSUS_API_KEY`` env var (Census now
     rejects keyless API requests). If the key is absent, these years are skipped
-    with a warning and only 2010–2020 are produced.
+    with a warning.
   - **2010–2019:** the key-free bulk file ``co-est2019-alldata.csv``
     (the 2010s vintage; ``POPESTIMATE2010…2019``).
-  - **2020:** the key-free bulk file ``co-est2024-alldata.csv``
-    (the 2020s vintage, 2020-census-based; ``POPESTIMATE2020``).
+  - **2020–2024:** the key-free bulk file ``co-est2024-alldata.csv``
+    (the 2020s vintage, 2020-census-based; ``POPESTIMATE2020…2024``).
 
-The two bulk files are large (all U.S. counties); we cache them under
-``data/raw/census_pep/_cache/`` (git-ignored) and extract only the two VT
+All years after 1999 are **July-1 resident population** (matching the July-1
+basis of popfc's NY series, so the two are comparable in one indexed chart).
+The 1999→2000 step embeds the 2000-census rebenchmark (a visible level shift,
+not an error). The bulk/NBER files are large (all U.S. counties); we cache them
+under ``data/raw/census_pep/_cache/`` (git-ignored) and extract only the two VT
 counties. Output is a small long-format CSV:
 
     state_fips, county_fips, geoid, geography, year, population, source
 
-where ``source`` records which PEP file/vintage each row came from. Provenance is
+where ``source`` records which file each row came from. Provenance is
 documented in ``data/raw/census_pep/SOURCE.md``.
 
 Usage:  CENSUS_API_KEY=...  python src/download_census_vt.py   [--force]
@@ -72,6 +82,10 @@ BULK_2024 = (
     "2020-2024/counties/totals/co-est2024-alldata.csv"
 )
 
+#: NBER's consolidation of the Census Bureau's legacy 1970s/80s/90s county
+#: intercensal releases (see module docstring for why not the legacy files).
+NBER_POP = "https://data.nber.org/census/population/popest/county_population.csv"
+
 #: Census PEP API (2000s intercensal); needs a key.
 API_2000 = "https://api.census.gov/data/2000/pep/int_population"
 
@@ -96,8 +110,9 @@ def _read_csv_latin1(path: Path) -> csv.DictReader:
 
 
 def fetch_bulk_2010_2024(*, force: bool) -> list[dict]:
-    """Bennington + Rutland July-1 population, 2010–2020, from the two bulk
-    PEP files (2010–2019 from the 2019 vintage; 2020 from the 2024 vintage)."""
+    """Bennington + Rutland July-1 population, 2010–2024, from the two bulk
+    PEP files (2010–2019 from the 2019 vintage; 2020–2024 from the 2024
+    vintage)."""
     rows: list[dict] = []
     # 2010–2019
     f19 = _download(BULK_2019, CACHE_DIR / "co-est2019-alldata.csv", force=force)
@@ -111,18 +126,50 @@ def fetch_bulk_2010_2024(*, force: bool) -> list[dict]:
                     "year": yr, "population": int(r[f"POPESTIMATE{yr}"]),
                     "source": "census_pep_co-est2019-alldata",
                 })
-    # 2020 (2020-census-based 2024 vintage)
+    # 2020–2024 (2020-census-based 2024 vintage)
     f24 = _download(BULK_2024, CACHE_DIR / "co-est2024-alldata.csv", force=force)
     for r in _read_csv_latin1(f24):
         if r["STATE"] == STATE_FIPS and r["COUNTY"] in VT_COUNTIES:
             name = VT_COUNTIES[r["COUNTY"]]
-            rows.append({
-                "state_fips": STATE_FIPS, "county_fips": r["COUNTY"],
-                "geoid": f"{STATE_FIPS}{r['COUNTY']}", "geography": name,
-                "year": 2020, "population": int(r["POPESTIMATE2020"]),
-                "source": "census_pep_co-est2024-alldata",
-            })
+            for yr in range(2020, 2025):
+                rows.append({
+                    "state_fips": STATE_FIPS, "county_fips": r["COUNTY"],
+                    "geoid": f"{STATE_FIPS}{r['COUNTY']}", "geography": name,
+                    "year": yr, "population": int(r[f"POPESTIMATE{yr}"]),
+                    "source": "census_pep_co-est2024-alldata",
+                })
     return rows
+
+
+def fetch_nber_1970_1999(*, force: bool) -> list[dict]:
+    """Bennington + Rutland population, 1970–1999, from NBER's consolidation of
+    the Census Bureau's legacy county-intercensal releases.
+
+    Census-year columns (1970, 1980, 1990) are April-1 census counts; other
+    years are July-1 intercensal estimates (the legacy convention). The file
+    carries two rows per county (a combined-state and a plain-county row); the
+    plain one (``fipsco`` == the 3-digit county code) is the one populated for
+    these decades.
+    """
+    path = _download(NBER_POP, CACHE_DIR / "nber_county_population.csv", force=force)
+    with open(path, encoding="latin-1", newline="") as f:
+        rows: list[dict] = []
+        for r in csv.DictReader(f):
+            cf = r["county_fips"].zfill(3)   # NBER stores "3"/"21" unpadded
+            if (r["state_fips"] == STATE_FIPS
+                    and cf in VT_COUNTIES
+                    and r["fipsco"] == cf):
+                name = VT_COUNTIES[cf]
+                for yr in range(1970, 2000):
+                    rows.append({
+                        "state_fips": STATE_FIPS,
+                        "county_fips": cf,
+                        "geoid": f"{STATE_FIPS}{cf}",
+                        "geography": name,
+                        "year": yr, "population": int(r[f"pop{yr}"]),
+                        "source": "nber_census_intercensal_1970_1999",
+                    })
+        return rows
 
 
 def fetch_api_2000_2009(*, force: bool) -> list[dict]:
@@ -167,7 +214,11 @@ def fetch_api_2000_2009(*, force: bool) -> list[dict]:
 
 
 def build(*, force: bool) -> list[dict]:
-    rows = fetch_api_2000_2009(force=force) + fetch_bulk_2010_2024(force=force)
+    rows = (
+        fetch_nber_1970_1999(force=force)
+        + fetch_api_2000_2009(force=force)
+        + fetch_bulk_2010_2024(force=force)
+    )
     rows.sort(key=lambda r: (r["geoid"], r["year"]))
     return rows
 

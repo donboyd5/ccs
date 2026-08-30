@@ -2,6 +2,83 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-08-30 — Demographics history extended to 1970; index enrollment sentence computed from data
+
+- **The demographics chapter's history plot now spans 1970–2024, indexed to
+  2010** (the user's request: "much longer history… indexed to 2010").
+  - **NY 1970–1999** comes from popfc's `population_all_sources.parquet`
+    (NYSDOL July-1 intercensal rows) spliced ahead of its reconciled series.
+    The reconciled series' own rule is `july1_nysdol_intercensal`, so the
+    pre-2000 rows take the **intercensal** (July-1) rows, not the April-1
+    census-count rows the same table carries at 1970/1980/1990 — one
+    continuous basis. Seam check at 1999→2000: every NY county within the
+    band of neighboring transitions (no definition break).
+  - **VT 1970–1999** comes from **NBER's consolidation** of the Census legacy
+    county-intercensal releases. Why not first-party: the Census 1970s county
+    totals are fixed-width (fine), but 1980s *annual* county totals exist only
+    inside a 34 MB age-sex-race file, and the 1990s state-county totals are
+    published as **PDF only**. NBER's file is a documented merge of exactly
+    those releases. Legacy basis: census-year values are April-1 counts, other
+    years July-1; 1970s values rounded to hundreds — invisible on an indexed
+    chart, documented in `SOURCE.md`.
+  - **VT history also extended 2021–2024** from the already-cached
+    `co-est2024-alldata.csv`, so all six counties now run through 2024 in plot 1.
+  - The chart's story changed: Washington County **grew for decades, peaked in
+    2010 (63,372), and has since fallen ~5.6%** (59,822 in 2024) — while
+    Saratoga nearly doubled since 1970 and is still growing. Two VT steps
+    (2000, 2020) are census rebenchmarks, noted in the caption.
+- **`index.qmd` enrollment figures are now computed, not hand-written** (the
+  user's bracketed request). A hidden chunk reads
+  `enrollment_k12_by_district.parquet`; an `output: asis` chunk prints the
+  sentence as a list item. Base year is a single constant
+  (`ENROLL_BASE_YEAR = 2005`) — rebased from the draft's 2016 to the full
+  2005–2025 series per the user's choice: **1,089 → 741 K-12 (−32.0%)**,
+  grade 12 **76 → 54 (−28.9%)**. Quarto's python engine has no inline prose
+  expressions, hence the asis-chunk pattern; the list structure renders
+  correctly (verified in the HTML).
+- **Fixed the stale index caution** ("enrollment runs back to 2015–16" →
+  2005–06) and **git-ignored Quarto's per-page `*_files/` render dirs**.
+- Also on this branch: the user's own uncommitted edits — the new index
+  overview draft (challenges framing; several bullets still his to finish) and
+  `pdf`/`docx` output formats in `_quarto.yml`.
+
+## 2026-06-30 — Enrollment series extended back to 2005-06 (SRC databases)
+
+- **The 2016 floor was artificial.** NYSED's standalone Enrollment database
+  begins SY 2017-18 (year_end 2018); the panel only reached 2016 because each
+  ENROLL file carries ~3 years. The same BEDS-day K-12 count lives in the
+  **Report Card (SRC)** Access databases back to SY 1999-00 — we just hadn't
+  downloaded the older SRC files.
+- **Extended enrollment to year_end 2005** (now **2005-06 → 2024-25, 21 yrs**)
+  by reading **SRC2005-2017** in `build_enrollment_teachers.py` (Enrollment DB
+  still supplies 2016-2025; latest-source-wins keeps it on the 2016-17 overlap).
+  Cambridge now shows a clean two-decade decline: **1,089 (2005) → 865 (2016) →
+  741 (2025)**. Teachers unchanged (2017-18+ only).
+- **Chose 2005 as the floor, not 1999-00.** SRC2005-2017 use 12-digit BEDS
+  coding identical to the Enrollment DB; SRC2000-2004 use a 6-digit code +
+  different layout with an unresolved `YEAR` convention (start- vs end-year) and
+  a likely gap at year_end 2000. The pre-2005 messiness wasn't worth it — nothing
+  else in the book predates 2013, and 2005-2025 already spans two decades. Those
+  files are downloaded but not parsed.
+- **Three era-boundaries handled:** SRC2018+ dropped enrollment entirely (moved
+  to the standalone DB); SRC2005-2017 use 12-digit `ENTITY_CD`/`bedscode`
+  (used); SRC2000-2004 use 6-digit (not used). Within SRC2005-2017, SRC2005 is
+  wide with `bedscode` + zero-padded grades and SRC2006-17 are the modern
+  `BEDS Day Enrollment` layout — both normalized to one schema.
+- **Two correctness traps caught by validation:** (1) SRC `BEDS Day Enrollment`
+  holds statewide/county/NRC **aggregate rows** that end in `0000` and leak past
+  the `…0000` district filter (inflated statewide sums 2-20×) — fixed by keeping
+  only `Institution Grouping` `GROUP_CODE=5` rows, the same method
+  `build_assessments.py` uses; (2) a few SRC files code **charter aggregates** as
+  district-level rows — fixed by excluding LEA type 86.
+- **Seam validated to zero.** SRC vs Enrollment DB agree exactly at 2016-17:
+  max |ΔK12| = **0.0** across ~2,884 district-cells. K-12 computed uniformly as
+  K+grades 1-12+ungraded matches NYSED's native `K12` (Δ=0). Statewide district
+  K-12: 2.78M (2005) → 2.52M (2016) → 2.24M (2025).
+- Provenance in `data/raw/nysed_enrollment_staff/SOURCE.md`;
+  `src/download_report_card.py` REGISTRY extended to SRC2000-2025 (report-card
+  `SOURCE.md` updated). Done on `feature/enrollment-longer-series`.
+
 ## 2026-06-28 — Mergers chapter (state-aid dataset; research-sourced)
 
 - **Filled in `front/mergers.qmd`** (was a 9-line outline) — the first Options

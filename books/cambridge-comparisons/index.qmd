@@ -1,48 +1,89 @@
 # Overview {.unnumbered}
 
-This website looks at the **Cambridge Central School District** (Cambridge
-CSD, Washington County, New York) alongside nearby districts, using public
-data from the New York State Education Department (NYSED) and selected other sources. It is one of several
-analyses in the [`ccs`](https://github.com/donboyd5/ccs) project; the aim is to
-put Cambridge's numbers in context rather than to view them in isolation.
+```{python}
+#| label: overview-setup
+#| include: false
+import os
+import sys
+
+sys.path.insert(0, os.getcwd())
+
+import polars as pl
+
+import comparisons as cc
+
+#: The enrollment sentence below is computed from the data so it can't drift.
+#: Change the base year here and the sentence follows.
+ENROLL_BASE_YEAR = 2005
+ENROLL_END_YEAR = 2025
+
+_enr = pl.read_parquet(
+    cc.REPO_ROOT / "data" / "processed" / "enrollment_k12_by_district.parquet"
+)
+```
+
+**Cambridge Central School District** (CCS, Washington County, New York) faces challenges common among rural school districts:
+
+- **Small size:** There are Small districts has pros and cons.
+
+- **Declining area population:** Washington County's population is declining. More families are moving out than in, international immigration has come to a standstill, and birth rates are falling here as they are throughout the nation. The county's population will continue to decline for the foreseeable future. Economic development efforts may reduce net outmigration but are unlikely to prevent overall population declines.
+
+- **Narrow tax base:** With relatively little commercial property, taxation relies heavily on homeowners.
+
+```{python}
+#| label: enroll-summary
+#| output: asis
+#| echo: false
+def _endpoints(col: str) -> tuple[float, float, float]:
+    """Cambridge's (base-year value, end-year value, pct change) for a column."""
+    s = (
+        _enr.filter(pl.col("district_cd") == cc.district_code("Cambridge"))
+        .filter(pl.col("year_end").is_in([ENROLL_BASE_YEAR, ENROLL_END_YEAR]))
+        .sort("year_end")[col]
+    )
+    return s[0], s[1], (s[1] / s[0] - 1) * 100
+
+
+K12_BASE, K12_END, K12_PCT = _endpoints("k12_enrollment")
+G12_BASE, G12_END, G12_PCT = _endpoints("12")
+
+print(
+    f"- **Declining student enrollment:** Between {ENROLL_BASE_YEAR} and "
+    f"{ENROLL_END_YEAR}, CCS K-12 enrollment declined {abs(K12_PCT):.1f}%, from "
+    f"{K12_BASE:,.0f} to {K12_END:,.0f} students. Twelfth grade enrollment "
+    f"declined {abs(G12_PCT):.1f}% from {G12_BASE:,.0f} to {G12_END:,.0f} students."
+)
+```
+
+- **Declining enrollment creates education problems:**
+
+  - It's hard to provide broad or niche opportunities when enrollment in a given grade is low. AP physics.
+
+- **Declining enrollment creates financial problems:**
+
+  -
+
+This website looks at the **Cambridge Central School District** (Cambridge CSD, Washington County, New York) alongside nearby districts, using public data from the New York State Education Department (NYSED) and selected other sources. It is one of several analyses in the [`ccs`](https://github.com/donboyd5/ccs) project; the aim is to put Cambridge's numbers in context rather than to view them in isolation.
 
 ## Comparison groups
 
-Different questions call for different peer sets, so this website uses two
-groups that can be adjusted as the work develops:
+Different questions call for different peer sets, so this website uses two groups that can be adjusted as the work develops:
 
-- **Graph group (5 districts)** — used for charts, where a short list keeps
-  lines legible: **Cambridge, Greenwich, Salem** (all Washington County),
-  **Schuylerville** (Saratoga County), and **Hoosick Falls** (Rensselaer
-  County). These are nearby small districts.
-- **Table group (12 districts)** — used for tables, which can hold more rows:
-  **every Washington County K-12 district** plus the two graph-group districts
-  that sit just outside the county (Schuylerville and Hoosick Falls).
+- **Graph group (5 districts)** — used for charts, where a short list keeps lines legible: **Cambridge, Greenwich, Salem** (all Washington County), **Schuylerville** (Saratoga County), and **Hoosick Falls** (Rensselaer County). These are nearby small districts.
+- **Table group (12 districts)** — used for tables, which can hold more rows: **every Washington County K-12 district** plus the two graph-group districts that sit just outside the county (Schuylerville and Hoosick Falls).
 
-The table group is the broader set; the graph group is a readable subset of it.
-**Putnam CSD** is left out of the "Washington County K-12" set because it is a
-K-8 district -- it has no high school of its own and pays to send its high-school students elsewhere, so it is not comparable on K-12 measures.
+The table group is the broader set; the graph group is a readable subset of it. **Putnam CSD** is left out of the "Washington County K-12" set because it is a K-8 district -- it has no high school of its own and pays to send its high-school students elsewhere, so it is not comparable on K-12 measures.
 
 | Group | Districts |
-|---|---|
+|------------------------------------|------------------------------------|
 | **Graph** (charts) | Cambridge, Greenwich, Hoosick Falls, Salem, Schuylerville |
 | **Table** (tables) | The graph group **+** Argyle, Fort Ann, Fort Edward, Granville, Hartford, Hudson Falls, Whitehall |
 
 ## Data and a few cautions
 
-The underlying numbers come from NYSED's public downloads and other reputable sources; each chapter and the
-[Sources](appendix/sources.qmd) appendix give the specifics. A few things to keep in mind
-throughout:
+The underlying numbers come from NYSED's public downloads and other reputable sources; each chapter and the [Sources](appendix/sources.qmd) appendix give the specifics. A few things to keep in mind throughout:
 
-- **Year labels are school-year-ending years.** "2025" means the **2024–25**
-  school year. Enrollment is the BEDS-day count (first Wednesday of October).
-- **Teacher counts begin in 2017–18.** So time series that depend on teachers
-  (such as students per teacher) start at school-year-ending **2018**, even
-  though enrollment runs back to 2015–16.
-- **Students per teacher is an approximation, not official class size.** It
-  divides K-12 enrollment by a district-wide teacher *headcount* (all grades,
-  not full-time-equivalents). It is useful for comparison across districts and
-  over time, but it is not NYSED's official pupil-teacher or average-class-size
-  figure. See the [Sources](appendix/sources.qmd) appendix for detail.
-- **Charter schools are excluded** — they have no district-total row in the
-  source data — so these are district-operated figures.
+- **Year labels are school-year-ending years.** "2025" means the **2024–25** school year. Enrollment is the BEDS-day count (first Wednesday of October).
+- **Teacher counts begin in 2017–18.** So time series that depend on teachers (such as students per teacher) start at school-year-ending **2018**, even though enrollment runs back to 2005–06.
+- **Students per teacher is an approximation, not official class size.** It divides K-12 enrollment by a district-wide teacher *headcount* (all grades, not full-time-equivalents). It is useful for comparison across districts and over time, but it is not NYSED's official pupil-teacher or average-class-size figure. See the [Sources](appendix/sources.qmd) appendix for detail.
+- **Charter schools are excluded** — they have no district-total row in the source data — so these are district-operated figures.

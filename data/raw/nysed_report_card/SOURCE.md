@@ -7,16 +7,23 @@ accountability, enrollment, staff, graduation, expenditures, and more, aggregate
 at the **statewide, county, Need/Resource-Capacity (N/RC), public-school-district,
 and public-school** levels.
 
-This project currently uses the SRC only for the **grades 3-8 ELA & Math
-assessment** tables (built into a seamless multi-year panel — see
-[Processed output](#processed-output)). The same databases also contain Regents,
-science, graduation, etc., which can be added later without re-downloading.
+This project uses the SRC for the **grades 3-8 ELA & Math assessment** tables
+(built into a seamless multi-year panel — see [Processed output](#processed-output))
+and, since 2026-06, for **pre-2018 K-12 enrollment** (SRC2005-17, in
+`build_enrollment_teachers.py` — the standalone Enrollment DB begins 2017-18).
+The same databases also contain Regents, science, graduation, etc., which can be
+added later without re-downloading.
+
+> **Two SRC era-boundaries matter for enrollment:** SRC2018+ no longer carry a
+> `BEDS Day Enrollment` table (enrollment moved to the standalone Enrollment
+> DB), and SRC2000-2004 use a 6-digit district code + a different layout (not
+> used). Only **SRC2005-2017** (12-digit `ENTITY_CD`/`bedscode`) feed enrollment.
 
 | item | value |
 |---|---|
 | publisher | NYSED (New York State Education Department), data.nysed.gov |
 | source page | <https://data.nysed.gov/downloads.php> (section "Report Card Database") |
-| coverage downloaded | **SY 2015-16 → 2024-25** (10 annual files, `year_end` 2016–2025) |
+| coverage downloaded | **SY 1999-00 → 2024-25** (26 annual files, `year_end` 2000–2025) |
 | grain (raw) | one row per entity × school-year × assessment × subgroup |
 | format | zipped Access DB (`.accdb` **and** `.mdb`, same data) + a per-year ReadMe PDF |
 
@@ -43,8 +50,9 @@ that script is the machine-readable copy of this mapping. Files are large
 | 2016 | 2015-16 | `zips/SRC2016.zip` | `/files/reportcards/15-16/SRC2016.zip` |
 
 (NYSED moved the path from `/files/reportcards/` to `/files/essa/` starting with
-SY 2017-18. Files back to SY 1999-00 exist on the page if the panel is ever
-extended further.) The base URL is `https://data.nysed.gov`.
+SY 2017-18; SY 1999-00 → 2011-12 live under `/files/reportcards/archive/`.) The
+base URL is `https://data.nysed.gov`. All 26 files (SRC2000-2025) are now
+downloaded; the `REGISTRY` in `download_report_card.py` is the full URL map.
 
 ## Time convention
 

@@ -2,13 +2,18 @@
 
 Two small processed parquets feed the demographics chapter:
 
-1. ``demographics_county_pop.parquet`` — July-1 resident population for the
-   comparison counties, history + (NY) forecast:
-     - **NY** (Washington, Warren, Saratoga, Rensselaer): ``popfc``'s reconciled
-       Census-PEP/NYSDOL history (2000–2024) spliced to its baseline cohort-
-       component forecast (2025–2050).
-     - **VT** (Bennington, Rutland): Census PEP history only (2000–2020); no
-       forecast (popfc is NYS-only).
+1. ``demographics_county_pop.parquet`` — resident population for the comparison
+   counties, history + (NY) forecast:
+     - **NY** (Washington, Warren, Saratoga, Rensselaer): July-1 NYSDOL
+       intercensal estimates (1970–1999, from ``popfc``'s all-sources table)
+       spliced to ``popfc``'s reconciled Census-PEP/NYSDOL history (2000–2024)
+       and baseline cohort-component forecast (2025–2050). The reconciled
+       series' rule is ``july1_nysdol_intercensal``, so the pre-2000 rows use
+       the same July-1 intercensal basis — one continuous series.
+     - **VT** (Bennington, Rutland): Census history only (1970–2024; 1970–1999
+       via NBER's consolidation of the Census legacy intercensal releases,
+       census-year values there are April-1 counts); no forecast (popfc is
+       NYS-only).
    One row per county-year: ``geoid, geography, state, year, period
    (history/forecast), population``.
 
@@ -43,6 +48,7 @@ POPFC_DIR = Path(os.environ.get(
     "POPFC_DIR", str(Path.home() / "Documents" / "python_projects" / "popfc")
 ))
 POPFC_RECONCILED = POPFC_DIR / "data_interim" / "population_reconciled.parquet"
+POPFC_ALL_SOURCES = POPFC_DIR / "data_interim" / "population_all_sources.parquet"
 POPFC_FORECAST = POPFC_DIR / "data_final" / "county_forecast_totals.csv"
 POPFC_YEARLY = POPFC_DIR / "data_final" / "county_yearly_components.csv"
 POPFC_WASH = POPFC_DIR / "data_final" / "washington_components.csv"
@@ -60,17 +66,35 @@ OUT_COMP = PROCESSED_DIR / "demographics_washington_components.parquet"
 
 
 def _ny_population() -> pl.DataFrame:
-    """NY county population: reconciled history (2000–2024) spliced to the
-    baseline forecast (2025–2050).
+    """NY county population: pre-2000 NYSDOL intercensal history (1970–1999) +
+    reconciled history (2000–2024) spliced to the baseline forecast
+    (2025–2050).
 
-    History comes from ``population_reconciled`` (Census PEP v2025 / NYSDOL, all
-    four counties through 2024); the forecast comes from
-    ``county_forecast_totals`` (the only all-county forecast file — note
+    Pre-2000 comes from ``population_all_sources`` (NYSDOL intercensal rows —
+    the July-1 series; at census years the file also carries April-1 census
+    counts, which we skip so the basis matches the reconciled series' own
+    ``july1_nysdol_intercensal`` rule). History 2000–2024 comes from
+    ``population_reconciled`` (Census PEP v2025 / NYSDOL); the forecast comes
+    from ``county_forecast_totals`` (the only all-county forecast file — note
     ``county_yearly_components`` is Washington-only). The forecast launches from
     2024, so we take history through 2024 and forecast from 2025; the small seam
     (reconciled 2024 vs the forecast's 2024 anchor differ by ~17 people) is
     invisible on an indexed chart.
     """
+    pre2000 = (
+        pl.read_parquet(POPFC_ALL_SOURCES)
+        .filter(pl.col("geoid").is_in(NY_COUNTIES))
+        .filter(pl.col("year") < 2000)
+        .filter(pl.col("source") == "nysdol", pl.col("kind") == "intercensal")
+        .select(
+            pl.col("geoid"),
+            pl.col("geoid").replace_strict(NY_COUNTIES).alias("geography"),
+            pl.lit("NY").alias("state"),
+            pl.col("year"),
+            pl.lit("history").alias("period"),
+            pl.col("population").cast(pl.Float64),
+        )
+    )
     hist = (
         pl.read_parquet(POPFC_RECONCILED)
         .filter(pl.col("geoid").is_in(NY_COUNTIES))
@@ -98,11 +122,12 @@ def _ny_population() -> pl.DataFrame:
             pl.col("population").cast(pl.Float64),
         )
     )
-    return pl.concat([hist, fc], how="vertical")
+    return pl.concat([pre2000, hist, fc], how="vertical")
 
 
 def _vt_population() -> pl.DataFrame:
-    """VT county population, history only (Census PEP, 2000–2020)."""
+    """VT county population, history only (Census legacy intercensal via NBER
+    1970–1999, then Census PEP 2000–2024)."""
     return (
         pl.read_csv(VT_PATH, schema_overrides={"geoid": pl.Utf8})
         .select(
@@ -165,10 +190,30 @@ def build_washington_components() -> pl.DataFrame:
     return pl.concat([hist, fc], how="vertical").sort("year")
 
 
+def _seam_check(pop: pl.DataFrame) -> None:
+    """Print year-over-year changes around the splice seams (conventions:
+    validate the seam when splicing a series). The 1999→2000 boundary is where
+    the pre-2000 legacy history meets the modern series; NY should be smooth
+    there (same NYSDOL July-1 basis on both sides), while VT embeds the
+    2000-census rebenchmark (a level shift, not an error)."""
+    seams = pop.filter(pl.col("year").is_between(1998, 2001)).sort("geography", "year")
+    piv = seams.pivot(on="year", index="geography", values="population").sort("geography")
+    for row in piv.iter_rows(named=True):
+        g = row["geography"]
+        c98, c99, c00, c01 = (row.get(str(y)) for y in (1998, 1999, 2000, 2001))
+        yoy_pre = (c99 / c98 - 1) * 100
+        yoy_seam = (c00 / c99 - 1) * 100
+        yoy_post = (c01 / c00 - 1) * 100
+        print(f"    {g:<18}  98→99 {yoy_pre:+5.1f}%   99→00 {yoy_seam:+5.1f}%   "
+              f"00→01 {yoy_post:+5.1f}%")
+
+
 def main() -> None:
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
     pop = build_county_pop()
+    print("Seam check (1999→2000 splice):")
+    _seam_check(pop)
     pop.write_parquet(OUT_POP, compression="zstd")
     by_state = (pop.group_by("state", "period").len().sort("state", "period")
                 .to_dict(as_series=False))

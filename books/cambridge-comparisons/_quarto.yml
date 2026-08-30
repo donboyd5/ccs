@@ -73,6 +73,15 @@ format:
     fig-align: center
     tbl-cap-location: top
     reference-location: document   # or: block | section | margin
+  pdf:
+    # multirow: tables whose headers span rows (e.g. the births/deaths table
+    # on the index page) generate \multirow, which needs this package.
+    include-in-header:
+      text: |
+        \usepackage{multirow}
+  docx:
+    toc: true
+    toc-depth: 2
 
 execute:
   echo: true

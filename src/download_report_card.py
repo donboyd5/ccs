@@ -4,12 +4,16 @@ Each year NYSED posts a single statewide **Report Card Database** — a zipped
 MS-Access database (``SRC{YEAR}.accdb``) holding *every* report-card table for
 that school year: grades 3-8 ELA/Math assessment results, Regents results,
 accountability, enrollment, staff, graduation, etc. This script downloads the
-annual zip for a 10-year window and saves it under a clean, sortable name in
+annual zip for every available year (SRC2000-SRC2025, school years 1999-00 →
+2024-25) and saves it under its original NYSED basename in
 ``data/raw/nysed_report_card/zips/``.
 
-The zips are large (~250-385 MB each, ~3.3 GB for 10 years) and git-ignored; the
-``.accdb`` inside is larger still, so we keep only the **zip** as the raw artifact
-and let ``build_assessments.py`` extract each ``.accdb`` to a temp dir on demand.
+The zips are git-ignored; recent ones are large (~250-385 MB each) while the
+oldest (SRC2000-2005) are 10-17 MB. We keep only the **zip** as the raw artifact
+and let the builders extract the ``.mdb``/``.accdb`` to a temp dir on demand.
+The assessments chapter uses SRC2016-2025; the enrollment series uses the
+12-digit-coded SRC2005-2017 (older SRC files use a 6-digit code and are kept on
+disk but not yet parsed).
 
 ``year_end`` is the spring (school-year-end) year, matching the rest of the
 project: NYSED's "2024-25" Report Card -> ``SRC2025.zip`` -> ``year_end = 2025``.
@@ -36,7 +40,8 @@ BASE = "https://data.nysed.gov"
 
 #: year_end (spring year) -> original NYSED URL of that year's Report Card zip.
 #: NYSED moved the path from ``/files/reportcards/`` to ``/files/essa/`` starting
-#: with SY 2017-18 (year_end 2018); both are recorded here verbatim.
+#: with SY 2017-18 (year_end 2018); both are recorded here verbatim. Files for
+#: SY 1999-00 through 2011-12 live under ``/files/reportcards/archive/``.
 REGISTRY: dict[int, str] = {
     2025: BASE + "/files/essa/24-25/SRC2025.zip",
     2024: BASE + "/files/essa/23-24/SRC2024.zip",
@@ -48,6 +53,22 @@ REGISTRY: dict[int, str] = {
     2018: BASE + "/files/essa/17-18/SRC2018.zip",
     2017: BASE + "/files/reportcards/16-17/SRC2017.zip",
     2016: BASE + "/files/reportcards/15-16/SRC2016.zip",
+    2015: BASE + "/files/reportcards/14-15/SRC2015.zip",
+    2014: BASE + "/files/reportcards/13-14/SRC2014.zip",
+    2013: BASE + "/files/reportcards/12-13/SRC2013.zip",
+    2012: BASE + "/files/reportcards/archive/2011-12/SRC2012.zip",
+    2011: BASE + "/files/reportcards/archive/2010-11/SRC2011.zip",
+    2010: BASE + "/files/reportcards/archive/2009-10/SRC2010.zip",
+    2009: BASE + "/files/reportcards/archive/2008-09/SRC2009.zip",
+    2008: BASE + "/files/reportcards/archive/2007-08/SRC2008.zip",
+    2007: BASE + "/files/reportcards/archive/2006-07/SRC2007.zip",
+    2006: BASE + "/files/reportcards/archive/2005-06/SRC2006.zip",
+    2005: BASE + "/files/reportcards/archive/2004-05/SRC2005.zip",
+    2004: BASE + "/files/reportcards/archive/2003-04/SRC2004.zip",
+    2003: BASE + "/files/reportcards/archive/2002-03/SRC2003.zip",
+    2002: BASE + "/files/reportcards/archive/2001-02/SRC2002.zip",
+    2001: BASE + "/files/reportcards/archive/2000-01/SRC2001.zip",
+    2000: BASE + "/files/reportcards/archive/1999-00/SRC2000.zip",
 }
 
 # NYSED serves these fine to a plain client, but present a browser-ish UA to be safe.
