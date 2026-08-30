@@ -1,8 +1,15 @@
 # Spending per pupil
 
-**Cambridge spends more per student than most nearby districts — consistently second only to Salem.** In 2024–25, Cambridge spent roughly **$31,000 per K-12 pupil** in current operating funds, compared to a group average of about $27,000. This measure — **current operating spending per pupil** — captures what the district actually spends to educate each student: salaries, benefits, classroom services, BOCES programs, and federally funded services.
+## Cambridge and Salem — the group's two smallest districts — have held the top two spots every year
 
-The chart below shows how spending per pupil has changed since 2015–16.
+In 2024–25 Cambridge spent about **$31,000 per K-12 pupil** in current
+operating funds, against a five-district average near $30,000. Cambridge and
+Salem, the group's two smallest districts, have traded first and second place
+in all ten years shown — small districts spread fixed costs (a principal, a
+building, a bus route) over fewer students, so their higher spending per pupil
+is arithmetic, not inefficiency. Dollars are nominal — not adjusted for
+inflation — and exclude capital projects, debt service, and interfund
+transfers; see [Methods](../appendix/methods.qmd) for the definition.
 
 ```{python}
 #| label: setup
@@ -62,24 +69,10 @@ cambridge = g.filter(pl.col("district") == cc.FOCUS)
 )
 ```
 
-Every district's spending per pupil has risen over the decade. Part of this is inflation — the dollars are not adjusted for rising prices. But the **rank order is consistent**: Cambridge and Salem, the two smallest districts by enrollment, sit at the top year after year.
+Every district's line rises over the decade — part of that is inflation — but
+the rank order barely changes.
 
-## Why the smallest districts spend the most per pupil
-
-The pattern above is the cost-side mirror of the enrollment story. **Small districts spread fixed costs over fewer students.** A principal, a building, a bus route — these costs don't shrink linearly when enrollment drops. So a district with 500 students inevitably spends more per pupil than a district with 1,300 students, even if they offer similar programs.
-
-Cambridge and Salem are the smallest in the comparison group, so their higher spending per pupil is not a sign of inefficiency — it's the arithmetic of small scale. The question for Cambridge is whether its level of spending is sustainable given its enrollment decline and tax base (discussed in the [Taxes](taxes.qmd) chapter).
-
-## What this measure includes (and excludes)
-
-The chart uses **current operating spending**, which deliberately leaves out two categories that would make year-to-year comparisons misleading:
-
-- **Capital projects and debt.** Building a new school or paying off long-term debt arrives in large, irregular lumps. Including these would make spending per pupil volatile in ways that don't reflect the actual cost of educating students.
-- **Transfers between a district's own funds.** Moving money from one fund to another doesn't change total resources, so it's excluded to avoid double-counting.
-
-This is close to the "current spending per pupil" measure the U.S. Census and NCES use to compare districts and states. The dollars come from the New York State Comptroller's financial-reporting data and are **not adjusted for inflation**, so part of the upward drift reflects rising prices rather than rising real resources.
-
-The table below shows where each district stood in 2015–16 and 2024–25, and how much their spending per pupil changed.
+Where each district started, where it ended, and the decade's change:
 
 ```{python}
 #| label: tbl-spending-per-pupil-change
@@ -125,6 +118,10 @@ wide = wide.with_columns((pl.col("2025") - pl.col("2016")).alias("chg"))
 )
 ```
 
-**Cambridge's spending per pupil rose by about $11,000** (from roughly $20,000 to $31,000) over the decade — a similar increase to other districts in the group. What sets Cambridge apart is where it started (already high in 2015–16) and where it remains (near the top in 2024–25).
+**Cambridge's spending per pupil rose about $10,000** — a middle-of-the-pack
+increase (Greenwich's was largest at $12,000). What sets Cambridge apart is
+where it started — near the top in 2015–16 — and where it remains in 2024–25.
+Whether that level is sustainable as enrollment falls is taken up in the
+[Taxes](taxes.qmd) chapter.
 
-*For additional detail on spending measures, see the exploratory [Spending](../exploratory/spending.qmd) chapter.*
+*For additional spending measures, see the exploratory [Spending](../exploratory/spending.qmd) chapter.*
