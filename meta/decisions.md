@@ -2,6 +2,46 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-08-30 — Demographics history extended to 1970; index enrollment sentence computed from data
+
+- **The demographics chapter's history plot now spans 1970–2024, indexed to
+  2010** (the user's request: "much longer history… indexed to 2010").
+  - **NY 1970–1999** comes from popfc's `population_all_sources.parquet`
+    (NYSDOL July-1 intercensal rows) spliced ahead of its reconciled series.
+    The reconciled series' own rule is `july1_nysdol_intercensal`, so the
+    pre-2000 rows take the **intercensal** (July-1) rows, not the April-1
+    census-count rows the same table carries at 1970/1980/1990 — one
+    continuous basis. Seam check at 1999→2000: every NY county within the
+    band of neighboring transitions (no definition break).
+  - **VT 1970–1999** comes from **NBER's consolidation** of the Census legacy
+    county-intercensal releases. Why not first-party: the Census 1970s county
+    totals are fixed-width (fine), but 1980s *annual* county totals exist only
+    inside a 34 MB age-sex-race file, and the 1990s state-county totals are
+    published as **PDF only**. NBER's file is a documented merge of exactly
+    those releases. Legacy basis: census-year values are April-1 counts, other
+    years July-1; 1970s values rounded to hundreds — invisible on an indexed
+    chart, documented in `SOURCE.md`.
+  - **VT history also extended 2021–2024** from the already-cached
+    `co-est2024-alldata.csv`, so all six counties now run through 2024 in plot 1.
+  - The chart's story changed: Washington County **grew for decades, peaked in
+    2010 (63,372), and has since fallen ~5.6%** (59,822 in 2024) — while
+    Saratoga nearly doubled since 1970 and is still growing. Two VT steps
+    (2000, 2020) are census rebenchmarks, noted in the caption.
+- **`index.qmd` enrollment figures are now computed, not hand-written** (the
+  user's bracketed request). A hidden chunk reads
+  `enrollment_k12_by_district.parquet`; an `output: asis` chunk prints the
+  sentence as a list item. Base year is a single constant
+  (`ENROLL_BASE_YEAR = 2005`) — rebased from the draft's 2016 to the full
+  2005–2025 series per the user's choice: **1,089 → 741 K-12 (−32.0%)**,
+  grade 12 **76 → 54 (−28.9%)**. Quarto's python engine has no inline prose
+  expressions, hence the asis-chunk pattern; the list structure renders
+  correctly (verified in the HTML).
+- **Fixed the stale index caution** ("enrollment runs back to 2015–16" →
+  2005–06) and **git-ignored Quarto's per-page `*_files/` render dirs**.
+- Also on this branch: the user's own uncommitted edits — the new index
+  overview draft (challenges framing; several bullets still his to finish) and
+  `pdf`/`docx` output formats in `_quarto.yml`.
+
 ## 2026-06-30 — Enrollment series extended back to 2005-06 (SRC databases)
 
 - **The 2016 floor was artificial.** NYSED's standalone Enrollment database

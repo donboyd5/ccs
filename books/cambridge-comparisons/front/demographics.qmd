@@ -2,7 +2,7 @@
 title: "Demographics: Rural aging and population decline"
 ---
 
-**Cambridge is caught in a storm buffeting rural school districts throughout New York.**
+## Cambridge is caught in a storm buffeting rural school districts throughout New York
 
 Population is declining in rural areas throughout New York.
 
@@ -12,10 +12,13 @@ The main reasons for this decline are:
 -  Out-migration of younger adults, leading to an aging population
 -  Economic factors that make rural areas less attractive for new residents
 
-The charts below put Cambridge's county — **Washington County** — alongside its
-neighbors on both sides of the state line. Each county's population is shown
-**relative to its own starting point** (indexed to 100), so the lines compare
-*trends*, not sizes. Washington County is the red line in each chart.
+The chart below puts Cambridge's county — **Washington County** — alongside its
+neighbors on both sides of the state line, reaching back to 1970. Each county's
+population is shown **relative to its own 2010 population** (2010 = 100), so the
+lines compare *trends*, not sizes. Washington County is the red line. Most of
+these counties grew for decades; Washington County's population peaked in 2010
+and has fallen about 6% since, while Saratoga County — the regional outlier —
+has nearly doubled since 1970 and is still growing.
 
 ```{python}
 #| label: setup
@@ -93,8 +96,8 @@ def _indexed(df: pl.DataFrame, base_year: int) -> pl.DataFrame:
 
 ```{python}
 #| label: fig-pop-history
-#| fig-cap: "Total population indexed to 2000 (=100), 2000–2020. Values below 100 mean a county ended the period smaller than it began. NY counties from the popfc forecast project (reconciled Census/NYSDOL series); Bennington and Rutland from the U.S. Census Bureau (Population Estimates Program). The 2020 uptick for the two Vermont counties is the 2020 Census rebenchmark — the census counted more residents than the prior estimates had shown."
-g = _indexed(pop.filter(pl.col("year").is_between(2000, 2020)), base_year=2000)
+#| fig-cap: "Total population indexed to each county's 2010 population (=100), 1970–2024. Values below 100 mean a county was smaller then than in 2010. NY counties: NYSDOL intercensal estimates via the popfc forecast project. Bennington and Rutland (VT): Census Bureau legacy intercensal estimates (1970–1999, via NBER's consolidation; census-year values are April-1 counts) and Population Estimates Program (2000–2024). The small upward steps in the Vermont lines at 2000 and 2020 are census rebenchmarks — each census counted more residents than the prior estimates had shown."
+g = _indexed(pop.filter(pl.col("year").is_between(1970, 2024)), base_year=2010)
 order = [COUNTY_LABEL[c] for c in ["Washington", "Saratoga", "Warren", "Rensselaer",
                                    "Bennington County", "Rutland County"]]
 
@@ -103,12 +106,12 @@ order = [COUNTY_LABEL[c] for c in ["Washington", "Saratoga", "Warren", "Renssela
     + geom_line(size=1)
     + scale_color_manual(values={COUNTY_LABEL[k]: v for k, v in COUNTY_PALETTE.items()},
                          limits=order)
-    + scale_x_continuous(breaks=list(range(2000, 2021, 5)))
-    + scale_y_continuous(limits=(80, 120), breaks=list(range(80, 121, 5)))
+    + scale_x_continuous(breaks=list(range(1970, 2025, 10)))
+    + scale_y_continuous(limits=(50, 115), breaks=list(range(50, 116, 10)))
     + labs(
-        x=None, y="Population (2000 = 100)",
-        title="Population by county, indexed to 2000",
-        subtitle="2000–2020 (100 = each county's 2000 population)",
+        x=None, y="Population (2010 = 100)",
+        title="Population by county, indexed to 2010",
+        subtitle="1970–2024 (100 = each county's 2010 population)",
     )
     + cc.theme_ccs()
 )
@@ -203,7 +206,7 @@ mig_cols = ["domestic_mig", "international_mig", "net_mig", "pop_change"]
 
 *Data sources:*
 
-- **popfc** (Washington County, NY Population Forecast, sibling project) — NY county population history (reconciled Census PEP / NYSDOL) and baseline forecast; Washington County components of change.
-- **U.S. Census Bureau, Population Estimates Program** — Bennington and Rutland county (Vermont) history, 2000–2020.
+- **popfc** (Washington County, NY Population Forecast, sibling project) — NY county population history (NYSDOL intercensal estimates 1970–1999, reconciled Census PEP / NYSDOL series 2000–2024) and baseline forecast; Washington County components of change.
+- **U.S. Census Bureau** — Bennington and Rutland county (Vermont) history: legacy county intercensal estimates 1970–1999 (via NBER's consolidated file) and Population Estimates Program 2000–2024.
 
 See the [Sources](../appendix/sources.qmd) appendix for provenance.

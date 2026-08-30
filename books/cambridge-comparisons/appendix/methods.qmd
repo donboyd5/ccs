@@ -32,11 +32,16 @@ see the [Sources](sources.qmd) appendix and the tracked `SOURCE.md` files under
 ### Demographics (county population)
 
 - **County population** is the July-1 resident total (Census Bureau basis),
-  shown **indexed** to a base year (2000 = 100, or 2020 = 100) so the lines
-  compare *trends* across counties of very different sizes, not raw counts.
+  shown **indexed** to a base year (2010 = 100, or 2020 = 100) so the lines
+  compare *trends* across counties of very different sizes, not raw counts. The
+  history chart reaches back to **1970**; in the legacy pre-2000 Vermont
+  estimates, census-year values (1970, 1980, 1990) are April-1 census counts
+  rather than July-1 — the Census convention of the time, invisible on an
+  indexed chart.
 - **New York** history and forecast come from the sibling *popfc* cohort-
   component project (baseline scenario); **Vermont** counties (Bennington,
-  Rutland) come straight from the Census Bureau, which has no popfc forecast.
+  Rutland) come straight from the Census Bureau (legacy intercensal estimates
+  through 1999, then PEP), which has no popfc forecast.
   These are the book's only **calendar-year** figures — the one place that
   departs from the school-year-ending convention.
 - **Components of change** (births, deaths, migration) are shown for Washington

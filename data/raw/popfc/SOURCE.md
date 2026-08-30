@@ -23,9 +23,19 @@ overridable via the `POPFC_DIR` env var.
 
 | popfc file | used for | columns read |
 |---|---|---|
+| `data_interim/population_all_sources.parquet` | NY county **pre-2000 history** (NYSDOL **July-1 intercensal** estimates, 1970–1999), spliced ahead of the reconciled series | `geoid`, `year`, `kind` (=`intercensal`), `source` (=`nysdol`), `population` (the 4 counties) |
 | `data_interim/population_reconciled.parquet` | NY county **history** (Census PEP + NYSDOL, reconciled to one July-1 series per county), 2000–2025 | `geoid`, `geography`, `year`, `population` (the 4 counties) |
 | `data_final/county_yearly_components.csv` | NY **history + forecast** population & components (baseline scenario); the forecast is 2025–2050 | `population` (plot 2); `births`, `deaths`, `net_mig`, `pop_change` (Washington table, forecast rows) |
 | `data_final/washington_components.csv` | Washington County **domestic vs international migration split** (history, by Census PEP vintage) | `v2025` vintage rows, 2020–2025: `births`, `deaths`, `domestic_mig`, `international_mig`, `net_mig`, `pop_change` |
+
+**Pre-2000 splice basis.** The reconciled series' own rule for 2000+ is
+`july1_nysdol_intercensal`, so the 1970–1999 rows take popfc's NYSDOL
+**intercensal** rows (July-1), *not* the April-1 census-count rows the same
+table carries at 1970/1980/1990 — one continuous July-1 series. Seam check at
+1999→2000 (from `build_demographics.py`): Washington −0.1%, Warren +0.4%,
+Rensselaer +0.2%, Saratoga +1.4% (Saratoga was growing ~1%/yr throughout) — all
+within the band of neighboring transitions, so no definition break at the
+splice.
 
 ## The four New York counties (and why these)
 
