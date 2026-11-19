@@ -120,7 +120,7 @@ Newest first. Each entry: the decision, and why.
   to 2020 (=100), 2020–2035, NY counties only, with **history solid / forecast
   dashed**. Washington County (Cambridge's county) is the red focus line.
 - **New York data read in place from the sibling `popfc` project**
-  (`~/Documents/python_projects/popfc`, commit `6a42d26`). History = its
+  (`~/Documents/code_projects/popfc`, commit `6a42d26`). History = its
   `population_reconciled` series (Census PEP v2025 / NYSDOL, 2000–2024); forecast
   = `county_forecast_totals` baseline (2025–2050). Per `.gitignore`, raw data
   under `data/` is not tracked, so popfc is **cited, not vendored** —
