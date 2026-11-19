@@ -28,7 +28,7 @@ Totals
 ------
 District totals are **computed as the sum of the district's detail rows** for
 every year (tax_levy, taxable_full_value, library_levy summed; full_value_tax_rate
-recomputed as 1000 * levy / full_value). For 2021-2025 OSC also publishes its own
+recomputed as 1000 * levy / full_value). For 2021-2026 OSC also publishes its own
 Total rows; ``validate_totals`` checks the computed totals against OSC's published
 totals (they should agree to within rounding) and the build refuses to proceed if
 any district is off by more than TOTAL_TOLERANCE.
@@ -63,7 +63,7 @@ XWALK_IN = PROJECT_ROOT / "data" / "crosswalks" / "district_crosswalk.csv"
 XWALK_OUT = PROJECT_ROOT / "data" / "crosswalks" / "osc_rpt_district_crosswalk.csv"
 OUT_PATH = PROJECT_ROOT / "data" / "processed" / "osc_school_district_tax_levies.parquet"
 
-YEARS = range(2015, 2026)  # 2015-2025 inclusive (the full-value-only era)
+YEARS = range(2015, 2027)  # 2015-2026 inclusive (the full-value-only era)
 
 #: computed district total vs OSC-published total: max tolerated relative error
 TOTAL_TOLERANCE = 1e-4  # 0.01%
@@ -287,6 +287,9 @@ MANUAL_OVERRIDES: dict[str, str] = {
     "060610400100": "06020106",  # Southwestern CSD at Jamestown (vs Pine Valley, same county)
     "300957400400": "41150402",  # New York Mills UFSD -> crosswalk "NY MILLS UFSD" (abbrev.)
     "550634200100": "66040103",  # UFSD of the Tarrytowns -> crosswalk "UFSD-TARRYTOWNS"
+    # North Colonie: the crosswalk also carries a retired pre-2010 code (01060506)
+    # under the same name, so the name match is ambiguous; this is the current one.
+    "010618700700": "01062306",
 }
 
 
