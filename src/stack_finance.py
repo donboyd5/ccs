@@ -1,9 +1,14 @@
-"""Stack NY school district finance CSVs (2013-2025) into a single parquet file.
+"""Stack NY school district finance CSVs (2013-2026) into a single parquet file.
 
-The annual files in ``data/raw/osc_school_finance/`` cover every NY school district. Years 2013-2025
+The annual files in ``data/raw/osc_school_finance/`` (fetched by
+``download_osc_finance.py``) cover every NY school district. Years 2013-2026
 share a single schema (PERIOD_START/PERIOD_END/ACCOUNT_CODE_SECTION), so they
-can be concatenated without harmonization. 2026 (a near-empty placeholder) and
-the 1995-2012 files (a different, older schema) are intentionally excluded.
+can be concatenated without harmonization. The 1995-2012 files (a different,
+older schema) are intentionally excluded.
+
+The newest year is OSC's first release of that fiscal year and is revised in
+later snapshots (the 2025 file changed for 32 districts between the May and
+October 2026 snapshots), so treat the last year as preliminary.
 
 Usage:
     python src/stack_finance.py
@@ -21,7 +26,7 @@ DATA_DIR = PROJECT_ROOT / "data"
 ACCOUNT_CODES_DIR = DATA_DIR / "raw" / "osc_school_finance"
 OUT_PATH = DATA_DIR / "processed" / "school_finance.parquet"
 
-YEARS = range(2013, 2026)  # 2013 through 2025 inclusive
+YEARS = range(2013, 2027)  # 2013 through 2026 inclusive
 
 # Codes are identifiers, not numbers: read as strings to preserve any leading
 # zeros and avoid integer overflow surprises.

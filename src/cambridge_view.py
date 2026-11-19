@@ -1,6 +1,6 @@
 """Build a Cambridge-only view from the stacked statewide finance parquet.
 
-Filters the full 2013-2025 stack down to Cambridge Central School District
+Filters the full 2013-2026 stack down to Cambridge Central School District
 (municipal code 530790601000) and writes a small, focused parquet for the
 ccs project. Run ``stack_finance.py`` first.
 
