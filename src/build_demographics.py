@@ -10,7 +10,7 @@ Two small processed parquets feed the demographics chapter:
        and baseline cohort-component forecast (2025–2050). The reconciled
        series' rule is ``july1_nysdol_intercensal``, so the pre-2000 rows use
        the same July-1 intercensal basis — one continuous series.
-     - **VT** (Bennington, Rutland): Census history only (1970–2024; 1970–1999
+     - **VT** (Bennington, Rutland): Census history only (1970–2025; 1970–1999
        via NBER's consolidation of the Census legacy intercensal releases,
        census-year values there are April-1 counts); no forecast (popfc is
        NYS-only).
@@ -45,7 +45,7 @@ VT_PATH = PROJECT_ROOT / "data" / "raw" / "census_pep" / "vt_county_population.c
 
 #: The sibling popfc project (NYS-only forecasts). Override with POPFC_DIR.
 POPFC_DIR = Path(os.environ.get(
-    "POPFC_DIR", str(Path.home() / "Documents" / "python_projects" / "popfc")
+    "POPFC_DIR", str(Path.home() / "Documents" / "code_projects" / "popfc")
 ))
 POPFC_RECONCILED = POPFC_DIR / "data_interim" / "population_reconciled.parquet"
 POPFC_ALL_SOURCES = POPFC_DIR / "data_interim" / "population_all_sources.parquet"
@@ -127,7 +127,7 @@ def _ny_population() -> pl.DataFrame:
 
 def _vt_population() -> pl.DataFrame:
     """VT county population, history only (Census legacy intercensal via NBER
-    1970–1999, then Census PEP 2000–2024)."""
+    1970–1999, then Census PEP 2000–2025)."""
     return (
         pl.read_csv(VT_PATH, schema_overrides={"geoid": pl.Utf8})
         .select(

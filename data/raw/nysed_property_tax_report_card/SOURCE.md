@@ -87,7 +87,7 @@ the project via [`data/crosswalks/district_crosswalk.csv`](../../crosswalks/dist
 ## Processed output
 
 [`src/build_ptrc.py`](../../../src/build_ptrc.py) → `data/processed/property_tax_report_card.parquet`
-— **8,691 district-years, year_end 2015–2027, 675 districts**. For 2016–2027 the
+— **8,693 district-years, year_end 2015–2027, 676 districts**. For 2016–2027 the
 builder reads the modern **35-column** layout (prior-year / budget-year **pairs**),
 selecting the **budget-year** value of each pair **by column position** (header text
 carries shifting year labels and stray spaces). **SY 2014-15 (year_end 2015)** is an
@@ -151,3 +151,13 @@ leaves the cell **blank in `year_end` 2019 and 2021** (and partially in 2021). T
 real (non-zero) incidence is stable across all years — only the encoding of "none"
 differs — so **treat null ≡ 0** for these three columns. This is a pre-existing NYSED
 quirk, not an artifact of the historical extension.
+
+## Update log
+
+- **2026-11-19** — re-downloaded the raw workbooks for **2004-05 → 2017-18**
+  (`2005_ptrc.xls` … `2018_ptrc.xlsx`), which were missing from disk (only
+  2019–2027 were present); all 23 registry files are now on disk. No newer year
+  exists: 2026-27 is the latest, and NYSED will post 2027-28 in May 2027. The
+  rebuilt panel matches the previous build row for row, plus two new rows —
+  **Rockland CSD** (Sullivan, `59130304`) for `year_end` 2026 and 2027 — which now
+  link because the district crosswalk was regenerated with that merged district.

@@ -8,7 +8,7 @@ Educational Management Services.
 |---|---|
 | publisher | NYSED, Educational Management Services |
 | source index | <https://www.p12.nysed.gov/mgtserv/> (budget vote results) |
-| coverage | vote years **2013–2026** (+ re-votes most years; 2018 has no published re-vote) |
+| coverage | budget years **2012-13 through 2026-27** — on-disk `2013`–`2027`, i.e. the May **2012–2026** votes (+ re-votes most years; 2018 has no published re-vote) |
 | grain | one row per district, per vote |
 | time convention | on-disk `year` = budget **span-end** year (NYSED "2024-25" → 2025); the builder relabels to the vote's **calendar** year (`year − 1`) |
 
@@ -22,6 +22,8 @@ NYSED filenames are wildly inconsistent:
 
 | on-disk | original NYSED URL |
 |---|---|
+| `2027_vote.xlsx`   | …/votingresults/2026-27-budget-vote-results.xlsx |
+| `2027_revote.xlsx` | …/votingresults/2026-27-budget-revote-results.xlsx |
 | `2026_vote.xlsx`   | …/votingresults/2025-26-budget-vote-results.xlsx |
 | `2026_revote.xlsx` | …/votingresults/2025-26-budget-revote-results.xlsx |
 | `2025_vote.xlsx`   | …/votingresults/2024-25-budget-vote-results-final.xlsx |
@@ -60,7 +62,7 @@ NYSED filenames are wildly inconsistent:
    the default urllib agent on some paths). Existing files are skipped unless
    `--force`.
 2. **Build** — [`src/build_budget_votes.py`](../../../src/build_budget_votes.py)
-   parses the 27 workbooks into one tidy panel,
+   parses the 29 workbooks into one tidy panel,
    `data/processed/budget_votes.parquet`. NYSED changes the column headers, file
    format, and layout every year, so each sheet is reduced to a standard schema by
    **heuristic layout detection** (ported from the original R notebook): it infers
@@ -92,6 +94,13 @@ supermajority, i.e. was above the tax cap).
   double-count when merging with school-year-ending series.
 - **2020 was atypical** (all-absentee voting, shifted June re-vote date).
 - **Pre-2012 omitted** — no tax cap, so the above/below-cap split is undefined.
+
+## Update log
+
+- **2026-11-19** — added the 2026-27 budget files (`2027_vote.xlsx`,
+  `2027_revote.xlsx`): the May 19, 2026 vote and June 16, 2026 re-vote. Panel is
+  now 10,323 district-votes (10,114 votes, 209 re-votes); rows for earlier years
+  are unchanged from the previous build.
 
 ## Also here
 

@@ -2,6 +2,72 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-11-19 — Data refresh ahead of first sharing (branch `feature/data-update-2026`)
+
+The user asked to update all source data before the site is shared. Every source
+was checked against its publisher; `SOURCE.md` in each raw folder has the detail
+and an "Update log". Chapter prose was **not** changed in this branch.
+
+- **Updated to a newer year:** budget votes (May/June 2026), enrollment (2025-26),
+  OSC tax levies (2026), OSC school finance (FY 2025-26, and the whole archive
+  refreshed to OSC's 2026-10-30 snapshot), Census Vermont counties (Vintage 2025).
+  The **Report Card** was refreshed twice over: the revised 2024-25 file (Group 4)
+  and the **2025-26 file (Group 1), which NYSED posted on 2026-11-19** with spring
+  2026 grades 3-8 results.
+- **No newer data exists:** teachers and class size (2025-26 Student & Educator
+  database not posted), Property Tax Report Card (2026-27 is the latest), state
+  aid (`9pb8-dg53` still ends at the 2025-26 enacted budget; last updated
+  2025-09-11), Cambridge's audit (FYE June 2025), NCES pupil-teacher ratio.
+- **Earlier years were compared with the previous build for every source.**
+  Nothing changed except where the publisher revised it: OSC revised FY 2025 for
+  32 districts (none of the 12), and Census revised Vermont 2020-2024 slightly.
+- **Cambridge's 2026-27 budget was defeated twice** (May 19: 554-584; June 16
+  re-vote: 648-456 = 58.7%, short of the 60% an over-cap budget needs). The
+  report card shows why 60% applied: a proposed levy of $11.36M, +12.0%, about
+  $1.12M over the levy limit.
+- **OSC FY 2025-26 all-funds totals for Cambridge jump because of a capital
+  project** ($8.57M of capital-fund spending, financed by a $10.24M serial bond),
+  not operations. `current_operating` is unaffected. Documented in
+  `data/raw/osc_school_finance/SOURCE.md`. The newest OSC year is a first release
+  and is treated as preliminary.
+- **Fixes made along the way** (each was blocking or would have corrupted a
+  rebuild): the demographics build pointed at popfc's old folder; raw Property Tax
+  Report Card files for 2005-2018 were missing from disk; a blank `NEEDS_INDEX` on
+  a few school rows in the 2026 enrollment file nulled the need category of four
+  districts; regenerating `district_crosswalk.csv` made North Colonie's name
+  match ambiguous in the OSC levy crosswalk (pinned with a manual override).
+- **`build_assessments.py` now reads SRC2016 and later only.** It globbed every
+  SRC zip, so after SRC2000-2015 were added in August (for enrollment) it parsed
+  unvalidated 2009-2014 test tables and crashed on SRC2009. The panel's documented
+  coverage (2015 onward) is unchanged; every 2015-2025 row matches the June build.
+- **New 2025-26 report-card row types are kept but separated**: NYSED now
+  publishes an *estimated* grades-3-8 summary row (`_EST`) in place of the plain
+  one for some entities (146 districts for Math, including Fort Edward, Hartford
+  and Schuylerville) and Small Group Total rows (`_SMALL`). They get
+  `test_type` `aggregate_est` / `small_group`, so they cannot be mistaken for a
+  single grade's result. Whether an estimated row may stand in for a district in
+  a comparison is a question for the test-results discussion.
+- **Statewide check:** computed 2026 grades 3-8 proficiency is 47.9% ELA and 57.5%
+  Math, matching NYSED's published 48% / 57%. ELA fell five points after rising
+  seven the year before; EdTrust-New York has asked for an independent audit of
+  the ELA assessments. Relevant to how much weight year-to-year changes can bear.
+- **Found, not fixed (test-results chapter is parked):** its 2023-24 table prints
+  values like "5,320.0%" (a percent format applied to numbers already in
+  percent), has ELA and Math under each other's headings, and the prose quotes
+  45.6% / 48.5% where the data for 2023-24 give 41.1% ELA / 53.2% Math.
+- **The OSC finance source URL is now recorded** and scripted
+  (`src/download_osc_finance.py`), closing the provenance gap noted in June.
+- **New merged district:** Rockland CSD (Sullivan County) replaces Livingston Manor
+  and Roscoe from 2025-26 - a current example for the mergers chapter.
+- **A refresh runbook** was added to `data/README.md`, including the Quarto
+  environment setting and the fact that `freeze: auto` does not re-run a chapter
+  when only its data changed.
+- **Not done, deliberately:** chapter text and chart titles that name years
+  (they now lag the data; the contingency-budgets page still says Cambridge has
+  always passed on the first vote); extending the demographics history chart to
+  2025; any use of the new 2025-26 figures in prose. These belong to the chapter
+  rework, where interpretation is the user's.
+
 ## 2026-08-30 — Demographics history extended to 1970; index enrollment sentence computed from data
 
 - **The demographics chapter's history plot now spans 1970–2024, indexed to
@@ -120,7 +186,7 @@ Newest first. Each entry: the decision, and why.
   to 2020 (=100), 2020–2035, NY counties only, with **history solid / forecast
   dashed**. Washington County (Cambridge's county) is the red focus line.
 - **New York data read in place from the sibling `popfc` project**
-  (`~/Documents/python_projects/popfc`, commit `6a42d26`). History = its
+  (`~/Documents/code_projects/popfc`, commit `6a42d26`). History = its
   `population_reconciled` series (Census PEP v2025 / NYSDOL, 2000–2024); forecast
   = `county_forecast_totals` baseline (2025–2050). Per `.gitignore`, raw data
   under `data/` is not tracked, so popfc is **cited, not vendored** —

@@ -17,8 +17,13 @@ Three expenditure measures per district-year:
 
 Per-pupil columns divide each measure by K-12 enrollment. ``year_end`` is the
 fiscal year ending June 30, which equals OSC's ``CALENDAR_YEAR`` and the NYSED
-school-year-ending label (no off-by-one). Per-pupil values are null before
-2016, where the enrollment panel does not reach.
+school-year-ending label (no off-by-one). Enrollment now reaches back to
+2005-06, so per-pupil values are populated for every year (2013 onward).
+
+The newest year is OSC's first release and is preliminary (see
+``stack_finance.py``). ``total_all_funds`` includes the Capital fund, so it jumps
+in years with a building project (Cambridge 2025-26: $8.6M of capital-fund
+spending financed by a $10.2M bond); use ``current_operating`` for comparisons.
 
 Output (data/processed/, git-ignored, regenerable):
     spending_per_pupil.parquet   one row per comparison district-year

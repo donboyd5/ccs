@@ -416,7 +416,7 @@ osc_sd_muni_code,school_name,primary_county,nysed_district_cd,xwalk_name,match_m
 470604600300,North Babylon Union Free School District,Suffolk,58010303,NORTH BABYLON UFSD,name
 280938600400,North Bellmore Union Free School District,Nassau,28020402,NORTH BELLMORE UFSD,name
 140759100100,North Collins Central School District,Erie,14220104,NORTH COLLINS CSD,name
-010618700700,North Colonie Central School District,Albany,01062306,NORTH COLONIE CSD,name
+010618700700,North Colonie Central School District,Albany,01062306,,manual
 381059500100,North Greenbush Common School District,Rensselaer,49080108,NORTH GREENBUSH COMN SD (WILLIAMS),name
 280938602900,North Merrick Union Free School District,Nassau,28022902,NORTH MERRICK UFSD,name
 540692200100,North Rose-Wolcott Central School District,Wayne,65150106,NORTH ROSE-WOLCOTT CSD,name
@@ -507,6 +507,7 @@ osc_sd_muni_code,school_name,primary_county,nysed_district_cd,xwalk_name,match_m
 060771500100,Ripley Central School District,Chautauqua,06240104,RIPLEY CSD,name
 470771600200,Riverhead Central School District,Suffolk,58060204,RIVERHEAD CSD,name
 260548000000,Rochester City School District,Monroe,26160001,ROCHESTER CITY SD,name
+480771800300,Rockland Central School District,Sullivan,59130304,ROCKLAND CSD,name
 280638602100,Rockville Centre Union Free School District,Nassau,28022103,ROCKVILLE CENTRE UFSD,name
 470909600900,Rocky Point Union Free School District,Suffolk,58020902,ROCKY POINT UFSD,name
 300549000000,Rome City School District,Oneida,41180001,ROME CITY SD,name
