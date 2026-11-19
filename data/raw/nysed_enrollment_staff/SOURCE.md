@@ -12,15 +12,24 @@ public school district, built from NYSED's public downloads. Built by
 
 | metric | source dataset | coverage (school years) |
 |---|---|---|
-| K-12 enrollment | NYSED **Enrollment** DB, table `BEDS Day Enrollment` (2017-18→2024-25) **+ Report Card (SRC)** DBs SRC2005-17, same table (2005-06→2016-17) | **2005-06 → 2024-25** (21 yrs) |
+| K-12 enrollment | NYSED **Enrollment** DB, table `BEDS Day Enrollment` (2017-18→2025-26) **+ Report Card (SRC)** DBs SRC2005-17, same table (2005-06→2016-17) | **2005-06 → 2025-26** (22 yrs) |
 | number of teachers (+ principals, counselors, social workers, turnover) | NYSED **Student & Educator** ("STUDED") database, table `Staff` | **2017-18 → 2024-25** (8 yrs) |
 | county / BOCES / Need-Resource-Capacity crosswalk | Enrollment database, table `BOCES and N/RC` | — |
 
 Source page: https://data.nysed.gov/downloads.php
-(8 annual `enrollment_*.zip` and 8 annual `studed*.zip` archives, each an MS-Access
+(9 annual `enrollment_*.zip` and 8 annual `studed*.zip` archives, each an MS-Access
 `.mdb`/`.accdb`). The raw archives/databases live next to this file in
 `enrollment/` and `studed/` and are git-ignored (too large for GitHub); re-download
-by hand from the source page above into those folders.
+from the source page above into those folders. Each zip holds a date-stamped
+`.mdb` (e.g. `ENROLL2026_20261107.mdb`); extract it and save it as
+`ENROLL_<year>.mdb` / `STUDED_<year>.mdb`, the names the builder globs for.
+
+> ⚠ **Enrollment is one year ahead of staff.** NYSED posted the 2025-26
+> Enrollment database on 2026-11-09 (`ENROLLMENT_2026.zip`, direct URL
+> `https://data.nysed.gov/files/enrollment/25-26/ENROLLMENT_2026.zip`). The
+> 2025-26 Student & Educator database was **not yet posted** as of 2026-11-19, so
+> `year_end = 2026` rows have enrollment but `num_teachers = null` (no
+> students-per-teacher, no class size).
 
 ### Pre-2018 enrollment comes from the Report Card (SRC) databases
 
@@ -29,7 +38,7 @@ NYSED's standalone Enrollment database begins school year **2017-18** (year_end
 statewide **Report Card (SRC)** Access databases. `build_enrollment_teachers.py`
 reads **SRC2005-SRC2017** (in `../nysed_report_card/zips/`, downloaded by
 `src/download_report_card.py`) for year_end **2005-2017** and the Enrollment DB
-for **2016-2025**; the two overlap at 2016-17 and latest-source-wins keeps the
+for **2016-2026**; the two overlap at 2016-17 and latest-source-wins keeps the
 Enrollment DB there. The SRC enrollment table is the *same* `BEDS Day Enrollment`
 table in the 12-digit-coded files (SRC2005 uses `bedscode` + zero-padded grades
 `01`..`12`; SRC2006-17 use `ENTITY_CD` + `1`..`12`), so K-12 is computed once as
@@ -47,7 +56,7 @@ statewide/charter row, so the build's reconciliation diagnostic shows
 
 **Seam validated.** SRC vs Enrollment DB agree exactly at the 2016-17 overlap —
 max |ΔK12| = **0.0** across ~2,884 district-cells. Statewide district K-12:
-**2.78M (2005) → 2.52M (2016) → 2.24M (2025)**.
+**2.78M (2005) → 2.52M (2016) → 2.24M (2025) → 2.19M (2026)**.
 
 > ⚠ **Not used: SRC2000-2004 (year_end 1997-2004).** The oldest SRC files use a
 > 6-digit district code (`GRP_CD`/`DISTRICT_CD`) and a different table layout
@@ -153,35 +162,40 @@ core — instead of mixing elementary with high-school electives (see
 
 ## Comparability — what's clean and what to watch
 
-**Directly comparable within each series.** All 8 enrollment files share an
+**Directly comparable within each series.** All 9 enrollment files share an
 identical schema, as do all 8 STUDED files. Each annual file repeats ~3 years of
 data; across the overlapping years the values are **identical (0 revisions)**, so
 stacking + de-duplicating (latest file wins) is lossless.
 
 Things to keep in mind:
 
-1. **Different spans.** Enrollment covers 2005-06→2024-25; teachers only
-   2017-18→2024-25. In the panel, pre-2018 rows have `num_teachers = null`
-   (and therefore no `k12_students_per_teacher`).
+1. **Different spans.** Enrollment covers 2005-06→2025-26; teachers only
+   2017-18→2024-25. In the panel, pre-2018 rows **and 2025-26 rows** have
+   `num_teachers = null` (and therefore no `k12_students_per_teacher`).
 
 2. **"By district" excludes charter schools.** Charters have no district-total
    (`…0000`) row, so they are absent from this district series. Reconciliation to
    NYSED's published statewide K-12 total (which *includes* charters):
 
-   | year_end | statewide K-12 | district sum (here) | charters | residual\* |
+   | year_end | statewide K-12 | district sum (here) | charters | residual |
    |---:|---:|---:|---:|---:|
-   | 2016 | 2,640,250 | 2,516,429 | 117,617 | 6,204 |
-   | 2020 | 2,581,069 | 2,416,201 | 159,211 | 5,657 |
-   | 2025 | 2,421,491 | 2,229,960 | 186,447 | 5,084 |
+   | 2017 | 2,629,970 | 2,501,186 | 128,784 | 0 |
+   | 2020 | 2,581,069 | 2,421,858 | 159,211 | 0 |
+   | 2025 | 2,421,491 | 2,235,044 | 186,447 | 0 |
+   | 2026 | 2,382,001 | 2,192,533 | 189,468 | 0 |
 
-   \*Residual ≈ state-operated / special-act schools that also lack a district row.
-   **Charter enrollment grew 118K→186K** while district enrollment fell, so the
-   district-only series declines faster than the all-public total.
+   (Figures as printed by the 2026-11-19 build; the district sum reconciles to
+   the statewide total exactly.) **Charter enrollment grew 129K→189K** while
+   district enrollment fell, so the district-only series declines faster than
+   the all-public total.
 
 3. **District reorganizations.** A merger creates a new `district_cd` and retires
    the predecessors. In this window, statewide only **6** districts have partial
    coverage. Local example: **Boquet Valley CSD** (Essex) was formed in 2019-20 by
-   merging **Westport** + **Elizabethtown-Lewis** (which end in 2018-19).
+   merging **Westport** + **Elizabethtown-Lewis** (which end in 2018-19). The
+   2025-26 file adds another: **Rockland CSD** (Sullivan, `59130304`, 533 K-12
+   students) replaces **Livingston Manor** (385 in 2024-25) + **Roscoe** (186),
+   which have no 2025-26 rows.
 
 4. **`num_teachers` is a headcount, not an FTE,** and counts *all* teachers in the
    district (all grades), while `k12_enrollment` is K-12 only (excludes PK).
@@ -189,11 +203,22 @@ Things to keep in mind:
    pupil-teacher or class-size ratio. NYSED's "Average Class Size" table (in
    STUDED) is the better source for class size if needed.
 
-5. **COVID.** District K-12 fell ~3.3% in a single year (2,416,201 → 2,337,046
+5. **COVID.** District K-12 fell ~3.3% in a single year (2,421,858 → 2,342,473
    between 2019-20 and 2020-21); part real decline, part pandemic un-enrollment.
 
 6. **Access text artifact.** NYSED stores numbers as text (e.g. `"703."`); the
    build strips the trailing dot and casts to numeric.
+
+## Update log
+
+- **2026-11-19** — added `ENROLL_2026.mdb` (school year 2025-26, NYSED file dated
+  2026-11-07). K-12 enrollment for every earlier district-year is **unchanged**
+  from the previous build. Cambridge K-12: 741 (2024-25) → **713** (2025-26).
+  Crosswalk changes carried by the new file (latest file wins): Boquet Valley CSD
+  N/RC 5 → 4; Randolph Academy UFSD BOCES name. The builder's crosswalk
+  de-duplication now prefers a row with a non-blank `NEEDS_INDEX` (the 2026 file
+  has 10 school rows with a blank code, which had nulled the category for four
+  districts). The reconciliation table above was refreshed from the build output.
 
 ## Rebuild
 
