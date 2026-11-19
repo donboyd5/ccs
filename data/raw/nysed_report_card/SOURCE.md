@@ -23,7 +23,7 @@ added later without re-downloading.
 |---|---|
 | publisher | NYSED (New York State Education Department), data.nysed.gov |
 | source page | <https://data.nysed.gov/downloads.php> (section "Report Card Database") |
-| coverage downloaded | **SY 1999-00 → 2024-25** (26 annual files, `year_end` 2000–2025) |
+| coverage downloaded | **SY 1999-00 → 2025-26** (27 annual files, `year_end` 2000–2026) |
 | grain (raw) | one row per entity × school-year × assessment × subgroup |
 | format | zipped Access DB (`.accdb` **and** `.mdb`, same data) + a per-year ReadMe PDF |
 
@@ -38,7 +38,8 @@ that script is the machine-readable copy of this mapping. Files are large
 
 | year_end | SY | on-disk | original NYSED URL |
 |---:|---|---|---|
-| 2025 | 2024-25 | `zips/SRC2025.zip` | `/files/essa/24-25/SRC2025.zip` |
+| 2026 | 2025-26 | `zips/SRC2026.zip` | `/files/essa/25-26/SRC2026.zip` (Group 1, posted 2026-11-19) |
+| 2025 | 2024-25 | `zips/SRC2025.zip` | `/files/essa/24-25/SRC2025.zip` (Group 4, 2026-08-01; replaced the Group 3 file) |
 | 2024 | 2023-24 | `zips/SRC2024.zip` | `/files/essa/23-24/SRC2024.zip` |
 | 2023 | 2022-23 | `zips/SRC2023.zip` | `/files/essa/22-23/SRC2023.zip` |
 | 2022 | 2021-22 | `zips/SRC2022.zip` | `/files/essa/21-22/SRC2022.zip` |
@@ -51,7 +52,7 @@ that script is the machine-readable copy of this mapping. Files are large
 
 (NYSED moved the path from `/files/reportcards/` to `/files/essa/` starting with
 SY 2017-18; SY 1999-00 → 2011-12 live under `/files/reportcards/archive/`.) The
-base URL is `https://data.nysed.gov`. All 26 files (SRC2000-2025) are now
+base URL is `https://data.nysed.gov`. All 27 files (SRC2000-2026) are now
 downloaded; the `REGISTRY` in `download_report_card.py` is the full URL map.
 
 ## Time convention
@@ -84,16 +85,16 @@ raw DBs if ever needed.
 
 ## Two source layouts (stitched seamlessly)
 
-The assessment tables changed shape across the 10 years. The builder handles both
+The assessment tables changed shape across the years read (SRC2016 onward). The builder handles both
 and emits one unified schema:
 
 | layout | files | structure |
 |---|---|---|
 | **old** | `SRC2016`, `SRC2017` | one table **per grade**: `ELA3 Subgroup Results` … `Math8 Subgroup Results`. No `ASSESSMENT_NAME`, **no proficiency column**, only 4 performance levels, no test-taken/not-tested counts. |
-| **new** | `SRC2018`–`SRC2025` | single `Annual EM ELA` / `Annual EM MATH` tables with an `ASSESSMENT_NAME` column, pre-computed `NUM_PROF`/`PER_PROF`, tested/not-tested counts, and (math only) a 5th level for the accelerated variants. |
+| **new** | `SRC2018`–`SRC2026` | single `Annual EM ELA` / `Annual EM MATH` tables with an `ASSESSMENT_NAME` column, pre-computed `NUM_PROF`/`PER_PROF`, tested/not-tested counts, and (math only) a 5th level for the accelerated variants. |
 
 After latest-file-wins de-dup, the **old layout uniquely supplies `year_end`
-2015–2016** and the **new layout supplies 2017–2025**. The 2016→2017 seam is purely
+2015–2016** and the **new layout supplies 2017–2026**. The 2016→2017 seam is purely
 a *file-format* change within one testing era (see below), so it should be smooth;
 the build validates it.
 
@@ -106,12 +107,32 @@ NYSED's reported `PER_PROF` exactly (checked at build time).
 **Accelerated middle-school math.** The new-layout `Annual EM MATH` table also
 carries `RegentsMath6/7/8` (grade 6-8 students taking a Regents math exam, e.g.
 Algebra I) and `Combined{6,7,8}Math` (grade-level + Regents combined). These are
-kept and flagged via `test_type` (`grade` / `aggregate` / `regents` / `combined`).
+kept and flagged via `test_type` (`grade` / `aggregate` / `regents` / `combined`,
+plus `aggregate_est` / `small_group` from 2025-26 — see below).
 The plain grade-level tests (`MATH4`, `MATH8`, …) are `test_type='grade'`. The old
 layout has **only** the grade-level math test, so grade-8 math proficiency based on
 `MATH8` alone excludes accelerated students consistently across all years — but the
 mix of who takes the grade-8 test vs. a Regents exam shifts over time and across
 districts, so compare `Combined8Math` when that matters.
+
+**New summary rows beginning with SRC2026 (SY 2025-26).** NYSED added an
+`ESTIMATE_FLAG` column and two kinds of All Students summary row:
+
+- **`<name>_EST`** (`ELA3_8_EST`, `MATH3_8_EST`) — an **estimated** grades-3-8
+  summary row, published **in place of** the plain `ELA3_8` / `MATH3_8` row for
+  some entities (2026: 12 districts for ELA; 146 districts, 21 counties and 3 N/RC
+  groups for Math). No entity has both. The builder keeps these as
+  `test_type='aggregate_est'`, `grade='3-8'`. Among the 12 comparison districts,
+  **Fort Edward, Hartford and Schuylerville** have an estimated Math 3-8 row for
+  2026; Cambridge's rows are not estimated. NYSED's ReadMe does not explain how the
+  estimate is made, so treat these rows as less firm than `test_type='aggregate'`.
+- **`<name>_SMALL`** (`ELA3_8_SMALL`, `MATH3_8_SMALL`, `REGENTS678MATH_SMALL`) — a
+  Small Group Total over suppressed grades. Kept as `test_type='small_group'`,
+  `grade=null` (22 rows in 2026).
+
+A filter on `grade == "3-8"` (as the test-results chapter uses) therefore returns
+both plain and estimated aggregates for 2026; filter on `test_type` to separate
+them.
 
 ## Suppression & text artifacts
 
@@ -136,7 +157,7 @@ across those breaks** — they are comparable only *within* each era:
 |---|---|---|
 | 1 | **2015, 2016, 2017** | Common Core tests, 3 sessions |
 | 2 | **2018, 2019, (2020 cancelled), 2021*, 2022** | redesigned **two-session** tests + new performance standards (2018 = new baseline) |
-| 3 | **2023, 2024, 2025** | **Next Generation Learning Standards** — new tests + new standard-setting (2023 = new baseline) |
+| 3 | **2023, 2024, 2025, 2026** | **Next Generation Learning Standards** — new tests + new standard-setting (2023 = new baseline) |
 
 - **2017 → 2018 break:** "Due to the State's new two-session test design and
   performance standards, the 2018 results cannot be compared with prior-year
@@ -203,18 +224,18 @@ non-matching computed value.
 
 ```bash
 pip install -r requirements.txt          # access-parser, polars, pyarrow
-python src/download_report_card.py       # fetch the 10 SRC zips (~3.3 GB, git-ignored)
+python src/download_report_card.py       # fetch the SRC zips (git-ignored; SRC2016+ feed this panel)
 python src/build_assessments.py          # parse + stitch -> processed parquet + CSV
 ```
 
 ### Build results (current)
 
-- **`assessments_em_ela_math.parquet`: 1,993,212 rows × 36 columns.**
-- **Coverage:** `year_end` 2015–2019 and 2021–2025 (10 years; **2020 absent** — COVID
-  cancellation). ~705–707 districts per year, plus the statewide, 63 county, and 7
-  N/RC benchmark aggregates. Entity levels: district 1,772,884 rows · county 194,362
-  · N/RC 22,694 · statewide 3,272.
-- **`assessments_grade4_8_all_students.csv`: 30,735 rows** (grade 4 & 8 grade-level
+- **`assessments_em_ela_math.parquet`: 2,175,498 rows × 36 columns.**
+- **Coverage:** `year_end` 2015–2019 and 2021–2026 (11 years; **2020 absent** — COVID
+  cancellation). ~705–712 districts per year, plus the statewide, 63 county, and 7
+  N/RC benchmark aggregates. Entity levels: district 1,935,194 rows · county 211,949
+  · N/RC 24,787 · statewide 3,568.
+- **`assessments_grade4_8_all_students.csv`: 33,803 rows** (grade 4 & 8 grade-level
   tests, All Students).
 - `pct_prof` is bounded [0, 100] with no NaN; it is **null** where `num_tested = 0`
   or the cell is suppressed. `mean_score` is null on the 3-8 aggregate rows (see
@@ -223,8 +244,8 @@ python src/build_assessments.py          # parse + stitch -> processed parquet +
 ### Validation performed
 
 - **Matches NYSED's published figures.** Computed statewide grades-3-8 ELA "All
-  Students" proficiency = **53.2% (2025), 46.3% (2024)** vs. NYSED's published
-  53% / 46%. In the new-layout years the **computed** `pct_prof` reproduces NYSED's
+  Students" proficiency = **47.9% (2026), 53.2% (2025), 46.3% (2024)** vs. NYSED's
+  published 48% / 53% / 46%; Math 3-8 = **57.5% (2026)** vs. published 57%. In the new-layout years the **computed** `pct_prof` reproduces NYSED's
   reported `PER_PROF`.
 - **Old↔new format seam is clean.** The 2016→2017 transition crosses the
   per-grade→`Annual EM` reader boundary *within* testing era 1. District median
@@ -243,3 +264,19 @@ python src/build_assessments.py          # parse + stitch -> processed parquet +
   Regents math-takers (see "Synthesized 3-8 aggregate" above) — so only `ELA3_8`
   for 2015-16 is on the same basis as later years; the `MATH3_8` reconstruction is
   narrower.
+
+## Update log
+
+- **2026-11-19** — (1) Replaced `SRC2025.zip` with NYSED's revised **Group 4** file
+  (dated 2026-08-01; the file on disk was Group 3, 2026-04-27). For the grades 3-8
+  ELA/Math rows this panel keeps, **nothing changed**: every 2015–2025 row is
+  identical to the previous build. (2) Added **`SRC2026.zip`** (Group 1), which NYSED
+  posted the same day: SY 2025-26, spring 2026 tests, 182,286 rows. (3) The builder
+  now reads only `SRC2016` and later (`MIN_SRC_YEAR`). Since August the folder has
+  also held SRC2000–2015 (downloaded for the enrollment series); the builder globbed
+  every zip, parsed 2009–2014 test tables that were never validated for this panel,
+  and then crashed on SRC2009. (4) New 2026 row types are classified separately
+  (see "New summary rows" above).
+  **Cambridge, grades 3-8, All Students:** ELA 36.6% (2023), 41.1% (2024), 45.6%
+  (2025), 38.3% (2026); Math 46.6%, 53.2%, 58.8%, 48.7%. Statewide ELA: 47.9%,
+  46.3%, 53.2%, 47.9%; Math: 52.5%, 54.3%, 56.8%, 57.5%.

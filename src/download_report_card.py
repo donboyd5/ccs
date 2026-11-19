@@ -43,6 +43,7 @@ BASE = "https://data.nysed.gov"
 #: with SY 2017-18 (year_end 2018); both are recorded here verbatim. Files for
 #: SY 1999-00 through 2011-12 live under ``/files/reportcards/archive/``.
 REGISTRY: dict[int, str] = {
+    2026: BASE + "/files/essa/25-26/SRC2026.zip",
     2025: BASE + "/files/essa/24-25/SRC2025.zip",
     2024: BASE + "/files/essa/23-24/SRC2024.zip",
     2023: BASE + "/files/essa/22-23/SRC2023.zip",
