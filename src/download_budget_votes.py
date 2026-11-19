@@ -34,6 +34,8 @@ OUT_DIR = PROJECT_ROOT / "data" / "raw" / "nysed_budget_votes"
 #: "revote" (June). The on-disk extension follows the source URL (older years
 #: are legacy ``.xls``). Lifted verbatim from the original R notebook's registry.
 REGISTRY: list[tuple[int, str, str]] = [
+    (2027, "vote",   "https://p12.nysed.gov/mgtserv/votingresults/2026-27-budget-vote-results.xlsx"),
+    (2027, "revote", "https://p12.nysed.gov/mgtserv/votingresults/2026-27-budget-revote-results.xlsx"),
     (2026, "vote",   "https://p12.nysed.gov/mgtserv/votingresults/2025-26-budget-vote-results.xlsx"),
     (2026, "revote", "https://p12.nysed.gov/mgtserv/votingresults/2025-26-budget-revote-results.xlsx"),
     (2025, "vote",   "https://p12.nysed.gov/mgtserv/votingresults/2024-25-budget-vote-results-final.xlsx"),
