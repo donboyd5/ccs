@@ -2,6 +2,44 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-11-22 — Ready for the user's local review (branch `feature/review-ready`)
+
+The user will now review by opening the chapter files locally and editing them.
+
+- **Objections go in the chapter files.** From the user: "please put your
+  objections right in the docs in [] this way i can open the files and edit
+  them". Each is written as `[CLAUDE: ...]` after the sentence it concerns.
+  They show on the rendered page, so they must all be resolved before
+  publishing (see `meta/workflow.md`).
+- **"Class size" chapter renamed "Students per teacher"** (file
+  `front/students-per-teacher.qmd`). From the user: students per teacher "is
+  not, of course" class size. The appendix that holds NYSED's actual class-size
+  figures is now titled "Class size and students per teacher: all measures".
+- **First-release chapter list is in place.** Core: Overview, Demographics,
+  Enrollment, Students per teacher, Spending, Property taxes, Tax cap, Reserves.
+  Nine chapters appear as "(to come)" placeholder pages: State aid, Tax base,
+  Staffing and salaries, Contingency budgets, Test results, Graduation and
+  Regents, Mergers, Regionalization, Cuts.
+- **Drafts kept, not deleted.** The written drafts of Contingency budgets, Test
+  results and Mergers moved to `books/cambridge-comparisons/_drafts/`. Quarto
+  ignores folders that start with an underscore. The placeholder keeps the
+  draft's file name, so links from other chapters still work and restoring a
+  chapter is one file move.
+- **Reserves, corrected:** the 4% limit on unassigned fund balance is Real
+  Property Tax Law §1318 (the text cited the tax-cap law) and applies to the
+  coming year's budget; the tax certiorari reserve is Education Law §3651(1-a);
+  the teachers' pension rate was 9.76% for 2023-24 (the text said 16.25%, which
+  was the 2013-14 rate) and has ranged from about 9% to 17.5% since 2014-15.
+  The Cambridge table stops at 2024-25 because the Comptroller's 2025-26
+  figures are a first release.
+- **Demographics:** checks added; no numbers changed. New York county
+  population still ends at 2024 because the sibling population project has not
+  been rerun.
+- **Overview:** the user's own edit committed as written; the computed
+  enrollment sentence now runs to 2025-26 and names school years.
+- **Not done:** the Contingency budgets draft has not been rechecked against the
+  2026 votes (it is out of the first release).
+
 ## 2026-11-22 — Tax-cap chapter: the over-the-cap test was subtracting exclusions twice (branch `feature/tax-cap-reserves-rework`)
 
 The Property Tax Report Card reports the proposed levy and the levy limit with

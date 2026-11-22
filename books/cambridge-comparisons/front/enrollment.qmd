@@ -6,9 +6,11 @@ Fewer students mean:
 
 -
 
+[CLAUDE: This bullet is empty and will show on the page as a blank bullet. Fill it or cut the list.]
 
 
- This matters because fewer students mean less state aid, a smaller tax base to spread costs across, and tough choices about staffing and programs. Enrollment is the starting point for everything that follows: staffing levels, spending per pupil, and the district's fiscal health.
+
+ This matters because fewer students mean less state aid, a smaller tax base to spread costs across, and tough choices about staffing and programs. [CLAUDE: Two of these three are not what the data show. (1) State aid: Cambridge's Foundation Aid rose every year, from $7.47 million in 2015–16 to $9.55 million in 2025–26. That is up 28% while enrollment fell 18%. After inflation it is down about 7% in total and up about 13% per pupil. (2) Tax base: enrollment does not set the tax base. Cambridge's taxable full value rose from $504 million to $813 million over these years. What shrinks is the number of students the same costs are spread over.] Enrollment is the starting point for everything that follows: staffing levels, spending per pupil, and the district's fiscal health.
 
 The figure below shows how Cambridge's K-12 enrollment has changed since 2015–16, alongside nearby districts for context.
 
@@ -148,7 +150,7 @@ cambridge = idx.filter(pl.col("district") == cc.FOCUS)
 )
 ```
 
-Cambridge's enrollment decline is real, but it is not alone. **The trend is regional.** Schuylerville and Greenwich have seen larger absolute losses (359 and 232 students respectively), while Hoosick Falls and Salem have held steadier. Four of the five districts lost students in the pandemic year 2020–21. Only Cambridge had more students the following year, and none of the four has returned to its 2019–20 level.
+Cambridge's enrollment decline is real, but it is not alone. **The trend is regional.** Schuylerville and Greenwich have seen larger absolute losses (359 and 232 students respectively), while Hoosick Falls and Salem have held steadier. [CLAUDE: The data support more than "regional". The decline is statewide. All twelve Washington County-area districts lost students, from 1% to 31%; Cambridge is sixth of twelve. Among the 149 similar districts statewide the median change was −14.6%, and New York as a whole fell 13.1%. Cambridge, at −17.6%, is somewhat worse than typical and not an outlier. Do you want these figures in the chapter? Separately: the chapter starts at 2015–16. Over twenty years Cambridge is down 35%, from 1,092 to 713. Do you want a longer chart?] Four of the five districts lost students in the pandemic year 2020–21. Only Cambridge had more students the following year, and none of the four has returned to its 2019–20 level.
 
 The table below shows where each district stood in 2015–16 and 2025–26, and how much they gained or lost over the decade.
 
@@ -203,10 +205,10 @@ wide = wide.with_columns(
 
 Enrollment decline sets the context for everything else in Cambridge's budget:
 
-- **State aid is tied to students.** Fewer students mean less foundation aid from New York State, unless the state adjusts its formulas.
+- **State aid is tied to students.** Fewer students mean less foundation aid from New York State, unless the state adjusts its formulas. [CLAUDE: Not what happened in Cambridge; see my note near the top. A sentence the data support: "State aid has not fallen as enrollment fell, but it has not kept up with inflation."]
 - **Fixed costs don't shrink.** A building, a bus route, a principal — these costs don't automatically fall when enrollment does. Spreading fixed costs over fewer students is part of why Cambridge's **spending per pupil** ranks high (see the [Spending](spending.qmd) chapter).
-- **Staffing choices get harder.** Cambridge now has the **fewest students per teacher** of the comparison group (see the [Class size](class-size.qmd) chapter) — a choice that preserves small classes but adds pressure at budget time.
+- **Staffing choices get harder.** Cambridge now has the **fewest students per teacher** of the comparison group (see the [Students per teacher](students-per-teacher.qmd) chapter) — a choice that preserves small classes but adds pressure at budget time. [CLAUDE: Three problems. "Fewest of the comparison group" is true of the five (8.7 in 2024–25) but not of the twelve: Fort Edward, Hartford and Whitehall are lower. "A choice" states a motive the data do not show. And "small classes" treats students per teacher as class size, which it is not. I would write: "Cambridge has the fewest students per teacher of the five districts shown here."]
 
 The enrollment trend is a regional challenge, not unique to Cambridge. But the scale of the decline — and the decisions it forces about what to preserve — is what Cambridge's community must grapple with.
 
-*See the exploratory [Class size — all measures](../exploratory/class-size-all-measures.qmd) chapter for deeper analysis of staffing ratios and class-size measures.*
+*See the exploratory [Class size and students per teacher: all measures](../exploratory/class-size-all-measures.qmd) appendix for deeper analysis of staffing ratios and class-size measures.*

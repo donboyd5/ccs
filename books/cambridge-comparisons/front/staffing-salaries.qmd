@@ -1,0 +1,7 @@
+# Staffing and salaries (to come)
+
+::: {.callout-note appearance="simple"}
+This chapter is planned and not yet written.
+:::
+
+This chapter will show how many teachers and other staff Cambridge employs, how staffing has changed as enrollment has fallen, and how salaries compare with nearby and similar districts.

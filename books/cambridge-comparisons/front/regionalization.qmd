@@ -1,5 +1,7 @@
-# Regionalization
+# Regionalization (to come)
 
-What is it?
+::: {.callout-note appearance="simple"}
+This chapter is planned and not yet written.
+:::
 
-Can it help?
+This chapter will explain what regionalization is — districts sharing programs, staff and services without merging — and what the evidence says about whether it can help a district like Cambridge.

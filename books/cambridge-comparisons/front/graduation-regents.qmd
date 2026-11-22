@@ -1,0 +1,7 @@
+# Graduation and Regents results (to come)
+
+::: {.callout-note appearance="simple"}
+This chapter is planned and not yet written.
+:::
+
+This chapter will show Cambridge's high-school graduation rates and Regents exam results, compared with nearby and similar districts.

@@ -1,4 +1,4 @@
-# Class size and staffing
+# Students per teacher
 
 **Cambridge has fewer students per teacher than the four nearby districts it is compared with here.** In 2024–25, Cambridge had about 8.7 students per teacher — the lowest ratio of the five, and below the statewide figure of about 10.9. This measure — **K-12 students per teacher** — is a district-wide staffing ratio: the total K-12 enrollment divided by the number of teachers. It is not NYSED's official class size (which counts only specific classrooms), but it is a fair way to compare districts and track change over time.
 
@@ -140,7 +140,7 @@ cambridge = g.filter(pl.col("district") == cc.FOCUS)
 )
 ```
 
-Cambridge's ratio has fallen over time because **enrollment dropped while the number of teachers ended where it started**. In 2017–18, Cambridge had 869 students and 85 teachers (10.2 students per teacher). By 2024–25, enrollment had fallen to 741 (see the [Enrollment](enrollment.qmd) chapter) and the district again had 85 teachers — pushing the ratio down to 8.7. In between, the teacher count ranged from 77 to 94. Counts of people move around from year to year in small districts, so single-year swings in the chart should not be read closely.
+Cambridge's ratio has fallen over time because **enrollment dropped while the number of teachers ended where it started**. In 2017–18, Cambridge had 869 students and 85 teachers (10.2 students per teacher). By 2024–25, enrollment had fallen to 741 (see the [Enrollment](enrollment.qmd) chapter) and the district again had 85 teachers — pushing the ratio down to 8.7. In between, the teacher count ranged from 77 to 94. Counts of people move around from year to year in small districts, so single-year swings in the chart should not be read closely. [CLAUDE: Cambridge's count went 82, 94, 85 in the last three years. I have not found the reason for the 94. The count is people, not full-time equivalents, so a change in part-time staffing moves the ratio without changing teaching time. Worth asking the district what happened in 2023–24.]
 
 Only Salem had a lower ratio in 2017–18. The two districts traded places several times after that; Cambridge has been the lower of the two in 2023–24 and 2024–25, and now has the lowest ratio of the five. Among all twelve Washington County-area districts, three smaller districts had lower ratios in 2024–25: Fort Edward, Hartford, and Whitehall.
 
@@ -154,15 +154,17 @@ Falling ratios are not unique to Cambridge. Statewide, K-12 students per teacher
 - Teacher **headcount** (the number of people employed), not full-time-equivalents (so part-time teachers count as one each)
 - All grades K-12, not just the grades NYSED reports for class size
 
-This makes it an **approximate measure** for comparing districts and tracking change — useful for the big picture, but not the same as the number of children in a typical classroom. NYSED's official class-size figures cover only a handful of specific grades and subjects, and they exist only since 2018–19. For a deeper dive into those measures, see the exploratory [Class size — all measures](../exploratory/class-size-all-measures.qmd) chapter.
+This makes it an **approximate measure** for comparing districts and tracking change — useful for the big picture, but not the same as the number of children in a typical classroom. NYSED's official class-size figures cover only a handful of specific grades and subjects, and they exist only since 2018–19. For a deeper dive into those measures, see the [Class size and students per teacher: all measures](../exploratory/class-size-all-measures.qmd) appendix.
+
+[CLAUDE: This chapter is now titled "Students per teacher" and no longer calls the ratio class size. NYSED does publish actual average class size for certain grades and subjects since 2018–19; it is in the appendix. Do you want one actual class-size chart here, so readers see the real thing next to the ratio?]
 
 ## What it means for Cambridge
 
-Cambridge's low students-per-teacher ratio reflects a choice: **maintain small classes and preserve programs even as enrollment falls.** That choice has implications:
+Cambridge's low students-per-teacher ratio reflects a choice: **maintain small classes and preserve programs even as enrollment falls.** That choice has implications: [CLAUDE: The data show that the ratio fell. They do not show why, and they say nothing about class size. The statewide ratio fell more than Cambridge's (1.8 against 1.5), so much of this is a general pattern. If the board has said this was its aim, cite where. Otherwise I would describe what happened and drop "a choice" and "small classes".]
 
 - **Higher spending per pupil.** Fewer students to spread fixed costs (salaries, benefits, facilities) across means spending per student runs higher (see the [Spending](spending.qmd) chapter).
-- **Budget pressure.** The same tax base must support more teachers per student than neighboring districts, which can strain the budget when state aid doesn't keep pace.
-- **Classroom experience.** Fewer students per teacher means more individual attention, which is a strength Cambridge has maintained even as enrollment declined.
+- **Budget pressure.** The same tax base must support more teachers per student than neighboring districts, which can strain the budget when state aid doesn't keep pace. [CLAUDE: State aid pays a large share of the budget, and the tax base has grown 61% since 2014–15. I would say only that more teachers per student costs more per student.]
+- **Classroom experience.** Fewer students per teacher means more individual attention, which is a strength Cambridge has maintained even as enrollment declined. [CLAUDE: "A strength" is a judgment, and the site is meant to inform and not recommend. The ratio counts every teacher, including specialists and part-timers, so it does not tell us how much attention a child gets in a typical classroom. I would cut this bullet or restate it as a fact.]
 
 The table below shows where each district stood in 2017–18 and 2024–25, and how much their staffing ratios changed.
 
@@ -216,4 +218,4 @@ wide = wide.with_columns((pl.col(y1) - pl.col(y0)).alias("change"))
 
 **Cambridge's ratio fell by 1.5 students per teacher** (from 10.2 to 8.7). Schuylerville and Greenwich saw larger drops (2.0 and 1.9 respectively) but started from higher levels. The ratio fell in all five districts; the smallest changes were in Salem (from 9.4 to 9.2) and Hoosick Falls (down 0.3).
 
-*For a deeper look at multiple class-size and staffing measures — including NYSED's official class-size data for specific grades and subjects, and a cross-check against federal NCES data — see the exploratory [Class size — all measures](../exploratory/class-size-all-measures.qmd) chapter.*
+*For a deeper look at multiple class-size and staffing measures — including NYSED's official class-size data for specific grades and subjects, and a cross-check against federal NCES data — see the [Class size and students per teacher: all measures](../exploratory/class-size-all-measures.qmd) appendix.*

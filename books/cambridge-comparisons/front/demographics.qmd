@@ -12,6 +12,8 @@ The main reasons for this decline are:
 -  Out-migration of younger adults, leading to an aging population
 -  Economic factors that make rural areas less attractive for new residents
 
+[CLAUDE: The chapter's exhibits support the first two bullets only in part, and the third not at all. The components table shows births (about 540 a year) well below deaths (about 770), and net migration that swings from year to year. Nothing here shows the ages of people leaving, an aging population, or economic factors. The title promises "rural aging" but there is no age chart. The sibling population project has age detail; do you want an age chart added, or the title and bullets narrowed to what is shown?]
+
 The chart below puts Cambridge's county — **Washington County** — alongside its
 neighbors on both sides of the state line, reaching back to 1970. Each county's
 population is shown **relative to its own 2010 population** (2010 = 100), so the
@@ -19,6 +21,8 @@ lines compare *trends*, not sizes. Washington County is the red line. Most of
 these counties grew for decades; Washington County's population peaked in 2010
 and has fallen about 6% since, while Saratoga County — the regional outlier —
 has nearly doubled since 1970 and is still growing.
+
+[CLAUDE: Two things about the data behind the charts and table below. (1) New York county population stops at 2024, because it comes from your population-forecast project, which has not been updated to the Census Bureau's 2025 estimates. The components table does have the 2025 estimate (a loss of 469), while the second chart treats 2025 as a forecast (a loss of about 265). The two disagree until that project is rerun. (2) In the table, deaths drop from 773 in 2025 to 664 in 2026, the first forecast year. A 14% fall in one year looks like a seam between history and the forecast, not a real change. Worth checking in that project before this is shared.]
 
 ```{python}
 #| label: setup
@@ -59,6 +63,24 @@ PROCESSED_DIR = REPO_ROOT / "data" / "processed"
 
 pop = pl.read_parquet(PROCESSED_DIR / "demographics_county_pop.parquet")
 components = pl.read_parquet(PROCESSED_DIR / "demographics_washington_components.parquet")
+
+# ---------------------------------------------------------------------------
+# Checks on the statements made in the text of this chapter. If the data
+# change so that a statement is no longer true, the page fails to build.
+# ---------------------------------------------------------------------------
+def _hist(name):
+    rows = pop.filter(
+        (pl.col("geography") == name) & (pl.col("period") == "history")
+    )
+    return dict(zip(rows["year"], rows["population"]))
+
+
+_wash, _sara = _hist("Washington"), _hist("Saratoga")
+assert max(_wash, key=_wash.get) == 2010                     # peak year
+assert max(_wash) == 2024                                    # last year of history
+assert round(100 * (_wash[2024] / _wash[2010] - 1)) == -6    # "about 6%"
+assert 1.9 <= _sara[2024] / _sara[1970] < 2.0                # "nearly doubled"
+assert _sara[2024] > _sara[2023]                             # "still growing"
 
 #: Short, state-tagged labels for the chart legends (VT counties tagged so a
 #: reader sees the chart spans two states; NY counties are the default context).

@@ -321,10 +321,12 @@ wide = wide.with_columns((pl.col(y1) - pl.col(y0)).alias("change"))
 
 The tax story has two parts:
 
-- **The levy (what Cambridge collects)** has risen 23% since 2014–15, to $10.1 million — less than the 38% rise in consumer prices. This funds the district's operations — the same spending per pupil discussed in the [Spending](spending.qmd) chapter.
-- **The rate (what property owners pay)** has fallen recently as property values rose, which could provide relief to property owners even as the levy continues to climb.
+- **The levy (what Cambridge collects)** has risen 23% since 2014–15, to $10.1 million — less than the 38% rise in consumer prices. [CLAUDE: Both facts are true: up 23% in dollars, down 11% after inflation. The lead gives both. Your call on which one this summary stresses.] This funds the district's operations — the same spending per pupil discussed in the [Spending](spending.qmd) chapter.
+- **The rate (what property owners pay)** has fallen recently as property values rose, which could provide relief to property owners even as the levy continues to climb. [CLAUDE: A lower rate does not mean a lower bill. The rate fell because values rose. If every property's value rises by the same share, each owner's bill moves with the levy and not with the rate. Bills fall only for owners whose property rose in value less than average. I would cut "relief".]
 
-The underlying pressure is the same: Cambridge's declining enrollment (see the [Enrollment](enrollment.qmd) chapter) means fewer taxpayers to spread the levy across, even as fixed costs remain. The district's low students-per-teacher ratio (see the [Class size](class-size.qmd) chapter) adds spending pressure, which ultimately feeds back into what the levy must collect.
+The underlying pressure is the same: Cambridge's declining enrollment (see the [Enrollment](enrollment.qmd) chapter) means fewer taxpayers to spread the levy across, even as fixed costs remain. The district's low students-per-teacher ratio (see the [Students per teacher](students-per-teacher.qmd) chapter) adds spending pressure, which ultimately feeds back into what the levy must collect.
+
+[CLAUDE: Students are not taxpayers. Enrollment fell 18% while the tax base grew 61%, and we have no count of taxpayers or households in the data. I would cut "fewer taxpayers". What the finance chapters show together is this: from 2015–16 to 2024–25 total operating spending fell about 4% after inflation, the levy fell about 11%, and Foundation Aid fell about 7%, while enrollment fell 14%. Somewhat fewer real dollars, spread over many fewer students. I think that is the summary this section should give.]
 
 *Data sources:*
 - **NYS Comptroller** school-district tax levies, taxable full value, and full-value rates, 2014–15 through 2025–26

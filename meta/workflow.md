@@ -35,3 +35,13 @@ The user has granted the assistant authority to **do everything except merge to
   confirmation first.
 - Keep `meta/` and the relevant `SOURCE.md` updated **in the same change** as the
   code/data they describe.
+
+## Review notes in chapter files
+
+- Claude's objections and questions about chapter text go **in the chapter's
+  `.qmd` file**, as `[CLAUDE: ...]` right after the sentence they concern. The
+  user reviews by opening the files and editing them, and answers or deletes
+  each note there.
+- These notes **show on the rendered page**. Before publishing, search the book
+  for `[CLAUDE:` and confirm none remain:
+  `grep -rn "\[CLAUDE:" books/cambridge-comparisons --include=*.qmd`

@@ -1,0 +1,7 @@
+# State aid (to come)
+
+::: {.callout-note appearance="simple"}
+This chapter is planned and not yet written.
+:::
+
+This chapter will show how much aid Cambridge receives from New York State, how that aid has changed over time before and after inflation, how it compares with nearby and similar districts, and how the state's Foundation Aid formula treats a district whose enrollment is falling.
