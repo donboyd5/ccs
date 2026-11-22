@@ -41,24 +41,26 @@ book:
   repo-actions: [source, issue]
   search: true
   page-footer:
-    left: "Cambridge School District in Comparison"
+    left: "Cambridge Central School District: Issues and comparisons"
     right: "Built with [Quarto](https://quarto.org/)."
 
   # ---------------------------------------------------------------------------
   # Reader comments (Giscus, backed by this repo's GitHub Discussions).
+  # TURNED OFF 2026-11-22: no reader comments for the first release. To turn them
+  # back on, uncomment the `comments:` block below.
   # Requires Discussions enabled + the giscus app installed on donboyd5/ccs
   # (both done). repo-id / category-id are this repo's GraphQL node IDs.
-  comments:
-    giscus:
-      repo: donboyd5/ccs
-      repo-id: "R_kgDOS2yCEg"
-      category: "Announcements"          # maintainer-only threads; giscus posts them
-      category-id: "DIC_kwDOS2yCEs4C-51c"
-      mapping: pathname                  # one discussion thread per chapter URL
-      reactions-enabled: true
-      input-position: bottom
-      theme: light
-      loading: lazy
+  # comments:
+  #   giscus:
+  #     repo: donboyd5/ccs
+  #     repo-id: "R_kgDOS2yCEg"
+  #     category: "Announcements"          # maintainer-only threads; giscus posts them
+  #     category-id: "DIC_kwDOS2yCEs4C-51c"
+  #     mapping: pathname                  # one discussion thread per chapter URL
+  #     reactions-enabled: true
+  #     input-position: bottom
+  #     theme: light
+  #     loading: lazy
 
 bibliography: references.bib
 csl: apa.csl

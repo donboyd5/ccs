@@ -215,12 +215,14 @@ York's open-data portal (<https://data.ny.gov>):
   tax levies and rates by municipality, useful for putting each district's school
   tax levy in the context of total local property taxes.
 
+<!-- Reader comments are turned off for the first release (2026-11-22).
 ## Reader comments
 
 Each page of this website has a comment area at the bottom, powered by
 [Giscus](https://giscus.app/). To leave a comment or a reaction, sign in with a
 free [GitHub](https://github.com/signup) account; comments are stored as
 discussions in this website's [GitHub repository](https://github.com/donboyd5/ccs).
+-->
 
 ## References
 
