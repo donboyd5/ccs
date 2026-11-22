@@ -2,6 +2,64 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-11-22 — Class size and Property taxes chapters brought up to date (branch `feature/class-size-rework`)
+
+Same pattern as Enrollment: years, numbers, charts and tables updated; each
+number and ranking in the text is checked against the data in the setup cell;
+statements the data contradict are corrected; interpretation is left for the
+user, with objections recorded for the user to answer.
+
+- **Class size stops at 2024-25.** NYSED has posted 2025-26 enrollment but not
+  the 2025-26 staff file, so there is no 2025-26 ratio yet.
+- **Class size, corrected:** Salem's ratio fell (the text said it rose);
+  Cambridge and Salem traded places several times (the text said Cambridge
+  crossed below Salem once, around 2022-23). Added: Cambridge's teacher count
+  ranged from 77 to 94 between two years of 85; three of the twelve
+  Washington County-area districts have lower ratios; the statewide ratio fell
+  from about 12.7 to about 10.9.
+- **Property taxes now runs 2014-15 to 2025-26 and shows the levy in
+  inflation-adjusted (2024-25) dollars.** The levy rose 23% while prices rose
+  38%, so it is about 11% lower after inflation. A table gives the change
+  before and after inflation for each district; there is no separate nominal
+  chapter. The tax rate is a ratio and is not adjusted.
+- **Property taxes, corrected:** the fall in the tax rate was attributed to "a
+  property reassessment in Washington County". Full value is the state's
+  estimate of market value and does not depend on local reassessment; it jumped
+  in all five districts in 2022-23. The text now says property values rose
+  across the area. Cambridge's rate decline is the smallest of the five (the
+  text said one of the larger).
+- **Left for the user:** the "What it means" sections of both chapters. Only
+  their numbers, and the word "reassessment", were changed.
+
+## 2026-11-22 — Dollars are shown adjusted for inflation; CPI-U for now
+
+From the user: inflation-adjusted dollars are the main presentation and nominal
+dollars go in an appendix; "the choice of price index is crucial"; "CPI-U ok
+for now, later we may change".
+
+- **Index:** BLS CPI-U, all items, U.S. city average, not seasonally adjusted
+  (`CUUR0000SA0`), averaged over each school year, July through June.
+- **Base year:** 2024-25 dollars (`cc.REAL_DOLLAR_YEAR = 2025`), site-wide, so
+  chapters can be compared with each other. Amounts for later years are
+  restated in 2024-25 dollars too.
+- **One gap:** BLS published no October 2025 value (lapse in appropriations).
+  It is interpolated from September and November; this affects only 2025-26.
+- **Changing the index later** means replacing one file
+  (`price_index_school_year.parquet`); chapters call `cc.to_real()` and do not
+  name the index in code. The checks on each chapter's text will fail and show
+  which sentences need new numbers.
+- **Caveat stated in Methods:** CPI-U measures prices households pay, not what
+  schools pay.
+
+## 2026-11-22 — Housekeeping for the first release
+
+- **Reader comments are off** (the Giscus block in `_quarto.yml` is commented
+  out, and the "Reader comments" section in Sources is hidden). The user wants
+  no reader comments for now.
+- **Footer** carries the book's title.
+- **Root `README.md`** added with the link to the published site, at the user's
+  request.
+
 ## 2026-11-22 — Test-results page: factual corrections only (branch `feature/test-results-table-fix`)
 
 The published page had a broken table and several statements the data contradict.

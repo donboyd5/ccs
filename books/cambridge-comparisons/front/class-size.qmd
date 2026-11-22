@@ -1,8 +1,8 @@
 # Class size and staffing
 
-**Cambridge now has fewer students per teacher than any nearby district in the comparison group.** In 2024–25, Cambridge had about 8.7 students per teacher — the lowest ratio of the five, and below the state average. This measure — **K-12 students per teacher** — is a district-wide staffing ratio: the total K-12 enrollment divided by the number of teachers. It is not NYSED's official class size (which counts only specific classrooms), but it is a fair way to compare districts and track change over time.
+**Cambridge has fewer students per teacher than the four nearby districts it is compared with here.** In 2024–25, Cambridge had about 8.7 students per teacher — the lowest ratio of the five, and below the statewide figure of about 10.9. This measure — **K-12 students per teacher** — is a district-wide staffing ratio: the total K-12 enrollment divided by the number of teachers. It is not NYSED's official class size (which counts only specific classrooms), but it is a fair way to compare districts and track change over time.
 
-The chart below shows how students per teacher has changed since teacher counts became available (2017–18 onward).
+The chart below shows how students per teacher has changed since teacher counts became available (2017–18 onward). It stops at 2024–25: NYSED has published 2025–26 enrollment but not yet the 2025–26 teacher counts.
 
 ```{python}
 #| label: setup
@@ -26,16 +26,100 @@ from plotnine import (
 from great_tables import GT, loc, md, style
 
 import comparisons as cc
+
+# Years shown. Teacher counts start in 2017-18. NYSED had not posted the
+# 2025-26 staff file when this chapter was last updated, so the chapter stops
+# at 2024-25 even though 2025-26 enrollment is in the panel.
+FIRST_YEAR, LAST_YEAR = 2018, 2025
+SPAN = f"{cc.school_year_label(FIRST_YEAR)} to {cc.school_year_label(LAST_YEAR)}"
+
+spt = (
+    cc.panel_for(cc.GRAPH_GROUP, since=FIRST_YEAR)
+    .filter(pl.col("year_end") <= LAST_YEAR)
+    .select(
+        "district", "region", "year_end",
+        "k12_enrollment", "num_teachers", "k12_students_per_teacher",
+    )
+    .drop_nulls("k12_students_per_teacher")
+)
+
+# ---------------------------------------------------------------------------
+# Checks on the statements made in the text of this chapter. If the data
+# change so that a statement is no longer true, the page fails to build
+# instead of quietly showing text that disagrees with its own charts.
+# ---------------------------------------------------------------------------
+def _val(district, year_end, col="k12_students_per_teacher"):
+    return spt.filter(
+        (pl.col("district") == district) & (pl.col("year_end") == year_end)
+    )[col].item()
+
+
+def _ratios(year_end):
+    rows = spt.filter(pl.col("year_end") == year_end)
+    return dict(zip(rows["district"], rows["k12_students_per_teacher"]))
+
+
+first, last = _ratios(FIRST_YEAR), _ratios(LAST_YEAR)
+change = {d: last[d] - first[d] for d in last}
+
+# Cambridge's own numbers.
+assert _val(cc.FOCUS, FIRST_YEAR, "k12_enrollment") == 869
+assert _val(cc.FOCUS, LAST_YEAR, "k12_enrollment") == 741
+assert _val(cc.FOCUS, FIRST_YEAR, "num_teachers") == 85
+assert _val(cc.FOCUS, LAST_YEAR, "num_teachers") == 85
+assert round(first[cc.FOCUS], 1) == 10.2 and round(last[cc.FOCUS], 1) == 8.7
+assert round(change[cc.FOCUS], 1) == -1.5
+_cam_teachers = spt.filter(pl.col("district") == cc.FOCUS)["num_teachers"]
+assert (_cam_teachers.min(), _cam_teachers.max()) == (77, 94)
+
+# Cambridge among the five: lowest in the last year; only Salem lower in the
+# first year. Cambridge and Salem traded places: Cambridge was the lower of
+# the two in 2018-19, 2020-21, 2023-24 and 2024-25.
+assert min(last, key=last.get) == cc.FOCUS
+assert [d for d in first if first[d] < first[cc.FOCUS]] == ["Salem"]
+assert [
+    _yr for _yr in range(FIRST_YEAR, LAST_YEAR + 1)
+    if _ratios(_yr)[cc.FOCUS] < _ratios(_yr)["Salem"]
+] == [2019, 2021, 2024, 2025]
+
+# Changes in the other four: all fell; Schuylerville and Greenwich fell most.
+assert all(v < 0 for v in change.values())
+assert round(change["Schuylerville"], 1) == -2.0
+assert round(change["Greenwich"], 1) == -1.9
+assert round(change["Salem"], 1) == -0.2
+assert round(change["Hoosick Falls"], 1) == -0.3
+assert round(first["Salem"], 1) == 9.4 and round(last["Salem"], 1) == 9.2
+
+# Cambridge among all twelve Washington County-area districts in the last year.
+_twelve = (
+    cc.panel_for(cc.TABLE_GROUP, since=LAST_YEAR)
+    .filter(pl.col("year_end") == LAST_YEAR)
+    .sort("k12_students_per_teacher")
+)
+assert _twelve["district"].to_list()[:4] == [
+    "Fort Edward", "Hartford", "Whitehall", cc.FOCUS,
+]
+
+# Statewide: all districts' K-12 students divided by all districts' teachers.
+def _statewide(year_end):
+    rows = cc.load_panel().filter(
+        (pl.col("year_end") == year_end)
+        & pl.col("k12_enrollment").is_not_null()
+        & (pl.col("num_teachers") > 0)
+    )
+    return rows["k12_enrollment"].sum(), rows["num_teachers"].sum()
+
+
+(_e0, _t0), (_e1, _t1) = _statewide(FIRST_YEAR), _statewide(LAST_YEAR)
+assert round(_e0 / _t0, 1) == 12.7 and round(_e1 / _t1, 1) == 10.9
+assert round(100 * (_e1 / _e0 - 1)) == -10  # statewide K-12 enrollment
+assert round(100 * (_t1 / _t0 - 1)) == 5    # statewide teachers
 ```
 
 ```{python}
 #| label: fig-students-per-teacher
 #| fig-cap: "K–12 students per teacher by school year ending, 2018 (2017–18) through 2025 (2024–25). Lower means fewer students per teacher. Source: NYSED Enrollment database (K-12 enrollment) and Student & Educator database (teacher counts)."
-g = (
-    cc.panel_for(cc.GRAPH_GROUP, since=2018)
-    .select("district", "year_end", "k12_students_per_teacher")
-    .drop_nulls()
-)
+g = spt
 cambridge = g.filter(pl.col("district") == cc.FOCUS)
 
 (
@@ -46,19 +130,21 @@ cambridge = g.filter(pl.col("district") == cc.FOCUS)
     + scale_color_manual(
         values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
     )
-    + scale_x_continuous(breaks=list(range(2018, 2026)))
+    + scale_x_continuous(breaks=list(range(FIRST_YEAR, LAST_YEAR + 1)))
     + labs(
         x="School year ending",
         y="K–12 students per teacher",
-        title="Students per teacher, 2017–18 to 2024–25",
+        title=f"Students per teacher, {SPAN}",
     )
     + cc.theme_ccs()
 )
 ```
 
-Cambridge's ratio has fallen over time, driven by two trends from the [Enrollment](enrollment.qmd) chapter: **enrollment dropped while teacher counts held roughly steady**. In 2017–18, Cambridge had 869 students and 85 teachers (10.2 students per teacher). By 2024–25, enrollment had fallen to 741 while teachers remained at 85 — pushing the ratio down to 8.7.
+Cambridge's ratio has fallen over time because **enrollment dropped while the number of teachers ended where it started**. In 2017–18, Cambridge had 869 students and 85 teachers (10.2 students per teacher). By 2024–25, enrollment had fallen to 741 (see the [Enrollment](enrollment.qmd) chapter) and the district again had 85 teachers — pushing the ratio down to 8.7. In between, the teacher count ranged from 77 to 94. Counts of people move around from year to year in small districts, so single-year swings in the chart should not be read closely.
 
-Only Salem had a lower ratio in 2017–18. Cambridge crossed below Salem around 2022–23 and now sits at the bottom of the group.
+Only Salem had a lower ratio in 2017–18. The two districts traded places several times after that; Cambridge has been the lower of the two in 2023–24 and 2024–25, and now has the lowest ratio of the five. Among all twelve Washington County-area districts, three smaller districts had lower ratios in 2024–25: Fort Edward, Hartford, and Whitehall.
+
+Falling ratios are not unique to Cambridge. Statewide, K-12 students per teacher fell from about 12.7 to about 10.9 over the same years, as enrollment declined about 10% and the number of teachers rose about 5%.
 
 ## What this measure is (and isn't)
 
@@ -83,9 +169,8 @@ The table below shows where each district stood in 2017–18 and 2024–25, and 
 ```{python}
 #| label: tbl-students-per-teacher-change
 #| tbl-cap: "K–12 students per teacher in 2017–18 and 2024–25, with change, by district."
-g = cc.panel_for(cc.GRAPH_GROUP, since=2018).filter(
-    pl.col("year_end").is_in([2018, 2025])
-)
+g = spt.filter(pl.col("year_end").is_in([FIRST_YEAR, LAST_YEAR]))
+y0, y1 = str(FIRST_YEAR), str(LAST_YEAR)
 
 wide = (
     g.with_columns(
@@ -96,19 +181,20 @@ wide = (
     .drop("_rank")
 )
 
-wide = wide.with_columns(
-    (pl.col("2025") - pl.col("2018")).alias("change")
-)
+wide = wide.with_columns((pl.col(y1) - pl.col(y0)).alias("change"))
 
 (
     GT(wide, rowname_col="district", groupname_col="region")
     .tab_header(
         title="Students per teacher change",
-        subtitle="School-year-ending 2018 (2017–18) and 2025 (2024–25), with change"
+        subtitle=(
+            f"School-year-ending {y0} ({cc.school_year_label(FIRST_YEAR)}) and "
+            f"{y1} ({cc.school_year_label(LAST_YEAR)}), with change"
+        ),
     )
-    .fmt_number(columns=["2018", "2025", "change"], decimals=1)
-    .tab_spanner(label="School year ending", columns=["2018", "2025"])
-    .cols_label(change=md("Change<br>2018→2025"))
+    .fmt_number(columns=[y0, y1, "change"], decimals=1)
+    .tab_spanner(label="School year ending", columns=[y0, y1])
+    .cols_label(change=md(f"Change<br>{y0}→{y1}"))
     .tab_style(
         style=[style.fill(color="#FCEFB4"), style.text(weight="bold")],
         locations=[
@@ -128,6 +214,6 @@ wide = wide.with_columns(
 )
 ```
 
-**Cambridge's ratio fell by 1.5 students per teacher** (from 10.2 to 8.7), while Schuylerville and Greenwich saw larger drops (2.0 and 1.9 respectively) but started from higher levels. Salem's ratio actually rose slightly (from 9.5 to 9.8) as its enrollment held steadier.
+**Cambridge's ratio fell by 1.5 students per teacher** (from 10.2 to 8.7). Schuylerville and Greenwich saw larger drops (2.0 and 1.9 respectively) but started from higher levels. The ratio fell in all five districts; the smallest changes were in Salem (from 9.4 to 9.2) and Hoosick Falls (down 0.3).
 
 *For a deeper look at multiple class-size and staffing measures — including NYSED's official class-size data for specific grades and subjects, and a cross-check against federal NCES data — see the exploratory [Class size — all measures](../exploratory/class-size-all-measures.qmd) chapter.*
