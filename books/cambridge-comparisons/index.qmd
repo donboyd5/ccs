@@ -24,7 +24,7 @@ _enr = pl.read_parquet(
 
 **Cambridge Central School District** (CCS, Washington County, New York) faces challenges common among rural school districts:
 
-- **Small size:** There are Small districts has pros and cons.
+- **Small size:** Small districts have some advantages - more personalized attention is possible, for example. But districts that are extremely small have disadvantages. It can be difficult or expensive to offer a broad set of courses. In high school, if a district only has 50 students in its graduating class it might have only a few students interested in courses such as AP physics or literature. It may not have enough need to higher a full-time teacher for the subject, and it may not be practical to hire a part-time teacher.
 
 - **Declining area population:** Washington County's population is declining. More families are moving out than in, international immigration has come to a standstill, and birth rates are falling here as they are throughout the nation. The county's population will continue to decline for the foreseeable future. Economic development efforts may reduce net outmigration but are unlikely to prevent overall population declines.
 
