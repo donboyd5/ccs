@@ -8,7 +8,7 @@ Each annual workbook gives, for every NY school district, the district's tax lev
 taxable full value, and full-value tax rate **broken out by the city/town the
 district overlaps** (the "component" detail), and (2019+) a district *Total* row.
 
-This project pulls **2015-2025** (the consistent full-value-only era; see the
+This project pulls **2015-2026** (the consistent full-value-only era; see the
 SOURCE.md in the output folder for the three format eras and the caveats). Files
 are saved under clean, sortable names ``<year>_school_district_tax.<ext>`` where
 ``<year>`` is OSC's own label on the file. OSC's original filenames are recorded
@@ -54,6 +54,7 @@ REGISTRY: dict[int, str] = {
     2023: "excel/2023-school-districts.xlsx",
     2024: "excel/2024-school-districts.xlsx",
     2025: "excel/2025-school-districts.xlsx",
+    2026: "excel/2026-school-districts.xlsx",
 }
 
 #: Supporting provenance documents (original path -> on-disk name).

@@ -8,15 +8,15 @@ Washington County, so popfc is the natural source for the area's population tren
 | item | value |
 |---|---|
 | project | `popfc` — Washington County, NY Population Forecast |
-| location | `~/Documents/python_projects/popfc/` (outside this repo) |
+| location | `~/Documents/code_projects/popfc/` (outside this repo) |
 | version used | git commit `6a42d26` (2026-06-06); county final outputs dated 2026-05-28 / 2026-06-05 |
-| methodology | [`docs/methodology.md`](file:///home/donboyd5/Documents/python_projects/popfc/docs/methodology.md) (cohort-component; plain-language) |
-| data dictionary | [`docs/data_dictionary.md`](file:///home/donboyd5/Documents/python_projects/popfc/docs/data_dictionary.md) |
+| methodology | [`docs/methodology.md`](file:///home/donboyd5/Documents/code_projects/popfc/docs/methodology.md) (cohort-component; plain-language) |
+| data dictionary | [`docs/data_dictionary.md`](file:///home/donboyd5/Documents/code_projects/popfc/docs/data_dictionary.md) |
 
 `popfc` is **not vendored into this repo** (its data files are git-ignored here
 anyway — see `.gitignore`); `src/build_demographics.py` reads its outputs **in
 place**. This means the demographics chapter rebuilds correctly only on a machine
-that has `popfc` checked out at `~/Documents/python_projects/popfc/`. The path is
+that has `popfc` checked out at `~/Documents/code_projects/popfc/`. The path is
 overridable via the `POPFC_DIR` env var.
 
 ## Files used and columns read
@@ -63,3 +63,11 @@ but not used by the chapter.
    history runs through 2024 (and its reconciled series to 2025); the forecast
    runs 2025–2050. Per the user's choice, the chapter uses the **baseline**
    scenario throughout.
+
+## Update log
+
+- **2026-11-19** — corrected the documented location and the builder's default
+  path: popfc now lives at `~/Documents/code_projects/popfc/` (it had moved from
+  `python_projects/`, which broke `build_demographics.py`). popfc itself is
+  unchanged (still commit `6a42d26`); the rebuilt NY series and the Washington
+  components table are identical to the previous build.

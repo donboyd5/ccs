@@ -11,8 +11,8 @@ State Comptroller (OSC), Division of Local Government and School Accountability.
 | publisher | NYS Office of the State Comptroller (OSC) |
 | source page | <https://www.osc.ny.gov/local-government/data/real-property-tax-levies-taxable-full-value-and-full-value-tax-rates> |
 | underlying source | counties' Tax Data Verification Forms / districts' Constitutional Tax Limit forms, compiled by OSC |
-| coverage on the page | school-district workbooks 2008–2025 (Excel) and 2001–2007 (PDF) |
-| **this project uses** | **2015–2025** (the consistent full-value-only era) |
+| coverage on the page | school-district workbooks 2008–2026 (Excel) and 2001–2007 (PDF) |
+| **this project uses** | **2015–2026** (the consistent full-value-only era) |
 | grain | one row per district × city/town (**detail**) + one per district (**district_total**) |
 
 ## Files (original OSC name → on-disk name)
@@ -34,6 +34,7 @@ saved under the clean, sortable convention `<year>_school_district_tax.<ext>`
 | 2023 | `2023-school-districts.xlsx` | `2023_school_district_tax.xlsx` |
 | 2024 | `2024-school-districts.xlsx` | `2024_school_district_tax.xlsx` |
 | 2025 | `2025-school-districts.xlsx` | `2025_school_district_tax.xlsx` |
+| 2026 | `2026-school-districts.xlsx` | `2026_school_district_tax.xlsx` |
 
 Also archived for provenance (same folder):
 `datadescription2015.pdf` and `datadescription.pdf` (OSC data descriptions) and
@@ -50,7 +51,7 @@ headers to one canonical schema by text.
 |---|---|---|---|---|---|
 | 2015 | `2015table3.xls` | **name only** | no | no | no |
 | 2016–2019 | `…table3` / `…school-districts` | `School District Municipal Code` | no | 2019 only | no |
-| 2020–2025 | `…-school-districts.xlsx` (sheet `Combined`/`Sheet1`) | code (2023–25 label it `SD Muni Code - RPT Authority`) | yes | yes | **2021–2025 only** |
+| 2020–2026 | `…-school-districts.xlsx` (sheet `Combined`/`Sheet1`) | code (2023–26 label it `SD Muni Code - RPT Authority`) | yes | yes | **2021–2026 only** |
 
 In the **2020** file the district code/name appear only on the *first* row of each
 district block (merged cells); the builder forward-fills them. Header rows sit at
@@ -61,7 +62,8 @@ varying offsets (1–5) under title/note/date rows.
 We label rows by `year_end` = OSC's file-year. Confirmed empirically against the
 PTRC panel: OSC's *actual* district levy tracks PTRC's *proposed* levy for the
 **same** `year_end` to ~0.1% (Cambridge OSC 2025 = $9,819,773 vs PTRC `year_end`
-2025 = $9,829,260; the pattern holds every year). So OSC year *N* = school year
+2025 = $9,829,260; OSC 2026 = $10,133,110 vs PTRC `year_end` 2026 = $10,140,860;
+the pattern holds every year). So OSC year *N* = school year
 ending June 30 of *N*, matching `osc_school_finance` and the rest of the project.
 
 ## Identifiers & linking
@@ -75,8 +77,8 @@ ending June 30 of *N*, matching `osc_school_finance` and the rest of the project
 * **`nysed_district_cd`** — the project key, attached via the generated crosswalk
   [`data/crosswalks/osc_rpt_district_crosswalk.csv`](../../crosswalks/osc_rpt_district_crosswalk.csv).
   Built by `src/build_osc_tax_levies.py` (normalized-name match to
-  `district_crosswalk.csv`, then a county-scoped fallback, then 9 hand-verified
-  `MANUAL_OVERRIDES`). **678 of 680** OSC districts link; the 12 pre-existing
+  `district_crosswalk.csv`, then a county-scoped fallback, then 10 hand-verified
+  `MANUAL_OVERRIDES`). **679 of 681** OSC districts link; the 12 pre-existing
   `osc_municipal_code` anchors all agree. `match_method` records how each linked.
   **Two intentionally unmatched** (reported, never dropped): *New York City*
   (NYSED splits it into 30+ borough districts; OSC reports one row) and *South
@@ -86,12 +88,12 @@ ending June 30 of *N*, matching `osc_school_finance` and the rest of the project
 
 `district_total` rows are **computed as the sum of each district's detail rows**
 (`tax_levy`, `taxable_full_value`, `library_levy` summed; `full_value_tax_rate`
-recomputed = 1000 × levy ÷ full value). For **2021–2025** OSC also publishes its
+recomputed = 1000 × levy ÷ full value). For **2021–2026** OSC also publishes its
 own Total rows; the builder's `validate_totals` checks the computed totals against
 them and **refuses to write output** if any district is off by > 0.01%. Result:
-3,389 district-years checked, worst levy error 2.3e-16 — i.e., the sums of the
+4,066 district-years checked, worst levy error 2.3e-16 — i.e., the sums of the
 detail parts equal OSC's reported totals to floating-point precision.
-`total_source` flags each total as `computed_equals_osc` (2021–2025) or
+`total_source` flags each total as `computed_equals_osc` (2021–2026) or
 `computed_no_osc_published` (2015–2020, OSC published no total).
 
 ## Known quirks & provenance gaps (surfaced, not hidden)
@@ -117,6 +119,16 @@ detail parts equal OSC's reported totals to floating-point precision.
 ## Processed output
 
 [`src/build_osc_tax_levies.py`](../../../src/build_osc_tax_levies.py) →
-`data/processed/osc_school_district_tax_levies.parquet` — **39,476 rows**, 2015–2025,
-680 districts (32,014 detail + 7,462 district_total). Rebuild:
+`data/processed/osc_school_district_tax_levies.parquet` — **43,059 rows**, 2015–2026,
+681 districts (34,920 detail + 8,139 district_total). Rebuild:
 `python src/build_osc_tax_levies.py` (run the download script first).
+
+## Update log
+
+- **2026-11-19** — added the **2026** workbook (`2026-school-districts.xlsx`). Rows
+  for 2015–2025 are identical to the previous build. New in 2026: **Rockland CSD**
+  (Sullivan, OSC `480771800300` → NYSED `59130304`), the merger of Livingston Manor
+  and Roscoe. One new manual override: **North Colonie** (the regenerated
+  `district_crosswalk.csv` now also lists a retired pre-2010 North Colonie code
+  under the same name, which made the name match ambiguous). Cambridge 2026: levy
+  $10,133,110, taxable full value $813.3M, full-value rate $12.46 per $1,000.

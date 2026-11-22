@@ -1,4 +1,4 @@
-"""Download Vermont county (Bennington, Rutland) population, 1970–2024.
+"""Download Vermont county (Bennington, Rutland) population, 1970–2025.
 
 The Cambridge comparisons book's demographics chapter plots regional population
 history. New York county history comes from the sibling ``popfc`` forecast
@@ -7,7 +7,7 @@ popfc (it is NYS-only), so this script pulls the two neighboring Vermont
 counties — **Bennington (50003)** and **Rutland (50021)** — from the U.S. Census
 Bureau's Population Estimates Program (PEP) and its legacy files.
 
-No single file spans 1970–2024, so we stitch four sources:
+No single file spans 1970–2025, so we stitch four sources:
 
   - **1970–1999:** NBER's consolidated county intercensal file
     (``county_population.csv``), which merges the Census Bureau's legacy 1970s /
@@ -25,8 +25,10 @@ No single file spans 1970–2024, so we stitch four sources:
     with a warning.
   - **2010–2019:** the key-free bulk file ``co-est2019-alldata.csv``
     (the 2010s vintage; ``POPESTIMATE2010…2019``).
-  - **2020–2024:** the key-free bulk file ``co-est2024-alldata.csv``
-    (the 2020s vintage, 2020-census-based; ``POPESTIMATE2020…2024``).
+  - **2020–2025:** the key-free bulk file ``co-est2025-alldata.csv``
+    (the Vintage 2025 release, 2020-census-based; ``POPESTIMATE2020…2025``).
+    Each new vintage revises every year back to 2020, so all of 2020 onward is
+    taken from the latest vintage (the same v2025 vintage popfc uses for NY).
 
 All years after 1999 are **July-1 resident population** (matching the July-1
 basis of popfc's NY series, so the two are comparable in one indexed chart).
@@ -77,9 +79,11 @@ BULK_2019 = (
     "https://www2.census.gov/programs-surveys/popest/datasets/"
     "2010-2019/counties/totals/co-est2019-alldata.csv"
 )
-BULK_2024 = (
+#: Latest 2020s vintage. To move to a newer vintage, change these two lines.
+VINTAGE_2020S = 2025
+BULK_2020S = (
     "https://www2.census.gov/programs-surveys/popest/datasets/"
-    "2020-2024/counties/totals/co-est2024-alldata.csv"
+    f"2020-{VINTAGE_2020S}/counties/totals/co-est{VINTAGE_2020S}-alldata.csv"
 )
 
 #: NBER's consolidation of the Census Bureau's legacy 1970s/80s/90s county
@@ -109,10 +113,10 @@ def _read_csv_latin1(path: Path) -> csv.DictReader:
         return list(csv.DictReader(f))
 
 
-def fetch_bulk_2010_2024(*, force: bool) -> list[dict]:
-    """Bennington + Rutland July-1 population, 2010–2024, from the two bulk
-    PEP files (2010–2019 from the 2019 vintage; 2020–2024 from the 2024
-    vintage)."""
+def fetch_bulk_2010_onward(*, force: bool) -> list[dict]:
+    """Bennington + Rutland July-1 population, 2010 onward, from the two bulk
+    PEP files (2010–2019 from the 2019 vintage; 2020 onward from the latest
+    2020s vintage, ``VINTAGE_2020S``)."""
     rows: list[dict] = []
     # 2010–2019
     f19 = _download(BULK_2019, CACHE_DIR / "co-est2019-alldata.csv", force=force)
@@ -126,17 +130,18 @@ def fetch_bulk_2010_2024(*, force: bool) -> list[dict]:
                     "year": yr, "population": int(r[f"POPESTIMATE{yr}"]),
                     "source": "census_pep_co-est2019-alldata",
                 })
-    # 2020–2024 (2020-census-based 2024 vintage)
-    f24 = _download(BULK_2024, CACHE_DIR / "co-est2024-alldata.csv", force=force)
-    for r in _read_csv_latin1(f24):
+    # 2020 onward (2020-census-based; latest vintage)
+    fname = f"co-est{VINTAGE_2020S}-alldata.csv"
+    f20s = _download(BULK_2020S, CACHE_DIR / fname, force=force)
+    for r in _read_csv_latin1(f20s):
         if r["STATE"] == STATE_FIPS and r["COUNTY"] in VT_COUNTIES:
             name = VT_COUNTIES[r["COUNTY"]]
-            for yr in range(2020, 2025):
+            for yr in range(2020, VINTAGE_2020S + 1):
                 rows.append({
                     "state_fips": STATE_FIPS, "county_fips": r["COUNTY"],
                     "geoid": f"{STATE_FIPS}{r['COUNTY']}", "geography": name,
                     "year": yr, "population": int(r[f"POPESTIMATE{yr}"]),
-                    "source": "census_pep_co-est2024-alldata",
+                    "source": f"census_pep_co-est{VINTAGE_2020S}-alldata",
                 })
     return rows
 
@@ -217,7 +222,7 @@ def build(*, force: bool) -> list[dict]:
     rows = (
         fetch_nber_1970_1999(force=force)
         + fetch_api_2000_2009(force=force)
-        + fetch_bulk_2010_2024(force=force)
+        + fetch_bulk_2010_onward(force=force)
     )
     rows.sort(key=lambda r: (r["geoid"], r["year"]))
     return rows

@@ -1,11 +1,14 @@
 short_name,district_name,county_name,county_cd,nysed_district_cd,beds_entity_cd,nces_leaid,osc_municipal_code,needs_rc_category,needs_rc_description,in_graph_group,in_table_group
+,N Y C ALTERNATIVE HS DISTRICT,,30,30790001,307900010000,,,,,false,false
 ,ALBANY CITY SD,Albany,01,01010001,010100010000,,,3,High Need: Urban-Suburban,false,false
 ,BERNE-KNOX-WESTERLO CSD,Albany,01,01020104,010201040000,,,5,Average Need,false,false
 ,BETHLEHEM CSD,Albany,01,01030606,010306060000,,,6,Low Need,false,false
 ,COHOES CITY SD,Albany,01,01050001,010500010000,,,3,High Need: Urban-Suburban,false,false
 ,GREEN ISLAND UFSD,Albany,01,01070103,010701030000,,,3,High Need: Urban-Suburban,false,false
 ,GUILDERLAND CSD,Albany,01,01080206,010802060000,,,6,Low Need,false,false
+,MAPLEWOOD COMMON SCHOOL DISTRICT,Albany,01,01062208,010622080000,,,,,false,false
 ,MENANDS UFSD,Albany,01,01061502,010615020000,,,5,Average Need,false,false
+,NORTH COLONIE CENTRAL SCHOOL DISTRICT,Albany,01,01060506,010605060000,,,,,false,false
 ,NORTH COLONIE CSD,Albany,01,01062306,010623060000,,,6,Low Need,false,false
 ,RAVENA-COEYMANS-SELKIRK CSD,Albany,01,01040206,010402060000,,,5,Average Need,false,false
 ,SOUTH COLONIE CSD,Albany,01,01060106,010601060000,,,5,Average Need,false,false
@@ -136,7 +139,6 @@ short_name,district_name,county_name,county_cd,nysed_district_cd,beds_entity_cd,
 ,RHINEBECK CSD,Dutchess,13,13180104,131801040000,,,6,Low Need,false,false
 ,SPACKENKILL UFSD,Dutchess,13,13160202,131602020000,,,5,Average Need,false,false
 ,WAPPINGERS CSD,Dutchess,13,13210106,132101060000,,,5,Average Need,false,false
-,,Erie,14,14160302,141603020000,,,,,false,false
 ,AKRON CSD,Erie,14,14210104,142101040000,,,5,Average Need,false,false
 ,ALDEN CSD,Erie,14,14010106,140101060000,,,5,Average Need,false,false
 ,AMHERST CSD,Erie,14,14020106,140201060000,,,5,Average Need,false,false
@@ -154,6 +156,7 @@ short_name,district_name,county_name,county_cd,nysed_district_cd,beds_entity_cd,
 ,GRAND ISLAND CSD,Erie,14,14150106,141501060000,,,5,Average Need,false,false
 ,HAMBURG CSD,Erie,14,14160106,141601060000,,,5,Average Need,false,false
 ,HOLLAND CSD,Erie,14,14170104,141701040000,,,5,Average Need,false,false
+,HOPEVALE UNION FREE SCHOOL DISTRICT AT HAMBURG,Erie,14,14160302,141603020000,,,,,false,false
 ,IROQUOIS CSD,Erie,14,14130106,141301060000,,,5,Average Need,false,false
 ,KENMORE-TONAWANDA UFSD,Erie,14,14260103,142601030000,,,5,Average Need,false,false
 ,LACKAWANNA CITY SD,Erie,14,14180001,141800010000,,,3,High Need: Urban-Suburban,false,false
@@ -165,7 +168,7 @@ short_name,district_name,county_name,county_cd,nysed_district_cd,beds_entity_cd,
 ,TONAWANDA CITY SD,Erie,14,14250001,142500010000,,,5,Average Need,false,false
 ,WEST SENECA CSD,Erie,14,14280106,142801060000,,,5,Average Need,false,false
 ,WILLIAMSVILLE CSD,Erie,14,14020306,140203060000,,,5,Average Need,false,false
-,BOQUET VALLEY CSD,Essex,15,15180104,151801040000,,,5,Average Need,false,false
+,BOQUET VALLEY CSD,Essex,15,15180104,151801040000,,,4,High Need: Rural,false,false
 ,CROWN POINT CSD,Essex,15,15020304,150203040000,,,4,High Need: Rural,false,false
 ,ELIZABETHTOWN-LEWIS CENTRAL SCHOOL DISTRICT,Essex,15,15030104,150301040000,,,4,High Need: Rural,false,false
 ,KEENE CSD,Essex,15,15060104,150601040000,,,6,Low Need,false,false
@@ -189,6 +192,7 @@ short_name,district_name,county_name,county_cd,nysed_district_cd,beds_entity_cd,
 ,JOHNSTOWN CITY SD,Fulton,17,17060001,170600010000,,,5,Average Need,false,false
 ,MAYFIELD CSD,Fulton,17,17080104,170801040000,,,5,Average Need,false,false
 ,NORTHVILLE CSD,Fulton,17,17090104,170901040000,,,5,Average Need,false,false
+,OPPENHEIM-EPHRATAH CENTRAL SCHOOL DISTRICT,Fulton,17,17100104,171001040000,,,,,false,false
 ,WHEELERVILLE UFSD,Fulton,17,17030102,170301020000,,,5,Average Need,false,false
 ,ALEXANDER CSD,Genesee,18,18020204,180202040000,,,5,Average Need,false,false
 ,BATAVIA CITY SD,Genesee,18,18030001,180300010000,,,4,High Need: Rural,false,false
@@ -215,7 +219,9 @@ short_name,district_name,county_name,county_cd,nysed_district_cd,beds_entity_cd,
 ,DOLGEVILLE CSD,Herkimer,21,21100304,211003040000,,,4,High Need: Rural,false,false
 ,FRANKFORT-SCHUYLER CSD,Herkimer,21,21040206,210402060000,,,5,Average Need,false,false
 ,HERKIMER CSD,Herkimer,21,21060106,210601060000,,,4,High Need: Rural,false,false
+,ILION CENTRAL SCHOOL DISTRICT,Herkimer,21,21050106,210501060000,,,,,false,false
 ,LITTLE FALLS CITY SD,Herkimer,21,21080005,210800050000,,,4,High Need: Rural,false,false
+,MOHAWK CENTRAL SCHOOL DISTRICT,Herkimer,21,21050204,210502040000,,,,,false,false
 ,MOUNT MARKHAM CSD,Herkimer,21,21200104,212001040000,,,4,High Need: Rural,false,false
 ,POLAND CSD,Herkimer,21,21110304,211103040000,,,4,High Need: Rural,false,false
 ,TOWN OF WEBB UFSD,Herkimer,21,21190102,211901020000,,,6,Low Need,false,false
@@ -290,6 +296,7 @@ short_name,district_name,county_name,county_cd,nysed_district_cd,beds_entity_cd,
 ,FONDA-FULTONVILLE CSD,Montgomery,27,27060104,270601040000,,,5,Average Need,false,false
 ,FORT PLAIN CSD,Montgomery,27,27070104,270701040000,,,4,High Need: Rural,false,false
 ,OPPENHEIM-EPHRATAH-ST. JOHNSVILLE CS,Montgomery,27,27120104,271201040000,,,4,High Need: Rural,false,false
+,SAINT JOHNSVILLE CENTRAL SCHOOL DISTRICT,Montgomery,27,27110204,271102040000,,,,,false,false
 ,BALDWIN UFSD,Nassau,28,28021003,280210030000,,,6,Low Need,false,false
 ,BELLMORE UFSD,Nassau,28,28020702,280207020000,,,6,Low Need,false,false
 ,BELLMORE-MERRICK CENTRAL HS DISTRICT,Nassau,28,28025307,280253070000,,,6,Low Need,false,false
@@ -475,6 +482,7 @@ Hoosick Falls,HOOSICK FALLS CSD,Rensselaer,49,49050106,490501060000,3614760,3806
 ,TROY CITY SD,Rensselaer,49,49170001,491700010000,,,3,High Need: Urban-Suburban,false,false
 ,WYNANTSKILL UFSD,Rensselaer,49,49080402,490804020000,,,5,Average Need,false,false
 ,NYC GEOG DIST #31 - STATEN ISLAND,Richmond,35,35310001,353100010000,,,1,High Need: NYC,false,false
+,,Rockland,50,50041402,500414020000,,,,,false,false
 ,CLARKSTOWN CSD,Rockland,50,50010106,500101060000,,,6,Low Need,false,false
 ,EAST RAMAPO CSD (SPRING VALLEY),Rockland,50,50040206,500402060000,,,3,High Need: Urban-Suburban,false,false
 ,HAVERSTRAW-STONY POINT CSD (NORTH RO,Rockland,50,50020106,500201060000,,,5,Average Need,false,false
@@ -617,6 +625,7 @@ Schuylerville,SCHUYLERVILLE CSD,Saratoga,52,52170104,521701040000,3626160,410774
 ,LIBERTY CSD,Sullivan,59,59090106,590901060000,,,4,High Need: Rural,false,false
 ,LIVINGSTON MANOR CSD,Sullivan,59,59130204,591302040000,,,4,High Need: Rural,false,false
 ,MONTICELLO CSD,Sullivan,59,59140106,591401060000,,,4,High Need: Rural,false,false
+,ROCKLAND CSD,Sullivan,59,59130304,591303040000,,,4,High Need: Rural,false,false
 ,ROSCOE CSD,Sullivan,59,59130104,591301040000,,,5,Average Need,false,false
 ,SULLIVAN WEST CSD,Sullivan,59,59150204,591502040000,,,5,Average Need,false,false
 ,TRI-VALLEY CSD,Sullivan,59,59120104,591201040000,,,5,Average Need,false,false
@@ -633,7 +642,6 @@ Schuylerville,SCHUYLERVILLE CSD,Saratoga,52,52170104,521701040000,3626160,410774
 ,LANSING CSD,Tompkins,61,61080104,610801040000,,,5,Average Need,false,false
 ,NEWFIELD CSD,Tompkins,61,61090104,610901040000,,,4,High Need: Rural,false,false
 ,TRUMANSBURG CSD,Tompkins,61,61100104,611001040000,,,5,Average Need,false,false
-,,Ulster,62,62020202,620202020000,,,5,Average Need,false,false
 ,ELLENVILLE CSD,Ulster,62,62200206,622002060000,,,4,High Need: Rural,false,false
 ,HIGHLAND CSD,Ulster,62,62080304,620803040000,,,5,Average Need,false,false
 ,KINGSTON CITY SD,Ulster,62,62060001,620600010000,,,5,Average Need,false,false
@@ -643,6 +651,7 @@ Schuylerville,SCHUYLERVILLE CSD,Saratoga,52,52170104,521701040000,3626160,410774
 ,RONDOUT VALLEY CSD,Ulster,62,62090106,620901060000,,,5,Average Need,false,false
 ,SAUGERTIES CSD,Ulster,62,62160106,621601060000,,,5,Average Need,false,false
 ,WALLKILL CSD,Ulster,62,62180106,621801060000,,,5,Average Need,false,false
+,WEST PARK UNION FREE SCHOOL DISTRICT,Ulster,62,62020202,620202020000,,,5,Average Need,false,false
 ,BOLTON CSD,Warren,63,63010104,630101040000,,,6,Low Need,false,false
 ,GLENS FALLS CITY SD,Warren,63,63030001,630300010000,,,5,Average Need,false,false
 ,GLENS FALLS COMN SD,Warren,63,63091808,630918080000,,,3,High Need: Urban-Suburban,false,false
@@ -674,6 +683,7 @@ Whitehall,WHITEHALL CSD,Washington,64,64170106,641701060000,3631290,530690700100
 ,SODUS CSD,Wayne,65,65120106,651201060000,,,4,High Need: Rural,false,false
 ,WAYNE CSD,Wayne,65,65080106,650801060000,,,5,Average Need,false,false
 ,WILLIAMSON CSD,Wayne,65,65140204,651402040000,,,5,Average Need,false,false
+,ABBOTT UNION FREE SCHOOL DISTRICT,Westchester,66,66041302,660413020000,,,5,Average Need,false,false
 ,ARDSLEY UFSD,Westchester,66,66040503,660405030000,,,6,Low Need,false,false
 ,BEDFORD CSD,Westchester,66,66010206,660102060000,,,6,Low Need,false,false
 ,BLIND BROOK-RYE UFSD,Westchester,66,66190502,661905020000,,,6,Low Need,false,false

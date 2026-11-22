@@ -10,7 +10,7 @@ the accelerated-math variants ``RegentsMath8`` / ``Combined8Math`` (see ``test_t
 
 TWO SOURCE LAYOUTS, stitched seamlessly
 ---------------------------------------
-* **New layout** (SRC2018-2025): single ``Annual EM ELA`` / ``Annual EM MATH``
+* **New layout** (SRC2018-2026): single ``Annual EM ELA`` / ``Annual EM MATH``
   tables with an ``ASSESSMENT_NAME`` column and pre-computed proficiency.
 * **Old layout** (SRC2016-2017): one table *per grade* (``ELA4 Subgroup
   Results`` ... ``Math8 Subgroup Results``) with no ``ASSESSMENT_NAME``, no
@@ -29,7 +29,7 @@ what this panel is for; school rows remain in the raw DBs if ever needed.
 
 Each SRC file carries ~2 school years and consecutive files overlap, so years are
 de-duplicated **latest-file-wins**.  After dedup the old layout uniquely supplies
-YEAR 2015-2016 and the new layout supplies 2017-2025 (YEAR 2020 is absent
+YEAR 2015-2016 and the new layout supplies 2017-2026 (YEAR 2020 is absent
 statewide: spring-2020 grades 3-8 tests were cancelled for COVID).
 
 Time convention: NYSED ``YEAR`` is the school-year-**end** (spring) year
@@ -59,6 +59,13 @@ ZIP_DIR = PROJECT_ROOT / "data" / "raw" / "nysed_report_card" / "zips"
 OUT_DIR = PROJECT_ROOT / "data" / "processed"
 OUT_PARQUET = OUT_DIR / "assessments_em_ela_math.parquet"
 OUT_CSV = OUT_DIR / "assessments_grade4_8_all_students.csv"
+
+#: Oldest SRC file this panel reads. SRC2016 is the first whose layout the
+#: readers below were written and validated for (it supplies YEAR 2015-2016).
+#: The same folder also holds SRC2000-SRC2015, downloaded later for the
+#: enrollment series; those are deliberately not parsed here (their test tables
+#: are unvalidated for this panel, and SRC2009 has a table the parser cannot read).
+MIN_SRC_YEAR = 2016
 
 GROUP_LEVEL = {"1": "state", "2": "county", "3": "nrc", "5": "district"}
 
@@ -241,6 +248,9 @@ def main() -> None:
                   key=lambda p: int("".join(c for c in p.stem if c.isdigit())), reverse=True)
     if not zips:
         raise SystemExit(f"No SRC*.zip in {ZIP_DIR} — run download_report_card.py first.")
+    zips = [z for z in zips
+            if int("".join(c for c in z.stem if c.isdigit())) >= MIN_SRC_YEAR]
+    print(f"Reading {len(zips)} SRC files (SRC{MIN_SRC_YEAR} and later) ...")
 
     frames: list[pl.DataFrame] = []
     metas: list[pl.DataFrame] = []
@@ -271,15 +281,26 @@ def main() -> None:
     panel = pl.concat(frames, how="vertical_relaxed")
 
     # parse subject/grade/test_type from assessment_name
+    # Beginning with SRC2026 NYSED adds two kinds of summary row to the All
+    # Students results: "<name>_SMALL" (a Small Group Total over suppressed
+    # grades, e.g. ELA3_8_SMALL, REGENTS678MATH_SMALL) and "<name>_EST" (an
+    # *estimated* 3-8 summary row, ESTIMATE_FLAG = Y, published in place of the
+    # plain 3-8 row for some entities). Both are kept, under their own
+    # test_type, so they never masquerade as a single grade's result and the
+    # "aggregate" series stays NYSED's un-estimated 3-8 rows only.
+    _uname = pl.col("assessment_name").str.to_uppercase()
     panel = panel.with_columns(
-        test_type=pl.when(pl.col("assessment_name").str.ends_with("3_8")).then(pl.lit("aggregate"))
+        test_type=pl.when(_uname.str.ends_with("_SMALL")).then(pl.lit("small_group"))
+        .when(_uname.str.ends_with("_EST")).then(pl.lit("aggregate_est"))
+        .when(pl.col("assessment_name").str.ends_with("3_8")).then(pl.lit("aggregate"))
         .when(pl.col("assessment_name").str.starts_with("Regents")).then(pl.lit("regents"))
         .when(pl.col("assessment_name").str.starts_with("Combined")).then(pl.lit("combined"))
         .otherwise(pl.lit("grade")),
         nysed_district_cd=pl.when(pl.col("entity_level") == "district")
         .then(pl.col("entity_cd").str.slice(0, 8)).otherwise(None),
     ).with_columns(
-        grade=pl.when(pl.col("test_type") == "aggregate").then(pl.lit("3-8"))
+        grade=pl.when(pl.col("test_type").is_in(["aggregate", "aggregate_est"])).then(pl.lit("3-8"))
+        .when(pl.col("test_type") == "small_group").then(None)
         .otherwise(pl.col("assessment_name").str.extract(r"(\d)")),
         is_computed_aggregate=pl.lit(False),
     )

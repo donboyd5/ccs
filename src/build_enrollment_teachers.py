@@ -543,8 +543,14 @@ def build_crosswalk() -> pl.DataFrame:
         frames.append(df)
     allrows = pl.concat(frames, how="vertical_relaxed")
     xwalk = (
-        allrows.sort("source_year", descending=True)
-        .unique(subset=["DISTRICT_CD"], keep="first")
+        # Latest file wins; within a file prefer a row that carries an N/RC
+        # code. (ENROLL_2026 has a few school rows with a blank NEEDS_INDEX;
+        # without the tie-break an arbitrary blank row could win and null the
+        # whole district's category.)
+        allrows.sort(
+            ["source_year", "NEEDS_INDEX"], descending=[True, False], nulls_last=True
+        )
+        .unique(subset=["DISTRICT_CD"], keep="first", maintain_order=True)
         .select(
             pl.col("DISTRICT_CD").str.strip_chars().alias("district_cd"),
             pl.col("COUNTY_CD").str.strip_chars().str.zfill(2).alias("county_cd"),
