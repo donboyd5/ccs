@@ -7,9 +7,9 @@ operating funds, against a five-district average near $30,000. Cambridge and
 Salem, the group's two smallest districts, have traded first and second place
 in all ten years shown — small districts spread fixed costs (a principal, a
 building, a bus route) over fewer students, so their higher spending per pupil
-is arithmetic, not inefficiency. Dollars are nominal — not adjusted for
-inflation — and exclude capital projects, debt service, and interfund
-transfers; see [Methods](../appendix/methods.qmd) for the definition.
+is arithmetic, not inefficiency. Dollars are adjusted for inflation and shown
+in 2024–25 dollars. They exclude capital projects, debt service, and interfund
+transfers; see [Methods](../appendix/methods.qmd) for the definitions.
 
 ```{python}
 #| label: setup
@@ -37,53 +37,92 @@ import comparisons as cc
 # Format axis/break values as whole dollars.
 def _dollars(breaks):
     return [f"${v:,.0f}" if v is not None else "" for v in breaks]
+
+
+# Years shown, and the school year whose dollars amounts are expressed in.
+FIRST_YEAR, LAST_YEAR = 2016, cc.REAL_DOLLAR_YEAR
+DOLLARS = f"{cc.school_year_label(cc.REAL_DOLLAR_YEAR)} dollars"
+
+# Current operating spending per pupil, nominal (current_pp) and adjusted for
+# inflation (current_pp_real).
+spend = cc.to_real(
+    cc.spending_for(cc.GRAPH_GROUP).filter(
+        pl.col("year_end").is_between(FIRST_YEAR, LAST_YEAR)
+    ),
+    ["current_pp"],
+)
+
+# --- Checks: the numbers written out in the prose must match the data. --------
+assert (FIRST_YEAR, LAST_YEAR) == (2016, 2025) and DOLLARS == "2024–25 dollars"
+_first = spend.filter(pl.col("year_end") == FIRST_YEAR)
+_last = spend.filter(pl.col("year_end") == LAST_YEAR)
+_chg = _first.join(_last, on="district", suffix="_last").with_columns(
+    real_chg=pl.col("current_pp_real_last") - pl.col("current_pp_real"),
+    nominal_chg=pl.col("current_pp_last") - pl.col("current_pp"),
+).sort("real_chg", descending=True)
+_cam = _chg.filter(pl.col("district") == cc.FOCUS)
+assert round(_last.filter(pl.col("district") == cc.FOCUS)["current_pp"].item(), -3) == 31_000
+assert round(_last["current_pp"].mean(), -3) == 30_000
+assert round(_cam["real_chg"].item(), -2) == 3_300
+assert round(_cam["real_chg"].item() / _cam["current_pp_real"].item() * 100) == 12
+assert round(_cam["nominal_chg"].item(), -3) == 10_000
+assert _chg["district"][0] == "Greenwich" and round(_chg["real_chg"][0], -3) == 6_000
+assert _chg["district"].to_list().index(cc.FOCUS) == 2  # third of five: the middle
+assert (_chg["real_chg"] > 0).all()  # every district rose after inflation
+# Cambridge and Salem hold the top two places in every year shown.
+for _y in range(FIRST_YEAR, LAST_YEAR + 1):
+    _top2 = spend.filter(pl.col("year_end") == _y).sort("current_pp", descending=True)
+    assert set(_top2["district"][:2]) == {"Cambridge", "Salem"}, _y
+_idx = cc.load_price_index()
+_infl = (
+    _idx.filter(pl.col("year_end") == LAST_YEAR)["index_value"].item()
+    / _idx.filter(pl.col("year_end") == FIRST_YEAR)["index_value"].item()
+    - 1
+)
+assert round(_infl * 100) == 33
 ```
 
 ```{python}
 #| label: fig-spending-per-pupil
-#| fig-cap: "Current operating spending per K–12 pupil (nominal dollars) by school year ending, 2016 (2015–16) through 2025 (2024–25). Source: NYS Comptroller local-government financial data; K-12 enrollment from NYSED."
-g = (
-    cc.spending_for(cc.GRAPH_GROUP)
-    .filter(pl.col("year_end") >= 2016)
-    .select("district", "year_end", "current_pp")
-    .drop_nulls()
-)
+#| fig-cap: "Current operating spending per K–12 pupil, adjusted for inflation (2024–25 dollars), by school year ending, 2016 (2015–16) through 2025 (2024–25). Source: NYS Comptroller local-government financial data; K-12 enrollment from NYSED; Consumer Price Index from the U.S. Bureau of Labor Statistics."
+g = spend.select("district", "year_end", "current_pp_real").drop_nulls()
 cambridge = g.filter(pl.col("district") == cc.FOCUS)
 
 (
-    ggplot(g, aes("year_end", "current_pp", color="district"))
+    ggplot(g, aes("year_end", "current_pp_real", color="district"))
     + geom_line(size=1)
     + geom_point(size=1.8)
     + geom_line(cambridge, size=2.4)  # emphasize the focus district
     + scale_color_manual(
         values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
     )
-    + scale_x_continuous(breaks=list(range(2016, 2026)))
+    + scale_x_continuous(breaks=list(range(FIRST_YEAR, LAST_YEAR + 1)))
     + scale_y_continuous(labels=_dollars)
     + labs(
         x="School year ending",
-        y="Current operating spending per pupil",
+        y=f"Spending per pupil ({DOLLARS})",
         title="Current operating spending per K-12 pupil, 2015–16 to 2024–25",
+        subtitle=f"Adjusted for inflation; {DOLLARS}",
     )
     + cc.theme_ccs()
 )
 ```
 
-Every district's line rises over the decade — part of that is inflation — but
-the rank order barely changes.
+Every district's line rises over the decade, even after adjusting for
+inflation, but the rank order barely changes.
 
 Where each district started, where it ended, and the decade's change:
 
 ```{python}
 #| label: tbl-spending-per-pupil-change
-#| tbl-cap: "Current operating spending per K–12 pupil in 2015–16 and 2024–25, with change, by district (nominal dollars)."
-t = cc.spending_for(cc.GRAPH_GROUP).filter(pl.col("year_end").is_between(2016, 2025))
+#| tbl-cap: "Current operating spending per K–12 pupil in 2015–16 and 2024–25, with change, by district (adjusted for inflation; 2024–25 dollars)."
+t = spend.filter(pl.col("year_end").is_in([FIRST_YEAR, LAST_YEAR]))
 
 wide = (
     t.with_columns(
         pl.when(pl.col("region") == "Washington County").then(0).otherwise(1).alias("_rank")
     )
-    .pivot(values="current_pp", index=["_rank", "region", "district"], on="year_end")
+    .pivot(values="current_pp_real", index=["_rank", "region", "district"], on="year_end")
     .sort(["_rank", "district"])
     .drop("_rank")
 )
@@ -94,7 +133,7 @@ wide = wide.with_columns((pl.col("2025") - pl.col("2016")).alias("chg"))
     GT(wide, rowname_col="district", groupname_col="region")
     .tab_header(
         title="Current operating spending per pupil",
-        subtitle="School-year-ending 2016 (2015–16) and 2025 (2024–25), nominal dollars"
+        subtitle="School-year-ending 2016 (2015–16) and 2025 (2024–25), in 2024–25 dollars"
     )
     .fmt_currency(columns=["2016", "2025", "chg"], decimals=0)
     .tab_spanner(label="School year ending", columns=["2016", "2025"])
@@ -111,17 +150,20 @@ wide = wide.with_columns((pl.col("2025") - pl.col("2016")).alias("chg"))
             "**Source:** New York State Comptroller local-government financial "
             "data (expenditures); K-12 enrollment from NYSED. Current operating "
             "spending = General, Special Aid and School Lunch funds, excluding "
-            "capital outlay, debt service and interfund transfers. Nominal "
-            "dollars; year = school-year-ending (2025 = 2024–25)."
+            "capital outlay, debt service and interfund transfers. Adjusted "
+            "for inflation with the Consumer Price Index (CPI-U) and shown in "
+            "2024–25 dollars; year = school-year-ending (2025 = 2024–25)."
         )
     )
 )
 ```
 
-**Cambridge's spending per pupil rose about $10,000** — a middle-of-the-pack
-increase (Greenwich's was largest at $12,000). What sets Cambridge apart is
+**Cambridge's spending per pupil rose about $3,300 after inflation**, or about
+12% — a middle-of-the-pack increase (Greenwich's was largest at about $6,000).
+Before adjusting for inflation the increase was about $10,000; consumer prices
+rose about 33% over the period. What sets Cambridge apart is
 where it started — near the top in 2015–16 — and where it remains in 2024–25.
 Whether that level is sustainable as enrollment falls is taken up in the
 [Taxes](taxes.qmd) chapter.
 
-*For additional spending measures, see the exploratory [Spending](../exploratory/spending.qmd) chapter.*
+*For the same figures before adjusting for inflation, and for all twelve comparison districts, see the exploratory [Spending](../exploratory/spending.qmd) chapter.*

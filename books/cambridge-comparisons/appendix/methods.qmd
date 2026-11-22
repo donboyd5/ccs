@@ -20,8 +20,12 @@ see the [Sources](sources.qmd) appendix and the tracked `SOURCE.md` files under
   See the [overview](../index.qmd).
 - **Charter schools are excluded** — they have no district-total row in the source
   data, so all figures are district-operated.
-- **Dollars are nominal** — not adjusted for inflation — unless noted. Part of any
-  upward drift in money measures reflects rising prices, not rising real resources.
+- **Dollars in the Spending chapter are adjusted for inflation** (see
+  [Adjusting for inflation](#adjusting-for-inflation) below). Dollars elsewhere
+  are still nominal — not adjusted for inflation — unless noted, so part of any
+  upward drift in those measures reflects rising prices, not rising real
+  resources. The nominal spending figures are in the exploratory
+  [Spending](../exploratory/spending.qmd) chapter.
 - **`nysed_district_cd`** (the 8-digit NYSED district code) is the stable join key
   across datasets; each source's native id maps to it through a tracked crosswalk.
   (The budget-vote files are the exception — they carry district *names*, not
@@ -96,7 +100,31 @@ see the [Sources](sources.qmd) appendix and the tracked `SOURCE.md` files under
   arrive in large, irregular lumps (they would make spending per pupil volatile),
   and interfund transfers would otherwise be counted twice.
 - This is close to the "current spending per pupil" measure the U.S. Census and
-  NCES use. **Dollars are nominal.**
+  NCES use.
+- The Spending chapter shows it **adjusted for inflation**, in 2024–25 dollars;
+  the exploratory Spending chapter shows it in nominal dollars.
+
+### Adjusting for inflation
+
+- **Why:** a dollar in 2015–16 bought more than a dollar in 2024–25. Comparing
+  the two years' spending without adjusting mixes real change with price change.
+- **How:** each year's amount is multiplied by the price index for 2024–25 and
+  divided by the price index for its own year. The result is that year's spending
+  restated in **2024–25 dollars**. Amounts for 2024–25 itself are unchanged.
+- **Which price index:** the **Consumer Price Index for All Urban Consumers
+  (CPI-U)**, all items, U.S. city average, not seasonally adjusted, from the U.S.
+  Bureau of Labor Statistics. Monthly values are averaged over each school year,
+  July through June, to match the districts' fiscal year. By this measure prices
+  rose about 33% from 2015–16 to 2024–25.
+- **What the choice means:** the CPI-U measures prices that households pay. It
+  answers "what did this spending cost in today's dollars?" It does not measure
+  the prices school districts pay, which are dominated by salaries and health
+  insurance and can rise faster or slower than consumer prices. A different index
+  would give different adjusted amounts. It would not change which district
+  spends more in any one year, because every district gets the same adjustment.
+- **One filled-in month:** the Bureau of Labor Statistics did not publish a value
+  for October 2025. It is estimated as the midpoint of September and November
+  2025. This affects only school year 2025–26.
 
 ### Property taxes
 
@@ -161,8 +189,8 @@ see the [Sources](sources.qmd) appendix and the tracked `SOURCE.md` files under
 
 ## Limitations — where comparisons break down
 
-- **No inflation adjustment** in money measures — part of the upward drift is
-  prices, not real growth.
+- **Inflation adjustment so far covers only the Spending chapter.** In other
+  money measures part of the upward drift is prices, not real growth.
 - **Small districts are volatile.** Cambridge, Salem, and the other small peers
   have small counts in some cuts of the data (high-school sections, single test
   grades), so individual values can swing; the book prefers medians and notes this

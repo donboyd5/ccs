@@ -26,8 +26,10 @@ misleading:
 This is close to the "current spending per pupil" measure the U.S. Census and the
 National Center for Education Statistics use to compare districts and states. The
 dollars come from the **New York State Comptroller's** financial-reporting data
-and are **not adjusted for inflation**, so part of the upward drift over time
-reflects rising prices rather than rising real resources.
+and, in this appendix, are **not adjusted for inflation** (nominal dollars), so
+part of the upward drift over time reflects rising prices rather than rising real
+resources. The main [Spending](../front/spending.qmd) chapter shows the same
+measure adjusted for inflation.
 
 ```{python}
 #| label: setup

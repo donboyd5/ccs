@@ -24,6 +24,7 @@ Years are **school-year-ending** (2025 = 2024–25).
 | School district property taxes | NYS Comptroller (OSC) | tax levy, taxable full value & full-value tax rate, by district × town | 2015–2025 | **Adding** |
 | Budget vote results | NYSED | budget vote & re-vote outcomes: defeats, contingency budgets, 60%-above-cap flag | 2012–2025 (vote yr) | **In use** |
 | State school aid | NYS (data.ny.gov `9pb8-dg53`) | state aid by category & district (incl. Foundation Aid — the merger-incentive base) | 1997–2026 | **In use** |
+| Consumer Price Index (CPI-U) | U.S. Bureau of Labor Statistics | monthly price index used to adjust dollars for inflation | 1995–2026 (school-year averages) | **In use** |
 | Real property tax rates & levies | NYS (data.ny.gov `iq85-sdzs`) | tax levies and rates by municipality | varies | Candidate |
 
 ## NYSED data files
@@ -113,9 +114,19 @@ the account code (General, Special Aid, School Lunch, Capital, Debt Service). Th
 keeps the General, Special Aid, and School Lunch funds and excludes capital
 outlay, debt service, and transfers between funds, to approximate the U.S. Census
 / NCES basis for comparing districts. The fiscal year ends June 30 and matches the
-school-year-ending label (no off-by-one). Dollars are **nominal** (not adjusted
-for inflation). Full provenance:
+school-year-ending label (no off-by-one). The source dollars are **nominal**; the
+Spending chapter adjusts them for inflation (see the next section). Full provenance:
 [`data/raw/osc_school_finance/SOURCE.md`](https://github.com/donboyd5/ccs/blob/main/data/raw/osc_school_finance/SOURCE.md).
+
+## Consumer Price Index (U.S. Bureau of Labor Statistics)
+
+Dollar amounts are adjusted for inflation with the **Consumer Price Index for All
+Urban Consumers (CPI-U)**, all items, U.S. city average, not seasonally adjusted
+(series `CUUR0000SA0`), from the [U.S. Bureau of Labor Statistics](https://www.bls.gov/cpi/).
+Monthly values are averaged over each school year (July through June). The
+[Methods](methods.qmd#adjusting-for-inflation) appendix explains the adjustment
+and what the choice of index means. Full provenance:
+[`data/raw/bls_cpi/SOURCE.md`](https://github.com/donboyd5/ccs/blob/main/data/raw/bls_cpi/SOURCE.md).
 
 ## Property Tax Report Card (NYSED)
 
