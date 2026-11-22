@@ -23,7 +23,9 @@ contribution, spending on capital projects, and some court-ordered payments — 
 be **excluded** from the cap. So a district whose proposed levy is above its base
 levy limit may still be **within the cap** once these permissible exclusions are
 applied. Only the amount over the limit *after exclusions* triggers the 60%
-requirement. (This is why the [Contingency budgets](contingency-budgets.qmd)
+requirement. The Property Tax Report Card reports both the proposed levy and the
+levy limit with the exclusions already taken out, so the two can be compared
+directly. (This is why the [Contingency budgets](contingency-budgets.qmd)
 chapter relies on NYSED's vote-file 60%-flag for actual override outcomes, rather
 than on a levy-vs-limit calculation alone.)
 
@@ -55,14 +57,99 @@ ptrc = cc.ptrc_for(cc.GRAPH_GROUP).with_columns(
     (pl.col("permissible_exclusions") / 1e6).alias("exclusions_m"),
 )
 cam = ptrc.filter(pl.col("district") == cc.FOCUS)
+
+# Years shown. The report card for a school year is filed the spring before, so
+# the latest year (2026-27) is the budget voted on in May 2026. Amounts are not
+# adjusted for inflation: each comparison is between two amounts in one year.
+FIRST_YEAR, LAST_YEAR = 2015, 2027
+SPAN = f"{cc.school_year_label(FIRST_YEAR)} to {cc.school_year_label(LAST_YEAR)}"
+cam = cam.filter(pl.col("year_end").is_between(FIRST_YEAR, LAST_YEAR)).sort("year_end")
+
+# Districts over the cap, statewide: proposed levy above the levy limit. Both
+# figures already exclude the permissible exclusions, so those are NOT
+# subtracted again.
+statewide = (
+    cc.load_ptrc()
+    .filter(pl.col("year_end").is_between(FIRST_YEAR, LAST_YEAR))
+    .with_columns(
+        (pl.col("proposed_tax_levy_wo_exclusions")
+         - pl.col("tax_levy_limit_wo_exclusions")).alias("levy_gap"),
+    )
+    .group_by("year_end")
+    .agg(
+        pl.len().alias("districts"),
+        (pl.col("levy_gap") > 0).sum().alias("over_cap"),
+    )
+    .sort("year_end")
+)
+
+# ---------------------------------------------------------------------------
+# Checks on the statements made in the text of this chapter. If the data
+# change so that a statement is no longer true, the page fails to build
+# instead of quietly showing text that disagrees with its own charts.
+# ---------------------------------------------------------------------------
+_rows = {r["year_end"]: r for r in cam.iter_rows(named=True)}
+assert sorted(_rows) == list(range(FIRST_YEAR, LAST_YEAR + 1))
+_gap_pct = {
+    y: 100 * r["levy_gap"] / r["tax_levy_limit_wo_exclusions"] for y, r in _rows.items()
+}
+
+# The report card's "without exclusions" levy is the total proposed levy minus
+# the exclusions (checked for the years the file reports it consistently).
+for _y in range(2016, LAST_YEAR + 1):
+    _r = _rows[_y]
+    assert abs(
+        _r["total_proposed_tax_levy"] - _r["permissible_exclusions"]
+        - _r["proposed_tax_levy_wo_exclusions"]
+    ) < 2, _y
+
+# Through 2025-26: never over the limit; within 0.5% of it in nine of the
+# twelve years; furthest under in 2019-20 (6%) and 2020-21 (3%).
+_before = {y: g for y, g in _gap_pct.items() if y < LAST_YEAR}
+assert all(g < 0.01 for g in _before.values())
+assert sum(abs(g) < 0.5 for g in _before.values()) == 9 and len(_before) == 12
+assert round(_before[2020]) == -6 and round(_before[2021]) == -3
+# The 2019-20 limit as filed equals the total proposed levy, exclusions included.
+assert abs(_rows[2020]["tax_levy_limit_wo_exclusions"] - _rows[2020]["total_proposed_tax_levy"]) < 2
+
+# 2026-27: about $1.1 million (about 12%) over the limit; levy up 12%.
+_last = _rows[LAST_YEAR]
+assert round(_last["levy_gap"] / 1e6, 1) == 1.1
+assert round(_gap_pct[LAST_YEAR]) == 12
+assert round(_last["tax_levy_pct_change"]) == 12
+assert round(_last["total_proposed_tax_levy"] / 1e6, 1) == 11.4
+assert round(_last["exclusions_m"], 1) == 0.6
+
+# The May and June 2026 votes on that budget.
+_votes = cc.load_budget_votes().filter(
+    (pl.col("district_key") == "CAMBRIDGE") & (pl.col("year") == 2026)
+)
+_v = {r["kind"]: r for r in _votes.iter_rows(named=True)}
+assert (_v["vote"]["yes"], _v["vote"]["no"]) == (554, 584)
+assert (_v["revote"]["yes"], _v["revote"]["no"]) == (648, 456)
+assert _v["vote"]["above_cap"] and _v["revote"]["above_cap"]
+assert round(100 * 554 / (554 + 584), 1) == 48.7
+assert round(100 * 648 / (648 + 456), 1) == 58.7
+
+# Statewide counts of districts over the cap.
+_over = dict(zip(statewide["year_end"], statewide["over_cap"]))
+assert all(660 <= n <= 675 for n in statewide["districts"])
+assert min(_over.values()) == 12 and max(_over.values()) == 41
+assert (_over[2026], _over[2027]) == (41, 40)
+assert max(v for y, v in _over.items() if y < 2026) == 36
+
+# Reserves note: unrestricted fund balance as a share of the budget, and no
+# use of a tax-cap reserve in any year.
+_fb = cam["fund_balance_unrestricted_pct_of_budget"]
+assert 3.0 <= _fb.min() and _fb.max() <= 4.6
+assert cam["tax_cap_reserve_used"].fill_null(0).max() == 0
 ```
 
 ```{python}
 #| label: fig-levy-vs-limit
-#| fig-cap: "Cambridge's proposed tax levy and its state-set levy limit, school years ending 2015 (2014–15) through 2027 (2026–27), in millions of dollars. Where the proposed levy sits above the limit, the budget is over the cap. Source: NYSED Property Tax Report Card."
+#| fig-cap: "Cambridge's proposed tax levy and its state-set levy limit, school years ending 2015 (2014–15) through 2027 (2026–27), in millions of dollars, both after taking out permissible exclusions. Not adjusted for inflation. Where the proposed levy sits above the limit, the budget is over the cap. Source: NYSED Property Tax Report Card."
 long = (
-    cam.filter(pl.col("year_end") >= 2015)
-    .select("year_end", "proposed_m", "limit_m")
+    cam.select("year_end", "proposed_m", "limit_m")
     .unpivot(index="year_end", variable_name="measure", value_name="amount")
     .with_columns(pl.col("measure").replace_strict(
         {"proposed_m": "Proposed levy", "limit_m": "Levy limit"}).alias("measure"))
@@ -73,20 +160,20 @@ long = (
     + geom_line(size=1)
     + geom_point(size=1.8)
     + scale_color_manual(values={"Proposed levy": "#C8102E", "Levy limit": "#555555"}, name="")
-    + scale_x_continuous(breaks=list(range(2015, 2028)))
+    + scale_x_continuous(breaks=list(range(FIRST_YEAR, LAST_YEAR + 1)))
     + labs(
         x="School year ending",
         y="Tax levy (millions of dollars)",
-        title="Cambridge's proposed tax levy and its levy limit, 2014–15 to 2026–27",
+        title=f"Cambridge's proposed tax levy and its levy limit, {SPAN}",
     )
     + cc.theme_ccs()
     + theme(figure_size=(9, 4.5), legend_position="top")
 )
 ```
 
-For more than a decade Cambridge proposed a levy almost exactly **at** its levy
-limit — right up against the cap, but not over it. For **2026–27** the proposed
-levy breaks sharply above the limit.
+For more than a decade Cambridge proposed a levy **at or under** its levy limit,
+and in most years almost exactly at it. For **2026–27** the proposed levy breaks
+sharply above the limit.
 
 ## Year by year
 
@@ -94,8 +181,7 @@ levy breaks sharply above the limit.
 #| label: tbl-cap-history
 #| tbl-cap: "Cambridge's proposed tax levy, levy limit, the gap (proposed − limit; +over), permissible exclusions, and the proposed levy change, by school year ending."
 tbl = (
-    cam.filter(pl.col("year_end") >= 2015)
-    .with_columns(
+    cam.with_columns(
         (pl.col("levy_gap") / pl.col("tax_levy_limit_wo_exclusions") * 100).round(1).alias("over_limit_pct"),
     )
     .select(
@@ -113,7 +199,7 @@ tbl = (
     GT(tbl, rowname_col="School year ending")
     .tab_header(
         title="Cambridge vs. its tax-levy limit",
-        subtitle="Proposed levy, the cap, and the gap, 2014–15 to 2026–27",
+        subtitle=f"Proposed levy, the cap, and the gap, {SPAN}",
     )
     .fmt_number(columns=["Proposed levy ($M)", "Levy limit ($M)", "Exclusions ($M)"], decimals=2)
     .fmt_number(columns="Over the limit (%)", decimals=1)
@@ -126,64 +212,60 @@ tbl = (
         md(
             "**Source:** NYSED Property Tax Report Card. Gap = proposed levy − levy "
             "limit (both excluding permissible exclusions); positive = over the cap. "
-            "Year = school-year-ending (2027 = 2026–27)."
+            "Year = school-year-ending (2027 = 2026–27). Dollars are not adjusted "
+            "for inflation. The limit filed for 2019–20 (year 2020) equals the total "
+            "proposed levy with exclusions included, so that year's gap may reflect "
+            "how the figure was reported and not a levy 6% under the cap."
         )
     )
 )
 ```
 
-Cambridge sat **at or just under** its levy limit in every year from 2014–15
-through 2025–26 — proposing, in most years, a levy equal to the maximum allowed
-under the cap. For **2026–27** it proposed a levy about **$1.1 million (≈12%)
-over** the limit; even after roughly $0.6 million of permissible exclusions,
-roughly **$0.5 million remains over the cap**, which would require a 60%
-supermajority to pass.
+Cambridge was **at or under** its levy limit in every year from 2014–15 through
+2025–26. In nine of those twelve years its proposed levy was within half a
+percent of the maximum allowed under the cap.
+
+For **2026–27** it proposed a levy about **$1.1 million (about 12%) over** the
+limit. Both figures are measured after taking out roughly $0.6 million of
+permissible exclusions, so the whole $1.1 million was over the cap and the
+budget needed a 60% supermajority to pass. It did not get one. In May 2026 the
+vote was 554 yes and 584 no (48.7% yes). A June revote, on a budget that was
+also over the cap, drew 648 yes and 456 no (58.7% yes) — a majority, but short
+of 60%.
 
 ## How binding is the cap statewide?
 
 ```{python}
 #| label: fig-over-cap-statewide
-#| fig-cap: "Number of New York school districts proposing a tax levy above their levy limit even after permissible exclusions, by school year ending. These are the budgets that require a 60% supermajority. Source: NYSED Property Tax Report Card."
-statewide = (
-    cc.load_ptrc()
-    .with_columns(
-        (pl.col("proposed_tax_levy_wo_exclusions")
-         - pl.col("tax_levy_limit_wo_exclusions")
-         - pl.col("permissible_exclusions")).alias("over_after_excl"),
-    )
-    .group_by("year_end")
-    .agg((pl.col("over_after_excl") > 0).sum().alias("over_cap"))
-    .sort("year_end")
-    .filter(pl.col("year_end") >= 2015)
-)
-
+#| fig-cap: "Number of New York school districts proposing a tax levy above their levy limit, after permissible exclusions, by school year ending. These are the budgets that require a 60% supermajority. Source: NYSED Property Tax Report Card."
 (
     ggplot(statewide, aes("year_end", "over_cap"))
     + geom_col(fill="#2C6E9B", width=0.7)
-    + scale_x_continuous(breaks=list(range(2015, 2028)))
+    + scale_x_continuous(breaks=list(range(FIRST_YEAR, LAST_YEAR + 1)))
     + labs(
         x="School year ending",
         y="Districts over the cap",
-        title="Districts proposing above the tax cap, 2014–15 to 2026–27",
+        title=f"Districts proposing above the tax cap, {SPAN}",
     )
     + cc.theme_ccs()
     + theme(figure_size=(9, 4))
 )
 ```
 
-Each year only a relative handful of New York's roughly 670 districts propose a
-levy above their cap even after exclusions — the budgets that must clear the 60%
-bar. The count runs from the low single digits to the low twenties in a given
-year, and is the pool from which override *failures* (and therefore contingency
+Each year a small share of New York's roughly 670 districts propose a levy
+above their cap after exclusions — the budgets that must clear the 60% bar. The
+count ran from 12 to 36 a year through 2024–25, then rose to 41 for 2025–26 and
+40 for 2026–27, the two highest counts in these years. This is the pool from
+which override *failures* (and therefore contingency
 budgets) can follow. What happens next — pass or fail — is the subject of the
 [Contingency budgets](contingency-budgets.qmd) chapter.
 
 ## A note on reserves
 
 A district facing the cap can draw on **fund balance** — its reserves — to ease
-the squeeze. Cambridge reports an **unrestricted fund balance of about 3–4% of
-its budget** across these years, and in some years uses a **tax-cap reserve**.
-The role of reserves and fund balance in Cambridge's finances is taken up in the
+the squeeze. Cambridge reports an **unrestricted fund balance of between 3% and
+4.6% of its budget** across these years. It reports no use of a tax-cap reserve
+in any of them. The role of reserves and fund balance in Cambridge's finances is taken up in the
 [reserves](reserves.qmd) chapter.
 
 *Source: NYSED Property Tax Report Card, via [`data/processed/property_tax_report_card.parquet`](https://github.com/donboyd5/ccs/blob/main/src/build_ptrc.py). Year = school-year-ending (2027 = 2026–27). The over/under gap is computed as proposed levy − levy limit (both excluding permissible exclusions); the stored `levy_vs_limit` field is not used because NYSED flips its sign at 2016 (see the [Sources](../appendix/sources.qmd) appendix).*
