@@ -2,6 +2,28 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-11-22 — Tax-cap chapter: the over-the-cap test was subtracting exclusions twice (branch `feature/tax-cap-reserves-rework`)
+
+The Property Tax Report Card reports the proposed levy and the levy limit with
+permissible exclusions already taken out. The chapter subtracted the exclusions
+a second time, in two places.
+
+- **Cambridge, 2026-27:** the text said about $0.5 million remained over the cap
+  after exclusions. The whole $1.1 million (about 12% of the limit) was over.
+- **Statewide chart:** it counted about half the districts that were over the
+  cap. Corrected counts run from 12 to 41 a year. The corrected counts match
+  the 60% flag in NYSED's budget-vote files in most years (40 and 40 for
+  2026-27), which is the check that the simple comparison is the right one.
+- **Added, from the vote file:** the May 2026 vote (554 yes, 584 no) and the
+  June revote (648 yes, 456 no; 58.7%, short of the 60% required).
+- **Removed:** "in some years uses a tax-cap reserve". The report card shows
+  none used in any year.
+- **Noted in the table:** the 2019-20 limit as filed equals the total proposed
+  levy with exclusions included, so that year's 6% gap is probably a reporting
+  difference.
+- **Not adjusted for inflation,** on purpose: the chapter compares two amounts
+  within the same year, and there is no price index yet for 2026-27.
+
 ## 2026-11-22 — Class size and Property taxes chapters brought up to date (branch `feature/class-size-rework`)
 
 Same pattern as Enrollment: years, numbers, charts and tables updated; each
