@@ -1,8 +1,8 @@
 # Student test results
 
-**On New York's grades 3–8 English Language Arts (ELA) and Mathematics tests, Cambridge's proficiency rates — the share of students scoring at or above grade level — are generally in the middle of nearby districts.** In 2023–24 (the most recent pre-Next-Generation year with normal participation), about 46% of Cambridge students tested proficient in ELA and 49% in Math, compared to statewide averages of roughly 48% and 51% respectively.
+**On New York's grades 3–8 English Language Arts (ELA) and Mathematics tests, Cambridge's proficiency rates — the share of students scoring at or above grade level — were at or above the middle of the five districts shown here in most years through 2021–22. Since the tests changed in 2022–23, Cambridge's ELA rate has been the lowest or second-lowest of the five.** In 2023–24, about 41% of Cambridge students tested proficient in ELA and 53% in Math, compared with statewide rates of about 46% and 54%.
 
-These results come from New York's **Report Card Database**, which reports test results for every district. The chart below shows how Cambridge's ELA proficiency rate has changed since 2015–16, alongside nearby districts for context.
+These results come from New York's **Report Card Database**, which reports test results for every district. The chart below shows how Cambridge's ELA proficiency rate has changed since 2014–15, alongside nearby districts for context.
 
 ```{python}
 #| label: setup
@@ -42,6 +42,19 @@ PROCESSED_DIR = REPO_ROOT / "data" / "processed"
 # Load assessments panel
 assessments = pl.read_parquet(PROCESSED_DIR / "assessments_em_ela_math.parquet")
 
+# Last school year (ending) shown on this page. The panel also holds 2025-26
+# (year_end 2026), released by NYSED in November 2026; it is held back until the
+# chapter is reworked. Raising this number requires rereading every sentence
+# below: the checks at the end of this cell fail if the prose no longer matches.
+LAST_YEAR_SHOWN = 2025
+assessments = assessments.filter(pl.col("year_end") <= LAST_YEAR_SHOWN)
+
+
+def year_label(year_end: int) -> str:
+    """2024 -> '2023–24'."""
+    return f"{year_end - 1}–{str(year_end)[2:]}"
+
+
 # Helper: proficiency rate for group (All Students, grades 3-8 aggregate)
 def proficiency_for(group: dict[str, str], subject: str) -> pl.DataFrame:
     """Proficiency rate (pct_prof) for All Students, grades 3-8, by district-year."""
@@ -55,6 +68,8 @@ def proficiency_for(group: dict[str, str], subject: str) -> pl.DataFrame:
             & (pl.col("subgroup") == "All Students")
             & (pl.col("grade") == "3-8")
             & (pl.col("subject") == subject)
+            # NYSED does not publish the grades 3-8 total for every district-year
+            & pl.col("pct_prof").is_not_null()
         )
         .with_columns(
             pl.col("nysed_district_cd").replace_strict(group).alias("district"),
@@ -63,11 +78,54 @@ def proficiency_for(group: dict[str, str], subject: str) -> pl.DataFrame:
         .select("district", "region", "year_end", "pct_prof")
         .sort("district", "year_end")
     )
+
+
+def statewide(subject: str, year_end: int) -> float:
+    return assessments.filter(
+        (pl.col("entity_level") == "state")
+        & (pl.col("subgroup") == "All Students")
+        & (pl.col("grade") == "3-8")
+        & (pl.col("subject") == subject)
+        & (pl.col("year_end") == year_end)
+    )["pct_prof"].item()
+
+
+# --- Checks: the numbers written out in the prose must match the data. --------
+def _rate(subject: str, district: str, year_end: int) -> float:
+    g = proficiency_for(cc.GRAPH_GROUP, subject)
+    return g.filter(
+        (pl.col("district") == district) & (pl.col("year_end") == year_end)
+    )["pct_prof"].item()
+
+
+def _rank(subject: str, year_end: int) -> tuple[int, int]:
+    """(Cambridge's rank from the top, number of districts with a rate)."""
+    g = proficiency_for(cc.GRAPH_GROUP, subject).filter(pl.col("year_end") == year_end)
+    mine = g.filter(pl.col("district") == cc.FOCUS)["pct_prof"].item()
+    return int((g["pct_prof"] > mine).sum()) + 1, g.height
+
+
+_years = sorted(proficiency_for(cc.GRAPH_GROUP, "ELA")["year_end"].unique())
+assert (_years[0], _years[-1]) == (2015, 2025), _years
+assert 2020 not in _years
+assert round(_rate("ELA", cc.FOCUS, 2024), 1) == 41.1
+assert round(_rate("Math", cc.FOCUS, 2024), 1) == 53.2
+assert round(statewide("ELA", 2024), 1) == 46.3
+assert round(statewide("Math", 2024), 1) == 54.3
+# ELA: at or above the middle (rank <= 3 of 5) through 2021-22 ...
+assert all(_rank("ELA", y)[0] <= 3 for y in _years if y <= 2022)
+# ... and lowest or second-lowest of five since 2022-23.
+assert all(_rank("ELA", y) in [(4, 5), (5, 5)] for y in _years if y >= 2023)
+# 2023-24: ELA lowest of five; Math fourth of five; Schuylerville highest in both.
+assert _rank("ELA", 2024) == (5, 5) and _rank("Math", 2024) == (4, 5)
+for _s in ("ELA", "Math"):
+    _g = proficiency_for(cc.GRAPH_GROUP, _s).filter(pl.col("year_end") == 2024)
+    assert _g.sort("pct_prof", descending=True)["district"][0] == "Schuylerville"
 ```
 
 ```{python}
 #| label: fig-ela-proficiency
-#| fig-cap: "Percent of students at/above proficiency on grades 3–8 ELA tests, by school year ending, 2016 (2015–16) through 2024 (2023–24). Tests were cancelled in 2020; 2021 reflects about half participation. Results are comparable within three eras (see text). Source: NYSED Report Card Database."
+#| fig-cap: "Percent of students at/above proficiency on grades 3–8 ELA tests, by school year ending, 2015 (2014–15) through 2025 (2024–25). Tests were cancelled in 2020; in 2021 about half as many students statewide took the tests as in 2019. Results are comparable within three eras (see text). Source: NYSED Report Card Database."
 g = proficiency_for(cc.GRAPH_GROUP, "ELA")
 cambridge = g.filter(pl.col("district") == cc.FOCUS)
 
@@ -79,23 +137,26 @@ cambridge = g.filter(pl.col("district") == cc.FOCUS)
     + scale_color_manual(
         values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
     )
-    + scale_x_continuous(breaks=list(range(2016, 2025)))
+    + scale_x_continuous(breaks=sorted(g["year_end"].unique()))
     + labs(
         x="School year ending",
         y="Percent proficient",
-        title="Grades 3–8 ELA proficiency, 2015–16 to 2023–24",
+        title=(
+            f"Grades 3–8 ELA proficiency, "
+            f"{year_label(g['year_end'].min())} to {year_label(g['year_end'].max())}"
+        ),
     )
     + cc.theme_ccs()
 )
 ```
 
-Cambridge's ELA proficiency rate has fluctuated, as have all districts'. The sharp dip in 2020–21 reflects pandemic disruption — only about half of students participated that year, so the rate is not representative. Tests were cancelled entirely in spring 2020.
+Cambridge's ELA proficiency rate has fluctuated, as have all districts'. The 2020–21 rates are not representative. Tests were cancelled entirely in spring 2020, and in spring 2021 only about half as many students statewide took them as in 2019. Several districts' rates that year are unusually high.
 
 The Math proficiency picture is similar:
 
 ```{python}
 #| label: fig-math-proficiency
-#| fig-cap: "Percent of students at/above proficiency on grades 3–8 Math tests, by school year ending, 2016 (2015–16) through 2024 (2023–24). Source: NYSED Report Card Database."
+#| fig-cap: "Percent of students at/above proficiency on grades 3–8 Math tests, by school year ending, 2015 (2014–15) through 2025 (2024–25). A missing point means NYSED did not publish a grades 3–8 Math total for that district in that year. Source: NYSED Report Card Database."
 g = proficiency_for(cc.GRAPH_GROUP, "Math")
 cambridge = g.filter(pl.col("district") == cc.FOCUS)
 
@@ -107,17 +168,20 @@ cambridge = g.filter(pl.col("district") == cc.FOCUS)
     + scale_color_manual(
         values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
     )
-    + scale_x_continuous(breaks=list(range(2016, 2025)))
+    + scale_x_continuous(breaks=sorted(g["year_end"].unique()))
     + labs(
         x="School year ending",
         y="Percent proficient",
-        title="Grades 3–8 Math proficiency, 2015–16 to 2023–24",
+        title=(
+            f"Grades 3–8 Math proficiency, "
+            f"{year_label(g['year_end'].min())} to {year_label(g['year_end'].max())}"
+        ),
     )
     + cc.theme_ccs()
 )
 ```
 
-Math proficiency rates show more year-to-year volatility than ELA, which is typical. Cambridge's rates are generally middle of the pack — below Schuylerville and often Greenwich in both subjects, but above Salem in many years.
+The Math chart has gaps: from 2017–18 through 2024–25, NYSED did not publish a grades 3–8 Math total for some districts in some years, including Cambridge in 2021–22. Where both rates are published, Cambridge has been below Schuylerville in every year since 2015–16. It has been above Greenwich and Salem in some years and below them in others.
 
 ## Why scores don't compare across all years
 
@@ -129,11 +193,11 @@ New York has **redesigned the tests and changed the passing standards twice** in
 
 A change in the proficiency rate *across* one of these boundaries reflects the new standard as much as any change in student learning. For example, the 2017→2018 jump for many districts is largely due to the redesign, not a sudden improvement in student skills.
 
-**2020–21 is an outlier:** Tests were cancelled in spring 2020. In 2021, only about half of students participated (many families opted out), so the 2021 rates are not representative and should be read with caution.
+**2020–21 is an outlier:** Tests were cancelled in spring 2020. In 2021, only about half as many students statewide took the tests as in 2019, so the 2021 rates are not representative and should be read with caution.
 
-## How Cambridge compares: most recent normal year
+## How Cambridge compares: 2023–24
 
-The table below shows where each district stood in 2023–24, the most recent year before the Next Generation era. (Next Generation results from 2024–25 will become available later in 2025.)
+The table below shows where each district stood in 2023–24, the second year of the Next Generation tests. It is the most recent year shown on this page for which NYSED published both rates for all five districts. Results for 2025–26, which NYSED released in November 2026, are not yet included on this page.
 
 ```{python}
 #| label: tbl-proficiency-2024
@@ -142,8 +206,13 @@ g_ela = proficiency_for(cc.GRAPH_GROUP, "ELA").filter(pl.col("year_end") == 2024
 g_math = proficiency_for(cc.GRAPH_GROUP, "Math").filter(pl.col("year_end") == 2024)
 
 wide = (
-    g_ela.join(g_math, on=["district", "region"], suffix="_ela_math")
-    .rename({"pct_prof": "pct_prof_math", "pct_prof_ela_math": "pct_prof_ela"})
+    g_ela.select("district", "region", pct_prof_ela="pct_prof")
+    .join(
+        g_math.select("district", "region", pct_prof_math="pct_prof"),
+        on=["district", "region"],
+        how="full",
+        coalesce=True,
+    )
     .with_columns(
         pl.when(pl.col("region") == "Washington County").then(0).otherwise(1).alias("_rank")
     )
@@ -157,7 +226,8 @@ wide = (
         title="Grades 3–8 proficiency, 2023–24",
         subtitle="Percent of students at/above proficiency (All Students)"
     )
-    .fmt_percent(columns=["pct_prof_ela", "pct_prof_math"], decimals=1)
+    # values are already in percent (41.1 means 41.1%), so do not rescale
+    .fmt_number(columns=["pct_prof_ela", "pct_prof_math"], decimals=1, pattern="{x}%")
     .tab_spanner(label="Percent proficient", columns=["pct_prof_ela", "pct_prof_math"])
     .cols_label(pct_prof_ela="ELA", pct_prof_math="Math")
     .tab_style(
@@ -169,22 +239,29 @@ wide = (
     )
     .tab_source_note(
         md(
-            "**Source:** NYSED Report Card Database. Results are for the "
-            "2018–2022 redesign era; Next Generation results (2023–25) are "
-            "not yet comparable. 2024 = school-year-ending 2023–24."
+            "**Source:** NYSED Report Card Database. School year 2023–24 "
+            "(tests given in spring 2024), the second year of the Next "
+            "Generation tests."
         )
     )
 )
 ```
 
-In 2023–24, Cambridge's ELA proficiency (45.6%) was slightly below the group's rough average, while its Math proficiency (48.5%) was closer to the middle. Schuylerville tends to lead the group in both subjects, while Salem trails — patterns that hold across most years.
+In 2023–24, Cambridge's ELA proficiency rate (41.1%) was the lowest of the five districts, and its Math rate (53.2%) was fourth, above Hoosick Falls. Schuylerville had the highest rate in both subjects.
+
+<!--
+HIDDEN 2026-11-22, pending the test-results discussion. The data do not support
+several statements below: Cambridge's ELA rate has been lowest or second-lowest
+of the five districts in every year since 2022-23, so "middle of the pack" and
+"held steady" no longer describe it. Original text kept here for that discussion.
 
 ## What this means
 
 Test scores are one measure of how a school system is serving its students. Cambridge's scores are generally **middle of the pack** — not the highest, not the lowest, and tracking with regional trends. The district's smaller class size and lower students-per-teacher ratio (see the [Class size](class-size.qmd) chapter) don't show up as dramatically higher test scores, which is consistent with national research: smaller classes help, but many other factors shape student achievement.
 
 The enrollment decline documented in the [Enrollment](enrollment.qmd) chapter doesn't appear to have hurt outcomes — Cambridge's scores have held steady while the student body shrank. That's a positive sign for the district's educational quality.
+-->
 
 *For additional subgroup breakdowns, grade-level detail, or comparison to statewide benchmarks, see the full panel in `data/processed/assessments_em_ela_math.parquet`. The exploratory versions of these chapters, when developed, will provide deeper analysis.*
 
-*Data source:* NYSED Report Card Database, ten years (2015–16 through 2024–25), stitched into one district-by-year panel. Raw data: `data/raw/nysed_report_card/zips/` (SRC{YEAR}.zip, ~3.3 GB total, git-ignored).
+*Data source:* NYSED Report Card Database, school years 2014–15 through 2024–25 (no tests in 2019–20), stitched into one district-by-year panel. Raw data: `data/raw/nysed_report_card/zips/` (SRC{YEAR}.zip, ~3.3 GB total, git-ignored).

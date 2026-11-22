@@ -2,6 +2,38 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-11-22 — Test-results page: factual corrections only (branch `feature/test-results-table-fix`)
+
+The published page had a broken table and several statements the data contradict.
+The chapter's content is still parked for discussion, so this change corrects
+facts and makes no new interpretive claims.
+
+- **Table:** rates printed as "5,320.0%" (a percent format applied to values
+  already in percent) and the ELA and Math columns were swapped. Fixed.
+- **Numbers and statements corrected to match the data:** the 2023-24 Cambridge
+  and statewide rates; 2023-24 described as "pre-Next-Generation" (it is the
+  second Next Generation year); a "sharp dip" in 2020-21 ELA (rates that year
+  were unusually high); chart titles and axis labels that named the wrong years.
+- **The lead no longer says Cambridge is "generally in the middle".** Among the
+  five districts, Cambridge's ELA rate was at or above the middle every year
+  through 2021-22 and has been lowest or second-lowest every year since 2022-23.
+- **"What this means" is hidden** (kept in the source as a comment). It said
+  scores were "middle of the pack" and had "held steady", which the data no
+  longer support. Interpretation is the user's to write.
+- **The page stops at 2024-25** (`LAST_YEAR_SHOWN = 2025`) and says that 2025-26
+  results exist but are not yet shown. Whether and how to show them, including
+  NYSED's estimated rows, belongs to the parked discussion.
+- **Guard added:** the setup cell asserts every number and ranking written out in
+  the prose against the data, so the page fails to render instead of drifting.
+
+## 2026-11-22 — Scope answers for the first release
+
+From the user: "similar" districts use the tightened rule (has a 12th grade;
+NYSED "High Need: Rural" or "Average Need" only; 149 districts). Contingency
+budgets stays out of the first-release core ("I have more to learn"). Mergers is
+"to come". "To come" chapters appear in the sidebar marked "(to come)" and open
+a short page saying what they will cover.
+
 ## 2026-11-19 — Data refresh ahead of first sharing (branch `feature/data-update-2026`)
 
 The user asked to update all source data before the site is shared. Every source
