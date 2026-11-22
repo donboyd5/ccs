@@ -1,0 +1,7 @@
+# The tax base (to come)
+
+::: {.callout-note appearance="simple"}
+This chapter is planned and not yet written.
+:::
+
+This chapter will describe the property that Cambridge's school taxes fall on: how much is homes, farms, businesses and other property, how its value has changed, and how the tax base per student compares with nearby and similar districts.

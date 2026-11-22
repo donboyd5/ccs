@@ -15,13 +15,13 @@ Years are **school-year-ending** (2025 = 2024–25).
 | Dataset | Publisher | What it provides | Years | Status |
 |---|---|---|---|---|
 | County population & forecast | popfc (NY) + U.S. Census Bureau (VT) | county total population (history + baseline forecast); Washington County components of change | 1970–2050 (NY), 1970–2024 (VT) — **calendar years** | **In use** |
-| Enrollment & staff | NYSED | K-12 enrollment; teacher/staff headcounts; average class size | Enrollment 2005–2025 (staff 2018–2025; class size 2019–2025) | **In use** |
-| Student test results (grades 3-8) | NYSED | grades 3-8 ELA & Math: % at/above proficiency, mean score, by district & subgroup | 2015–2025 (no 2020) | **Adding** |
+| Enrollment & staff | NYSED | K-12 enrollment; teacher/staff headcounts; average class size | Enrollment 2005–2026 (staff 2018–2025; class size 2019–2025) | **In use** |
+| Student test results (grades 3-8) | NYSED | grades 3-8 ELA & Math: % at/above proficiency, mean score, by district & subgroup | 2015–2026 (no 2020) | **Adding** |
 | Pupil–teacher FTE (CCD) | NCES, via Urban Institute | FTE-based pupil-teacher ratio (cross-check) | 2016–2025 | **In use** |
 | School district finance | NYS Comptroller (OSC) | revenue & expenditure by account code → per-pupil spending | 2013–2025 | **In use** |
 | Audited financial reports | Federal Audit Clearinghouse | Cambridge CSD audited statements (PDF) | 2020–2025 | Reference |
 | Property Tax Report Card | NYSED | proposed budget, tax levy, levy limit (the cap), permissible exclusions, fund balances | 2015–2027 | **In use** |
-| School district property taxes | NYS Comptroller (OSC) | tax levy, taxable full value & full-value tax rate, by district × town | 2015–2025 | **Adding** |
+| School district property taxes | NYS Comptroller (OSC) | tax levy, taxable full value & full-value tax rate, by district × town | 2015–2026 | **Adding** |
 | Budget vote results | NYSED | budget vote & re-vote outcomes: defeats, contingency budgets, 60%-above-cap flag | 2012–2025 (vote yr) | **In use** |
 | State school aid | NYS (data.ny.gov `9pb8-dg53`) | state aid by category & district (incl. Foundation Aid — the merger-incentive base) | 1997–2026 | **In use** |
 | Consumer Price Index (CPI-U) | U.S. Bureau of Labor Statistics | monthly price index used to adjust dollars for inflation | 1995–2026 (school-year averages) | **In use** |

@@ -18,6 +18,8 @@ that, the budget must win a **60% supermajority** at the polls — not the usual
 simple majority (50% + 1). Each district's allowable growth for the year, after
 the state's formula, is its **levy limit**.
 
+[CLAUDE: "The lesser of 2% or inflation" is a fair summary, but the formula also adds growth in the tax base and unused room carried over from the prior year. That is why Cambridge's levy rose 2.5% and 3.2% in some years while staying at its limit. One more sentence here would stop a careful reader from thinking the table contradicts the rule.]
+
 There is an important escape valve. Certain costs — growth in the pension
 contribution, spending on capital projects, and some court-ordered payments — can
 be **excluded** from the cap. So a district whose proposed levy is above its base
@@ -233,6 +235,8 @@ vote was 554 yes and 584 no (48.7% yes). A June revote, on a budget that was
 also over the cap, drew 648 yes and 456 no (58.7% yes) — a majority, but short
 of 60%.
 
+[CLAUDE: Two things I cannot tell from the data. (1) Was the June revote on the same levy as the May budget? The vote file says only that it was over the cap. If the board cut the proposal for the revote, this should say by how much. (2) The 2019–20 row shows Cambridge 6% under its limit. The limit as filed that year equals the total levy with exclusions included, so I think it was reported on a different basis. If you know the 2019–20 budget, tell me which reading is right.]
+
 ## How binding is the cap statewide?
 
 ```{python}
@@ -259,6 +263,8 @@ count ran from 12 to 36 a year through 2024–25, then rose to 41 for 2025–26 
 which override *failures* (and therefore contingency
 budgets) can follow. What happens next — pass or fail — is the subject of the
 [Contingency budgets](contingency-budgets.qmd) chapter.
+
+[CLAUDE: You are holding the Contingency budgets chapter back from the first release. A reader who has just learned the budget failed twice will want to know what that means for 2026–27. Two sentences here would cover it: under a contingency budget the levy cannot exceed the prior year's, and certain spending is not allowed. Do you want them here, or nothing until you have learned more?]
 
 ## A note on reserves
 

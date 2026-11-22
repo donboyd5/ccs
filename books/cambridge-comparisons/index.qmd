@@ -15,7 +15,7 @@ import comparisons as cc
 #: The enrollment sentence below is computed from the data so it can't drift.
 #: Change the base year here and the sentence follows.
 ENROLL_BASE_YEAR = 2005
-ENROLL_END_YEAR = 2025
+ENROLL_END_YEAR = 2026
 
 _enr = pl.read_parquet(
     cc.REPO_ROOT / "data" / "processed" / "enrollment_k12_by_district.parquet"
@@ -24,7 +24,7 @@ _enr = pl.read_parquet(
 
 **Cambridge Central School District** (CCS, Washington County, New York) faces challenges common among rural school districts:
 
-- **Small size:** There are Small districts has pros and cons.
+- **Small size:** Small districts have some advantages - more personalized attention is possible, for example. But districts that are extremely small have disadvantages. It can be difficult or expensive to offer a broad set of courses. In high school, if a district only has 50 students in its graduating class it might have only a few students interested in courses such as AP physics or literature. It may not have enough need to hire a full-time teacher for the subject, and it may not be practical to hire a part-time teacher.
 
 - **Declining area population:** Washington County's population is declining. More families are moving out than in, international immigration has come to a standstill, and birth rates are falling here as they are throughout the nation. The county's population will continue to decline for the foreseeable future. Economic development efforts may reduce net outmigration but are unlikely to prevent overall population declines.
 
@@ -48,8 +48,9 @@ K12_BASE, K12_END, K12_PCT = _endpoints("k12_enrollment")
 G12_BASE, G12_END, G12_PCT = _endpoints("12")
 
 print(
-    f"- **Declining student enrollment:** Between {ENROLL_BASE_YEAR} and "
-    f"{ENROLL_END_YEAR}, CCS K-12 enrollment declined {abs(K12_PCT):.1f}%, from "
+    f"- **Declining student enrollment:** Between "
+    f"{cc.school_year_label(ENROLL_BASE_YEAR)} and "
+    f"{cc.school_year_label(ENROLL_END_YEAR)}, CCS K-12 enrollment declined {abs(K12_PCT):.1f}%, from "
     f"{K12_BASE:,.0f} to {K12_END:,.0f} students. Twelfth grade enrollment "
     f"declined {abs(G12_PCT):.1f}% from {G12_BASE:,.0f} to {G12_END:,.0f} students."
 )
@@ -62,6 +63,8 @@ print(
 - **Declining enrollment creates financial problems:**
 
   -
+
+[CLAUDE: This bullet is empty, and the one above it ends in a fragment ("AP physics."). Below this point the older introduction ("This website looks at…") still follows your new one, so the page has two openings. When you fill the financial bullet, the finance chapters support this: from 2015–16 to 2024–25 Cambridge's total operating spending fell about 4% after inflation while enrollment fell 14%, so spending per pupil rose 12%. They do not support "less state aid" or "a smaller tax base": Foundation Aid rose 28% in dollars and the tax base grew 61%. The enrollment sentence above is computed from the data and now runs to 2025–26.]
 
 This website looks at the **Cambridge Central School District** (Cambridge CSD, Washington County, New York) alongside nearby districts, using public data from the New York State Education Department (NYSED) and selected other sources. It is one of several analyses in the [`ccs`](https://github.com/donboyd5/ccs) project; the aim is to put Cambridge's numbers in context rather than to view them in isolation.
 

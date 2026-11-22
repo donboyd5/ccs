@@ -1,4 +1,4 @@
-# Students per teacher
+# Class size and students per teacher: all measures
 
 A natural question is how crowded Cambridge's classrooms are compared with
 nearby districts. The measure most people picture is **class size** — the number

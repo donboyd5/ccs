@@ -13,17 +13,25 @@ book:
       chapters:
         - front/demographics.qmd
         - front/enrollment.qmd
-        - front/class-size.qmd
+        - front/students-per-teacher.qmd
+    # Chapters marked "(to come)" are short placeholder pages. The drafts of
+    # Contingency budgets, Test results and Mergers are kept in _drafts/ (Quarto
+    # ignores folders that start with an underscore). To restore one, move it
+    # back to front/ over its placeholder.
     - part: "CCS finances"
       chapters:
         - front/spending.qmd
         - front/taxes.qmd
         - front/tax-cap.qmd
         - front/reserves.qmd
+        - front/state-aid.qmd
+        - front/tax-base.qmd
+        - front/staffing-salaries.qmd
         - front/contingency-budgets.qmd
     - part: "Academic performance"
       chapters:
         - front/test-results.qmd
+        - front/graduation-regents.qmd
     - part: "Options"
       chapters:
         - front/mergers.qmd

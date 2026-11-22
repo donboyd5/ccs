@@ -25,7 +25,7 @@ that purpose. A New York school district's main reserve funds are:
 | Reserve fund | Account code | Legal basis | Purpose |
 |---|---|---|---|
 | Capital reserve | A878 | Education Law §3651 | Cost of items for which bonds may be issued (requires voter approval) |
-| Tax certiorari reserve | A864 | General Municipal Law §3651.1-a | Property-tax refund judgments (mandatory; capped at anticipated claims) |
+| Tax certiorari reserve | A864 | Education Law §3651(1-a) | Property-tax refund judgments (mandatory; capped at anticipated claims) |
 | Retirement contribution reserve (ERS / TRS) | A827 / A828 | General Municipal Law §6-r | Pension contributions to the state retirement systems |
 | Employee benefit accrued liability reserve | A867 | General Municipal Law §6-p | Accrued employee benefits payable on termination |
 | Insurance reserve | A863 | General Municipal Law §6-m | Liability, property, and casualty deductibles/losses |
@@ -51,9 +51,10 @@ caps.
 
 ## The 4% cap
 
-New York's property-tax-cap law (Real Property Tax Law §2-c / Education Law
-§2023-a) limits a school district's **unassigned (unexpended-surplus) fund
-balance** to **4% of the prior year's budget**. This is the measure NYSED reports
+New York's Real Property Tax Law (§1318) limits a school district's **unassigned
+(unexpended-surplus) fund balance** to **4% of the coming year's budget**. Any
+surplus above that must be used to reduce the tax levy or placed in a reserve
+fund the law allows. This is the measure NYSED reports
 in the Property Tax Report Card as `fund_balance_unrestricted_pct_of_budget`.
 
 The cap applies **only to the unassigned balance**, not to the restricted reserve
@@ -61,7 +62,9 @@ funds. That is why a district with substantial capital, retirement, or tax-
 certiorari reserves is not "over the cap" — those are restricted for their
 purposes. The 4% rule constrains only the flexible money a district can keep on
 hand.^[The cap on the property-tax *levy* itself is a separate rule, covered in
-the Taxes chapter and the contingency-budgets chapter.]
+the [Tax cap](tax-cap.qmd) chapter.]
+
+[CLAUDE: I corrected legal citations in this chapter. The 4% limit was attributed to the property-tax-cap law; it is Real Property Tax Law §1318, an older and separate rule, and the 4% is of the coming year's budget, not the prior year's. The tax certiorari reserve is under Education Law §3651(1-a), not General Municipal Law. I checked the first against Comptroller audit reports. I have not checked the other citations in the table above; I believe the insurance reserve is General Municipal Law §6-n (the table says §6-m), unemployment is §6-m, workers' compensation is §6-j, and the repair reserve's account code is A882. Someone should verify these against the statutes before the chapter is shared.]
 
 ## Why districts build specific reserves
 
@@ -70,11 +73,12 @@ unpredictable cost** the district is legally required to pay — smoothing a bil
 that would otherwise hit the budget all at once. The clearest example is the
 **retirement reserve**. A district's pension cost depends on an annually-set
 employer contribution rate that swings widely: NYSTRS's teachers'-system rate has
-ranged from roughly **6% to 17.5% of payroll** since 2014-15 (it was **16.25% for
-2023-24**, for example).^[NYSTRS employer contribution rate history,
-<https://www.nystrs.org/employers/employer-contribution-rate/>. The rate is
-smoothed over several years of investment returns, so market shocks feed in
-slowly — hence the run-up to 16.25% after the 2022 market decline.] By
+ranged from roughly **9% to 17.5% of payroll** since 2014-15 (it was **17.53% for
+2014-15** and **9.76% for 2023-24**, for example).^[NYSTRS employer contribution
+rate history, <https://www.nystrs.org/employers/employer-contribution-rate/>. The
+rate is smoothed over several years of investment returns, so market shocks feed
+in slowly. It fell from 17.53% for 2014-15 to 8.86% for 2019-20 and has been
+about 10% since.] By
 contributing to the reserve in lower-rate years, a district builds a cushion it
 can draw on when the rate spikes — instead of cutting programs or sharply raising
 taxes that year. The same logic runs through the other reserves: each earmarks
@@ -111,7 +115,7 @@ extra rules (from the chart of accounts and Cambridge's audited reports):
 
 - **Capital reserve (Education Law §3651):** both establishing it *and* every
   expenditure from it require voter approval by proposition.
-- **Tax certiorari reserve (General Municipal Law §3651.1-a):** mandatory to fund;
+- **Tax certiorari reserve (Education Law §3651(1-a)):** mandatory to fund;
   the balance may not exceed anticipated judgments and claims, and any unused
   amount must be returned to the General Fund by the first day of the fourth
   fiscal year after deposit. (Cambridge was flagged in 2024-25 for over-funding
@@ -170,6 +174,78 @@ RESERVE_CODES = {
     "A878": "Capital reserve",
     "A884": "Reserve for debt",
 }
+
+# The Comptroller's 2025-26 figures are a first release and preliminary, so the
+# Cambridge table stops at 2024-25 (as the Spending chapter does).
+RESERVE_TABLE_YEARS = list(range(2013, 2026))
+
+# ---------------------------------------------------------------------------
+# Checks on the statements made in the text of this chapter. If the data
+# change so that a statement is no longer true, the page fails to build
+# instead of quietly showing text that disagrees with its own charts.
+# ---------------------------------------------------------------------------
+_CAM = "64161004"
+_U = "fund_balance_unrestricted_pct_of_budget"
+_ptrc = pl.read_parquet(PTRC_PATH).filter(pl.col("year_end").is_between(2015, 2027))
+
+# Unassigned balance: the median district is at 4% every year; the 75th
+# percentile peaks a little over 6% in 2022-2024; Cambridge is 3% to 4.6%.
+_u = _ptrc.drop_nulls(_U).group_by("year_end").agg(
+    pl.col(_U).median().alias("median"),
+    pl.col(_U).quantile(0.75).alias("p75"),
+    (pl.col(_U) > 4).mean().alias("share_over"),
+).sort("year_end")
+assert _u["median"].round(2).unique().to_list() == [4.0]
+assert 6.0 <= _u["p75"].max() <= 6.5
+_over = dict(zip(_u["year_end"], _u["share_over"]))
+assert _over[2015] < 0.20 and 0.33 <= max(_over.values()) < 0.35
+assert 0.25 <= _over[2027] < 0.30
+_cam_u = _ptrc.filter(pl.col("nysed_district_cd") == _CAM)[_U]
+assert 3.0 <= _cam_u.min() and _cam_u.max() <= 4.6
+
+# Total fund balance as a share of the budget: statewide median about 19% in
+# 2014-15 and about 26% in 2024-25; Cambridge about 11% and 19%, near the 27th
+# percentile in 2024-25.
+_t = _ptrc.with_columns(
+    (
+        pl.col("fund_balance_restricted").fill_null(0)
+        + pl.col("fund_balance_assigned_appropriated").fill_null(0)
+        + pl.col("fund_balance_unrestricted").fill_null(0)
+    ).alias("total_fb")
+).filter(pl.col("proposed_spending") > 0).with_columns(
+    (pl.col("total_fb") / pl.col("proposed_spending") * 100).alias("fb_pct")
+)
+
+
+def _fb(year_end):
+    rows = _t.filter(pl.col("year_end") == year_end)
+    cam = rows.filter(pl.col("nysed_district_cd") == _CAM)["fb_pct"].item()
+    return rows["fb_pct"].median(), cam, (rows["fb_pct"] < cam).mean() * 100
+
+
+assert round(_fb(2015)[0]) == 19 and round(_fb(2025)[0]) == 26
+assert round(_fb(2015)[1]) == 11 and round(_fb(2025)[1]) == 19
+assert 26 <= _fb(2025)[2] <= 29
+
+# Cambridge's reserve balances (Comptroller data), in dollars.
+_fin = pl.read_parquet(CAM_FINANCE_PATH)
+
+
+def _bal(code, year):
+    return _fin.filter(
+        (pl.col("ACCOUNT_CODE") == code) & (pl.col("CALENDAR_YEAR") == year)
+    )["AMOUNT"].sum()
+
+
+assert round(_bal("A8029", 2013) / 1e6, 1) == 2.5 and round(_bal("A8029", 2025) / 1e6, 1) == 5.2
+assert _bal("A878", 2021) == 0 and round(_bal("A878", 2022) / 1e6, 1) == 1.4
+assert round(_bal("A878", 2025)) == 1_105_710
+assert round(_bal("A827", 2025)) == 884_019 and round(_bal("A827", 2013) / 1e3) == 387
+assert round(_bal("A828", 2025)) == 663_060 and _bal("A828", 2020) == 0
+assert abs(_bal("A867", 2025) - 147_207) <= 1  # audit and Comptroller differ by $1
+assert round(_bal("A864", 2025)) == 138_351
+assert _bal("A884", 2023) > 0 and _bal("A884", 2024) == 0
+assert all(0.95e6 <= _bal("A917", y) <= 1.2e6 for y in range(2022, 2026))
 ```
 
 **Most New York districts hold their unassigned fund balance right at the 4%
@@ -221,8 +297,9 @@ cam = (
 The **median district reports exactly 4% every year** — the cap binds, and
 districts keep the maximum flexible balance the law allows. A meaningful tail
 sits above 4% in some years (the top of the band reaches about 6% in the early
-2020s), and roughly **a quarter to a third of districts report over 4%** in a
-given year. **Cambridge tracks right at the cap** (about 3–4.6%), a typical
+2020s). The share of districts reporting **over 4%** rose from under a fifth in
+2014–15 to about a third in the early 2020s, and was about a quarter for
+2026–27. **Cambridge tracks right at the cap** (about 3–4.6%), a typical
 position.
 
 ## Total reserves vs. other districts
@@ -289,7 +366,7 @@ modest**.
 #| label: tbl-cambridge-reserves
 #| tbl-cap: "Cambridge Central School District reserve fund balances by type, school years ending 2013–2025, in thousands of dollars. Source: NYS Comptroller school-district finance data (ST-3 account codes A8xx). Blank = reserve not held that year."
 fin = pl.read_parquet(CAM_FINANCE_PATH)
-years = list(range(2013, 2026))
+years = RESERVE_TABLE_YEARS
 
 
 def _amt(code: str, year: int):
@@ -346,8 +423,8 @@ Cambridge's reserves have **grown and diversified** over the decade:
   in 2012–13 to $5.2 million in 2024–25**.
 - The district **added reserves it previously did not hold** — a **TRS
   (teachers') retirement** reserve from 2020–21, an **employee-benefit accrued
-  liability** reserve, and a substantial **capital reserve** (~$1.1 million) from
-  2021–22.
+  liability** reserve, and a substantial **capital reserve** from 2021–22 (about $1.4
+  million at first, $1.1 million in 2024–25).
 - The **ERS retirement** reserve roughly doubled (to ~$884,000 in 2024–25); the
   **reserve for debt** was drawn down to zero as debt retired.
 - The **unassigned, 4%-capped** balance — the flexible part — has been about
@@ -377,8 +454,8 @@ the capital reserve** and **$200,119 from the employee-benefit reserve**.
 The audits flagged two reserve-related items, both since corrected:
 
 - **Tax-certiorari reserve over-funding (finding 2024-002).** The reserve
-  exceeded the amount of anticipated tax-certiorari claims. General Municipal Law
-  §3651.1-a caps this reserve at anticipated judgments and refunds, and any
+  exceeded the amount of anticipated tax-certiorari claims. Education Law
+  §3651(1-a) caps this reserve at anticipated judgments and refunds, and any
   unused balance must be returned to the General Fund. Cambridge corrected the
   over-funding.
 - A **capital-assets / net-debt** presentation issue (finding 2024-001, also
@@ -388,6 +465,8 @@ The audits flagged two reserve-related items, both since corrected:
 Taken together, Cambridge's reserves are healthy and growing, concentrated in
 restricted funds tied to specific future costs (capital projects, pensions),
 while its flexible unassigned balance is held at the legal 4% ceiling.
+
+[CLAUDE: "Healthy" is a judgment, and it sits oddly with this chapter's own finding that Cambridge's total fund balance is "comparatively modest", around the 27th percentile statewide. I would state the two facts and let the reader judge: the balance has roughly doubled, and it is still smaller relative to the budget than in about three-quarters of districts. Also: the table stops at 2024–25. The Comptroller's first figures for 2025–26 show a total balance of $6.9 million, up from $5.2 million, with the capital reserve at $1.9 million. They are preliminary and I have left them out, as in the Spending chapter. One more thing a reader will ask after the budget defeat: how much of this could be used in 2026–27 under a contingency budget? The chapter does not say.]
 
 *Sources: OSC [Accounting & Reporting Manual](https://www.osc.ny.gov/files/local-government/publications/pdf/accounting-and-reporting-manual-for-school-districts.pdf)
 (chart of accounts); NYSED Property Tax Report Card; NYS Comptroller school-

@@ -166,4 +166,6 @@ where it started — near the top in 2015–16 — and where it remains in 2024�
 Whether that level is sustainable as enrollment falls is taken up in the
 [Taxes](taxes.qmd) chapter.
 
+[CLAUDE: The chapter shows only spending per pupil. Total operating spending tells a different story: it rose from $18.1 million in 2015–16 to $23.1 million in 2024–25, up 28%, while prices rose 33%. So the total fell about 4% after inflation. Spending per pupil rose 12% because enrollment fell 14%. I would add the total next to the per-pupil figure. Do you agree? Also, the Taxes chapter does not take up whether the level is "sustainable", so this last sentence promises something the site does not deliver.]
+
 *For the same figures before adjusting for inflation, and for all twelve comparison districts, see the exploratory [Spending](../exploratory/spending.qmd) chapter.*
