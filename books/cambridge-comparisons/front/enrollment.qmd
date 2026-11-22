@@ -1,6 +1,6 @@
 # Enrollment is declining
 
-**Cambridge has fewer students than it used to — about 124 fewer K-12 students in 2024–25 than in 2015–16, a decline of roughly 14%.**
+**Cambridge has fewer students than it used to — 152 fewer K-12 students in 2025–26 than in 2015–16, a decline of roughly 18%.**
 
 Fewer students mean:
 
@@ -35,16 +35,61 @@ from plotnine import (
 from great_tables import GT, loc, md, style
 
 import comparisons as cc
+
+# Years shown: ten school years apart.
+FIRST_YEAR, LAST_YEAR = 2016, 2026
+def _school_year(year_end: int) -> str:
+    """2026 -> '2025–26'."""
+    return f"{year_end - 1}–{str(year_end)[2:]}"
+
+
+SPAN = f"{_school_year(FIRST_YEAR)} to {_school_year(LAST_YEAR)}"
+
+enr = (
+    cc.panel_for(cc.GRAPH_GROUP, since=FIRST_YEAR)
+    .filter(pl.col("year_end") <= LAST_YEAR)
+    .select("district", "region", "year_end", "k12_enrollment")
+    .drop_nulls()
+)
+
+# --- Checks: the numbers written out in the prose must match the data. --------
+assert (enr["year_end"].min(), enr["year_end"].max()) == (FIRST_YEAR, LAST_YEAR)
+assert enr.group_by("district").len()["len"].unique().to_list() == [LAST_YEAR - FIRST_YEAR + 1]
+
+
+def _n(district: str, year_end: int) -> int:
+    return int(
+        enr.filter((pl.col("district") == district) & (pl.col("year_end") == year_end))[
+            "k12_enrollment"
+        ].item()
+    )
+
+
+_chg = {d: _n(d, LAST_YEAR) - _n(d, FIRST_YEAR) for d in cc.GRAPH_GROUP.values()}
+_pct = {d: round(_chg[d] / _n(d, FIRST_YEAR) * 100) for d in _chg}
+assert (_chg["Cambridge"], _pct["Cambridge"]) == (-152, -18)
+assert (_chg["Schuylerville"], _pct["Schuylerville"]) == (-359, -22)
+assert (_chg["Greenwich"], _pct["Greenwich"]) == (-232, -22)
+assert _chg["Salem"] > -10 and _chg["Hoosick Falls"] > -60  # "closer to flat"
+# Cambridge's decline is third-largest of the five, by count and by percent.
+assert sorted(_chg, key=_chg.get).index("Cambridge") == 2
+_exact = {d: _chg[d] / _n(d, FIRST_YEAR) for d in _chg}
+assert sorted(_exact, key=_exact.get).index("Cambridge") == 2
+assert (_n("Schuylerville", FIRST_YEAR), _n("Salem", FIRST_YEAR)) == (1645, 512)
+# 2020-21: four of the five lost students (Salem did not); only Cambridge had
+# more students the next year; none of the four later regained its 2019-20 level.
+_lost = [d for d in _chg if _n(d, 2021) < _n(d, 2020)]
+assert sorted(_lost) == ["Cambridge", "Greenwich", "Hoosick Falls", "Schuylerville"]
+assert [d for d in _lost if _n(d, 2022) > _n(d, 2021)] == ["Cambridge"]
+assert all(
+    max(_n(d, y) for y in range(2021, LAST_YEAR + 1)) < _n(d, 2020) for d in _lost
+)
 ```
 
 ```{python}
 #| label: fig-enrollment
-#| fig-cap: "K–12 enrollment by school year ending, 2016 (2015–16) through 2025 (2024–25). Source: NYSED BEDS Day enrollment (first Wednesday of October)."
-g = (
-    cc.panel_for(cc.GRAPH_GROUP, since=2016)
-    .select("district", "year_end", "k12_enrollment")
-    .drop_nulls()
-)
+#| fig-cap: "K–12 enrollment by school year ending, 2016 (2015–16) through 2026 (2025–26). Source: NYSED BEDS Day enrollment (first Wednesday of October)."
+g = enr.select("district", "year_end", "k12_enrollment")
 cambridge = g.filter(pl.col("district") == cc.FOCUS)
 
 (
@@ -55,12 +100,12 @@ cambridge = g.filter(pl.col("district") == cc.FOCUS)
     + scale_color_manual(
         values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
     )
-    + scale_x_continuous(breaks=list(range(2016, 2026)))
+    + scale_x_continuous(breaks=list(range(FIRST_YEAR, LAST_YEAR + 1)))
     + scale_y_continuous(limits=(450, 1400), breaks=list(range(500, 1401, 200)))
     + labs(
         x="School year ending",
         y="K–12 enrollment",
-        title="K-12 enrollment, 2015–16 to 2024–25",
+        title=f"K-12 enrollment, {SPAN}",
     )
     + cc.theme_ccs()
 )
@@ -71,14 +116,10 @@ The districts differ greatly in size, which is why the chart above clips Schuyle
 ```{python}
 #| label: fig-enrollment-indexed
 #| fig-cap: "K–12 enrollment indexed to 2016 (= 100); 90 means a 10% decline. Dashed line marks the 2016 baseline. Source: NYSED BEDS Day enrollment."
-g = (
-    cc.panel_for(cc.GRAPH_GROUP, since=2016)
-    .select("district", "year_end", "k12_enrollment")
-    .drop_nulls()
-)
+g = enr.select("district", "year_end", "k12_enrollment")
 # set each district's 2016 enrollment equal to 100
 base = (
-    g.filter(pl.col("year_end") == 2016)
+    g.filter(pl.col("year_end") == FIRST_YEAR)
     .select("district", "k12_enrollment")
     .rename({"k12_enrollment": "base_2016"})
 )
@@ -96,7 +137,7 @@ cambridge = idx.filter(pl.col("district") == cc.FOCUS)
     + scale_color_manual(
         values=cc.PALETTE, name="", limits=cc.district_order(cc.GRAPH_GROUP)
     )
-    + scale_x_continuous(breaks=list(range(2016, 2026)))
+    + scale_x_continuous(breaks=list(range(FIRST_YEAR, LAST_YEAR + 1)))
     + scale_y_continuous(limits=(75, 110), breaks=list(range(75, 111, 5)))
     + labs(
         x="School year ending",
@@ -107,16 +148,14 @@ cambridge = idx.filter(pl.col("district") == cc.FOCUS)
 )
 ```
 
-Cambridge's enrollment decline is real, but it is not alone. **The trend is regional.** Schuylerville and Greenwich have seen larger absolute losses (327 and 219 students respectively), while Hoosick Falls and Salem have held steadier. The pandemic year 2020–21 shows a sharp dip across districts, followed by partial recoveries that did not fully return to pre-pandemic levels.
+Cambridge's enrollment decline is real, but it is not alone. **The trend is regional.** Schuylerville and Greenwich have seen larger absolute losses (359 and 232 students respectively), while Hoosick Falls and Salem have held steadier. Four of the five districts lost students in the pandemic year 2020–21. Only Cambridge had more students the following year, and none of the four has returned to its 2019–20 level.
 
-The table below shows where each district stood in 2015–16 and 2024–25, and how much they gained or lost over the decade.
+The table below shows where each district stood in 2015–16 and 2025–26, and how much they gained or lost over the decade.
 
 ```{python}
 #| label: tbl-enrollment-change
-#| tbl-cap: "K–12 enrollment in 2015–16 and 2024–25, with change, by district."
-g = cc.panel_for(cc.GRAPH_GROUP, since=2016).filter(
-    pl.col("year_end").is_in([2016, 2025])
-)
+#| tbl-cap: "K–12 enrollment in 2015–16 and 2025–26, with change, by district."
+g = enr.filter(pl.col("year_end").is_in([FIRST_YEAR, LAST_YEAR]))
 
 wide = (
     g.with_columns(
@@ -128,19 +167,19 @@ wide = (
 )
 
 wide = wide.with_columns(
-    (pl.col("2025") - pl.col("2016")).alias("change"),
-    ((pl.col("2025") - pl.col("2016")) / pl.col("2016") * 100).alias("pct_change"),
+    (pl.col("2026") - pl.col("2016")).alias("change"),
+    ((pl.col("2026") - pl.col("2016")) / pl.col("2016") * 100).alias("pct_change"),
 )
 
 (
     GT(wide, rowname_col="district", groupname_col="region")
     .tab_header(
         title="K-12 enrollment change",
-        subtitle="School-year-ending 2016 (2015–16) and 2025 (2024–25), with change"
+        subtitle="School-year-ending 2016 (2015–16) and 2026 (2025–26), with change"
     )
-    .fmt_number(columns=["2016", "2025", "change"], decimals=0)
+    .fmt_number(columns=["2016", "2026", "change"], decimals=0)
     .fmt_number(columns="pct_change", decimals=1, force_sign=True)
-    .tab_spanner(label="School year ending", columns=["2016", "2025"])
+    .tab_spanner(label="School year ending", columns=["2016", "2026"])
     .cols_label(pct_change=md("% change"))
     .tab_style(
         style=[style.fill(color="#FCEFB4"), style.text(weight="bold")],
@@ -158,7 +197,7 @@ wide = wide.with_columns(
 )
 ```
 
-**Cambridge lost 124 students (−14%)** over the decade, the second-largest decline among the five districts after Schuylerville's 327-student loss (−20%). Greenwich lost 219 students (−21%). Salem and Hoosick Falls held closer to flat.
+**Cambridge lost 152 students (−18%)** over the decade, the third-largest decline among the five districts, whether counted in students or in percent. Schuylerville lost 359 students (−22%) and Greenwich lost 232 (−22%). Salem and Hoosick Falls held closer to flat.
 
 ## What this means
 
