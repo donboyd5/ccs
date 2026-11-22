@@ -17,6 +17,7 @@ data/
 │   ├── state_aid/                     NYS state aid by district and category (data.ny.gov)
 │   ├── census_pep/                    Census population estimates, two Vermont counties
 │   ├── popfc/                         pointer to the sibling popfc forecast project (SOURCE.md only)
+│   ├── bls_cpi/                       BLS Consumer Price Index (CPI-U), monthly — the inflation adjustment
 │   └── fac_annual_reports/            Cambridge CSD audited financial reports (PDF)
 ├── processed/               # derived datasets, regenerable via src/ (Parquet/CSV)
 └── crosswalks/              # curated, hand-maintained id maps (CSV, tracked)
@@ -50,6 +51,7 @@ data/
 | `download_budget_votes.py` / `build_budget_votes.py` | `raw/nysed_budget_votes/` | `budget_votes.parquet` |
 | `download_state_aid.py` / `build_state_aid.py` | `raw/state_aid/` | `state_aid.parquet` |
 | `download_census_vt.py` / `build_demographics.py` | `raw/census_pep/` + the sibling `popfc` project | `demographics_county_pop.parquet`, `demographics_washington_components.parquet` |
+| `download_cpi.py` / `build_price_index.py` | `raw/bls_cpi/` | `price_index_school_year.parquet` (used by `comparisons.to_real()` to adjust dollars for inflation) |
 | `build_crosswalk.py` | enrollment panel + `comparisons.py` maps | `crosswalks/district_crosswalk.{csv,parquet}` |
 
 The reader-facing **index of all data sources** is in the website's Sources
@@ -86,6 +88,10 @@ project environment (`.venv/bin/python`). Order matters where noted.
    `download_report_card.py`; `python src/download_report_card.py <year>` (add
    `--force` to replace a reposted file), then `build_assessments.py` (slow: it
    reads every multi-gigabyte database).
+10. **Price index** — `download_cpi.py`, then `build_price_index.py`. When the
+    chapters move to a newer latest year, raise `REAL_DOLLAR_YEAR` in
+    `books/cambridge-comparisons/comparisons.py` so adjusted amounts are shown in
+    that year's dollars, and reread every chapter that states adjusted amounts.
 
 **After every rebuild, compare with the previous build** before trusting it:
 earlier years should be unchanged unless the publisher revised them, and any

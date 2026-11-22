@@ -39,6 +39,12 @@ DATA_DIR = REPO_ROOT / "data"
 PANEL_PATH = DATA_DIR / "processed" / "district_enrollment_teachers_panel.parquet"
 CCD_PATH = DATA_DIR / "processed" / "ccd_pupil_teacher_ny.parquet"
 SPENDING_PATH = DATA_DIR / "processed" / "spending_per_pupil.parquet"
+PRICE_INDEX_PATH = DATA_DIR / "processed" / "price_index_school_year.parquet"
+
+#: The school year (ending) whose dollars inflation-adjusted amounts are shown
+#: in: 2025 means "2024-25 dollars". Keep it equal to the latest school year the
+#: chapters show, so that the latest year reads the same adjusted or not.
+REAL_DOLLAR_YEAR = 2025
 CLASS_SIZE_PATH = DATA_DIR / "processed" / "class_size_by_district.parquet"
 BUDGET_VOTES_PATH = DATA_DIR / "processed" / "budget_votes.parquet"
 PTRC_PATH = DATA_DIR / "processed" / "property_tax_report_card.parquet"
@@ -453,6 +459,51 @@ def ptrc_for(group: dict[str, str]) -> pl.DataFrame:
         )
         .sort("district", "year_end")
     )
+
+
+def school_year_label(year_end: int) -> str:
+    """The school year ending in `year_end`, written out: 2025 -> '2024–25'."""
+    return f"{year_end - 1}–{str(year_end)[2:]}"
+
+
+def load_price_index() -> pl.DataFrame:
+    """The school-year (July-June) price index: ``year_end``, ``index_value``.
+
+    Built by ``src/build_price_index.py``. The index is currently the CPI-U
+    (see that script); chapters should not name it in code, only call
+    :func:`to_real`, so that the index can be changed in one place.
+    """
+    return pl.read_parquet(PRICE_INDEX_PATH)
+
+
+def to_real(
+    df: pl.DataFrame,
+    cols: list[str],
+    *,
+    base_year: int = REAL_DOLLAR_YEAR,
+    year_col: str = "year_end",
+    suffix: str = "_real",
+) -> pl.DataFrame:
+    """Add inflation-adjusted copies of dollar columns.
+
+    For each column in `cols`, adds ``<col><suffix>``: the amount restated in
+    the dollars of school year `base_year` (amount x index in the base year /
+    index in the row's own year). The original columns are left as they are.
+    Raises if any year in `df` has no price index, rather than returning nulls.
+    """
+    idx = load_price_index().select(
+        pl.col("year_end").alias(year_col), pl.col("index_value").alias("_idx")
+    )
+    base = idx.filter(pl.col(year_col) == base_year)["_idx"]
+    if base.len() != 1:
+        raise ValueError(f"no price index for base year {base_year}")
+    out = df.join(idx.cast({year_col: df.schema[year_col]}), on=year_col, how="left")
+    missing = out.filter(pl.col("_idx").is_null())[year_col].unique().to_list()
+    if missing:
+        raise ValueError(f"no price index for year(s) {sorted(missing)}")
+    return out.with_columns(
+        [(pl.col(c) * base.item() / pl.col("_idx")).alias(f"{c}{suffix}") for c in cols]
+    ).drop("_idx")
 
 
 def spending_for(group: dict[str, str]) -> pl.DataFrame:
