@@ -22,13 +22,17 @@ _enr = pl.read_parquet(
 )
 ```
 
-**Cambridge Central School District** (CCS, Washington County, New York) faces challenges common among rural school districts:
+This website compares **Cambridge Central School District(CCS)** in Washington County, New York to nearby and similar districts, using data from the New York State Education Department (NYSED) and selected other sources.
 
-- **Small size:** Small districts have some advantages - more personalized attention is possible, for example. But districts that are extremely small have disadvantages. It can be difficult or expensive to offer a broad set of courses. In high school, if a district only has 50 students in its graduating class it might have only a few students interested in courses such as AP physics or literature. It may not have enough need to hire a full-time teacher for the subject, and it may not be practical to hire a part-time teacher.
+[DON: some of my suggestions below involve adding supporting facts. Please set it up so that they are drawn from data, not hard-coded.]
 
-- **Declining area population:** Washington County's population is declining. More families are moving out than in, international immigration has come to a standstill, and birth rates are falling here as they are throughout the nation. The county's population will continue to decline for the foreseeable future. Economic development efforts may reduce net outmigration but are unlikely to prevent overall population declines.
+Cambridge Central School District faces challenges common among rural school districts:
 
-- **Narrow tax base:** With relatively little commercial property, taxation relies heavily on homeowners.
+- **Small size:** Small districts can allow more personalized attention and easier social connections. But extremely small districts can find it difficult or expensive to offer a broad set of courses. If a district only has 50 students in its high school graduating class it might not be practical to hire a full-time teacher for low-enrollment courses such as AP phyisics or literature. It may not be practical to offer specialized clubs or sports. [DON: add something like CCS had a senior class size of xx students in 2026 -- give a measure of how small this is and/or how it has changed "down from yy in 20xx."]
+
+- **Declining area population:** Washington County's population is declining. More families are moving out than in, international immigration has come to a standstill, and birth rates are falling here as they are throughout the nation. The county's population will continue to decline for the foreseeable future. Economic development efforts may reduce net outmigration but are unlikely to prevent overall population declines. Without an influx of new families, Cambridge's enrollment is likely to coninue declining. [DON: give supportive facts]
+
+[DON: would it be better practice, for readability, to precompute the values needed for Declining student enrollment: and then have just the numbers as inserts?]
 
 ```{python}
 #| label: enroll-summary
@@ -62,11 +66,15 @@ print(
 
 - **Declining enrollment creates financial problems:**
 
-  -
+  - From 2015–16 to 2024–25 Cambridge's total operating spending fell about 4% after inflation while enrollment fell 14%, so spending per pupil rose 12%. [How much did inflation-adjusted property tax, or same per household, or as % of full value change?]
+
+- **Narrow tax base:** With relatively little commercial property, taxation relies heavily on homeowners.
+
 
 [CLAUDE: This bullet is empty, and the one above it ends in a fragment ("AP physics."). Below this point the older introduction ("This website looks at…") still follows your new one, so the page has two openings. When you fill the financial bullet, the finance chapters support this: from 2015–16 to 2024–25 Cambridge's total operating spending fell about 4% after inflation while enrollment fell 14%, so spending per pupil rose 12%. They do not support "less state aid" or "a smaller tax base": Foundation Aid rose 28% in dollars and the tax base grew 61%. The enrollment sentence above is computed from the data and now runs to 2025–26.]
 
-This website looks at the **Cambridge Central School District** (Cambridge CSD, Washington County, New York) alongside nearby districts, using public data from the New York State Education Department (NYSED) and selected other sources. It is one of several analyses in the [`ccs`](https://github.com/donboyd5/ccs) project; the aim is to put Cambridge's numbers in context rather than to view them in isolation.
+
+[DON: Claude let's put the comparison groups and data and cautions into a Data and methods section that we link to.]
 
 ## Comparison groups
 

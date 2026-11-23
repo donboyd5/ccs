@@ -4,17 +4,15 @@ title: "Demographics: Rural aging and population decline"
 
 ## Cambridge is caught in a storm buffeting rural school districts throughout New York
 
-Population is declining in rural areas throughout New York.
+Population is declining in rural areas throughout New York. The main reasons are:
 
-The main reasons for this decline are:
-
--  Declines in the number of births, which is a statewide trend
+-  Declines in the number of births, a statewide trend
 -  Out-migration of younger adults, leading to an aging population
 -  Economic factors that make rural areas less attractive for new residents
 
-[CLAUDE: The chapter's exhibits support the first two bullets only in part, and the third not at all. The components table shows births (about 540 a year) well below deaths (about 770), and net migration that swings from year to year. Nothing here shows the ages of people leaving, an aging population, or economic factors. The title promises "rural aging" but there is no age chart. The sibling population project has age detail; do you want an age chart added, or the title and bullets narrowed to what is shown?]
+[CLAUDE: The chapter's exhibits support the first two bullets only in part, and the third not at all. The components table shows births (about 540 a year) well below deaths (about 770), and net migration that swings from year to year. Nothing here shows the ages of people leaving, an aging population, or economic factors. The title promises "rural aging" but there is no age chart. The sibling population project has age detail; do you want an age chart added, or the title and bullets narrowed to what is shown?] [DON: yes, add the age chart]
 
-The chart below puts Cambridge's county — **Washington County** — alongside its
+The chart below puts Cambridge's county (Washington County) alongside its
 neighbors on both sides of the state line, reaching back to 1970. Each county's
 population is shown **relative to its own 2010 population** (2010 = 100), so the
 lines compare *trends*, not sizes. Washington County is the red line. Most of
@@ -22,7 +20,7 @@ these counties grew for decades; Washington County's population peaked in 2010
 and has fallen about 6% since, while Saratoga County — the regional outlier —
 has nearly doubled since 1970 and is still growing.
 
-[CLAUDE: Two things about the data behind the charts and table below. (1) New York county population stops at 2024, because it comes from your population-forecast project, which has not been updated to the Census Bureau's 2025 estimates. The components table does have the 2025 estimate (a loss of 469), while the second chart treats 2025 as a forecast (a loss of about 265). The two disagree until that project is rerun. (2) In the table, deaths drop from 773 in 2025 to 664 in 2026, the first forecast year. A 14% fall in one year looks like a seam between history and the forecast, not a real change. Worth checking in that project before this is shared.]
+[CLAUDE: Two things about the data behind the charts and table below. (1) New York county population stops at 2024, because it comes from your population-forecast project, which has not been updated to the Census Bureau's 2025 estimates. The components table does have the 2025 estimate (a loss of 469), while the second chart treats 2025 as a forecast (a loss of about 265). The two disagree until that project is rerun. (2) In the table, deaths drop from 773 in 2025 to 664 in 2026, the first forecast year. A 14% fall in one year looks like a seam between history and the forecast, not a real change. Worth checking in that project before this is shared.][DON: we'll update that later. Meanwhile, we need a more parsimonious chart. What counties are in it? Let's get down to 5 or 4. we need washington, saratoga, rensselaer, and warren. what else do we have? Bennington? Make the caption just the first sentence and put a foot note for the rest]
 
 ```{python}
 #| label: setup
@@ -139,6 +137,8 @@ order = [COUNTY_LABEL[c] for c in ["Washington", "Saratoga", "Warren", "Renssela
 )
 ```
 
+[CLAUDE: We'll need to simplify the projection graph, too. Does it make sense to combine with the history graph? or keep it separate?]
+
 ```{python}
 #| label: fig-pop-forecast
 #| fig-cap: "Total population indexed to 2020 (=100), 2020–2035. Solid lines are history (through 2024); dashed lines are the popfc baseline forecast (2025–2035). NY counties only — Vermont has no forecast in popfc."
@@ -172,6 +172,8 @@ fc = pl.concat([g.filter(pl.col("year") == 2024), g.filter(pl.col("period") == "
 The table below breaks Washington County's annual **components of change** into
 its parts — births, deaths, and migration — so the decline can be traced to its
 drivers. Negative migration means more people moved out than in.
+
+[DON: Claude, we should have github link for popfc I think. We will update this.]
 
 ```{python}
 #| label: tbl-components
