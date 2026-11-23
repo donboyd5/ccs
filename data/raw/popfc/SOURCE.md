@@ -8,6 +8,7 @@ Washington County, so popfc is the natural source for the area's population tren
 | item | value |
 |---|---|
 | project | `popfc` — Washington County, NY Population Forecast |
+| repository | <https://github.com/donboyd5/popfc> (public) |
 | location | `~/Documents/code_projects/popfc/` (outside this repo) |
 | version used | git commit `6a42d26` (2026-06-06); county final outputs dated 2026-05-28 / 2026-06-05 |
 | methodology | [`docs/methodology.md`](file:///home/donboyd5/Documents/code_projects/popfc/docs/methodology.md) (cohort-component; plain-language) |
@@ -26,6 +27,8 @@ overridable via the `POPFC_DIR` env var.
 | `data_interim/population_all_sources.parquet` | NY county **pre-2000 history** (NYSDOL **July-1 intercensal** estimates, 1970–1999), spliced ahead of the reconciled series | `geoid`, `year`, `kind` (=`intercensal`), `source` (=`nysdol`), `population` (the 4 counties) |
 | `data_interim/population_reconciled.parquet` | NY county **history** (Census PEP + NYSDOL, reconciled to one July-1 series per county), 2000–2025 | `geoid`, `geography`, `year`, `population` (the 4 counties) |
 | `data_final/county_yearly_components.csv` | NY **history + forecast** population & components (baseline scenario); the forecast is 2025–2050 | `population` (plot 2); `births`, `deaths`, `net_mig`, `pop_change` (Washington table, forecast rows) |
+| `data_interim/county_agesex_1990_2024.parquet` | Washington County **population by age, history** (single year of age × sex), grouped into under 5, 5 to 17, 18 to 64, 65 and over | `geoid` (=`36115`), `year`, `source`, `kind`, `age`, `population`. Rows used: `source = cdc_bridged` for 1990–2019; `source = census_sya`, `kind = estimate` for 2020–2024 (the April-1 `census` rows for 2020 are skipped) |
+| `data_final/county_forecast_agesex.parquet` | Washington County **population by age, forecast** (baseline), 2025–2050 | `geoid`, `scenario` (=`baseline`), `year`, `age`, `population` (the file's 2024 launch row is dropped in favor of the history value) |
 | `data_final/washington_components.csv` | Washington County **domestic vs international migration split** (history, by Census PEP vintage) | `v2025` vintage rows, 2020–2025: `births`, `deaths`, `domestic_mig`, `international_mig`, `net_mig`, `pop_change` |
 
 **Pre-2000 splice basis.** The reconciled series' own rule for 2000+ is
@@ -65,6 +68,19 @@ but not used by the chapter.
    scenario throughout.
 
 ## Update log
+
+- **2026-11-23** — added Washington County population by broad age group
+  (`demographics_washington_age.parquet`) from the two age files listed above,
+  for the age chart in the demographics chapter. Seam check from
+  `build_demographics.py`: at 2019→2020, where the CDC bridged-race estimates
+  meet the Census estimates benchmarked to the 2020 census, ages 5 to 17 rise
+  1.2% against a trend of about −1% a year (a step of about 2%); ages 65 and
+  over and 18 to 64 continue their trends; under 5 falls 2.5%. At 2024→2025,
+  where history meets the forecast, all four groups continue their trends
+  except under 5 (+1.2% after several years of small declines). The two
+  existing datasets were rebuilt and are identical to the previous build.
+  popfc itself is unchanged (still commit `6a42d26`). Rutland County, Vermont
+  is still built into the county population file but is no longer charted.
 
 - **2026-11-19** — corrected the documented location and the builder's default
   path: popfc now lives at `~/Documents/code_projects/popfc/` (it had moved from

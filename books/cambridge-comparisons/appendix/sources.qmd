@@ -14,7 +14,7 @@ Years are **school-year-ending** (2025 = 2024–25).
 
 | Dataset | Publisher | What it provides | Years | Status |
 |---|---|---|---|---|
-| County population & forecast | popfc (NY) + U.S. Census Bureau (VT) | county total population (history + baseline forecast); Washington County components of change | 1970–2050 (NY), 1970–2024 (VT) — **calendar years** | **In use** |
+| County population & forecast | [popfc](https://github.com/donboyd5/popfc) (NY) + U.S. Census Bureau (VT) | county total population (history + baseline forecast); Washington County components of change and population by age | 1970–2050 (NY; by age from 1990), 1970–2024 (VT) — **calendar years** | **In use** |
 | Enrollment & staff | NYSED | K-12 enrollment; teacher/staff headcounts; average class size | Enrollment 2005–2026 (staff 2018–2025; class size 2019–2025) | **In use** |
 | Student test results (grades 3-8) | NYSED | grades 3-8 ELA & Math: % at/above proficiency, mean score, by district & subgroup | 2015–2026 (no 2020) | **Adding** |
 | Pupil–teacher FTE (CCD) | NCES, via Urban Institute | FTE-based pupil-teacher ratio (cross-check) | 2016–2025 | **In use** |
@@ -197,11 +197,13 @@ and the title *"Financial report."* They are the same series of district audits.
 
 The [Demographics](../front/demographics.qmd) chapter places Cambridge in its
 regional population context. **New York** county population — history and a
-cohort-component forecast through 2050 — comes from **popfc**, a sibling
+cohort-component forecast through 2050 — comes from
+**[popfc](https://github.com/donboyd5/popfc)**, a sibling
 Washington County population-forecast project (a cohort-component model whose
-methodology is documented in its own repository). The **baseline** scenario is
-used. **Vermont's** Bennington and Rutland counties are not in popfc (it is
-NYS-only), so their history (1970–2024) is pulled directly from the **U.S.
+methodology is documented in its own repository). Washington County's
+population by age (1990 onward) comes from the same project. The **baseline** scenario is
+used. **Vermont's** Bennington County is not in popfc (it is
+NYS-only), so its history (1970–2024) is pulled directly from the **U.S.
 Census Bureau** — legacy county intercensal estimates for 1970–1999 (via NBER's
 consolidated file of the Census releases; census-year values are April-1 counts)
 and the Population Estimates Program (PEP), July-1 estimates, for 2000–2024.

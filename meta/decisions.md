@@ -2,6 +2,33 @@
 
 Newest first. Each entry: the decision, and why.
 
+## 2026-11-23 — Review round 1: overview and demographics
+
+Changes made in response to the user's notes in `index.qmd` and
+`front/demographics.qmd` (his edits are committed first, as written).
+
+- **Overview: every number is computed and inserted.** One setup block at the
+  top of `index.qmd` computes the values; the sentences use inline
+  `` `{python} ...` `` inserts. Direction words ("fell", "down from", "about
+  twice") are guarded by `assert` statements. Facts added at the user's request:
+  twelfth-grade enrollment and how it compares statewide; county population,
+  births, deaths, migration and the forecast; the levy after inflation and the
+  tax rate.
+- **Comparison groups and cautions moved** from the overview to
+  `appendix/methods.qmd`, retitled **Data and methods**. The overview links to it.
+- **Demographics: one population chart, five counties.** Rutland (VT) dropped
+  from the chart (still in the data file). History and forecast are combined in
+  one chart indexed to 2010; the separate 2020-indexed forecast chart is removed.
+  The user asked whether to combine; this is the assistant's recommendation,
+  flagged in the file for his decision.
+- **Demographics: age chart added** (Washington County, ages 5 to 17 and 65 and
+  over, 1990–2035), from popfc's population by single year of age. New processed
+  file `demographics_washington_age.parquet`; see `data/raw/popfc/SOURCE.md`.
+- **Captions shortened**; source detail moved to footnotes. popfc is linked to
+  its public GitHub repository.
+- **Parked by the user:** updating popfc to the Census Bureau's 2025 estimates.
+  A note stays in the chapter until it is done.
+
 ## 2026-11-22 — Ready for the user's local review (branch `feature/review-ready`)
 
 The user will now review by opening the chapter files locally and editing them.

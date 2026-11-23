@@ -25,6 +25,13 @@ Two small processed parquets feed the demographics chapter:
    from ``washington_components.csv``); for **2026–2035** (forecast) only total
    ``net_mig`` is projected, so the two split columns are null there.
 
+3. ``demographics_washington_age.parquet`` — Washington County population by
+   broad age group (under 5, 5 to 17, 18 to 64, 65 and over), 1990–2050:
+   ``year, period (history/forecast), age_group, population``. History is
+   ``popfc``'s single-year-of-age series (CDC bridged-race estimates 1990–2019,
+   Census Bureau single-year-of-age estimates 2020–2024); the forecast is the
+   ``popfc`` baseline by age (2025–2050).
+
 New York data is read **in place** from the sibling ``popfc`` project (its data
 files are git-ignored here); set ``POPFC_DIR`` to override the default path. See
 ``data/raw/popfc/SOURCE.md`` and ``data/raw/census_pep/SOURCE.md``.
@@ -52,6 +59,8 @@ POPFC_ALL_SOURCES = POPFC_DIR / "data_interim" / "population_all_sources.parquet
 POPFC_FORECAST = POPFC_DIR / "data_final" / "county_forecast_totals.csv"
 POPFC_YEARLY = POPFC_DIR / "data_final" / "county_yearly_components.csv"
 POPFC_WASH = POPFC_DIR / "data_final" / "washington_components.csv"
+POPFC_AGE_HISTORY = POPFC_DIR / "data_interim" / "county_agesex_1990_2024.parquet"
+POPFC_AGE_FORECAST = POPFC_DIR / "data_final" / "county_forecast_agesex.parquet"
 
 #: The four NY comparison counties (Cambridge's county + neighbors).
 NY_COUNTIES: dict[str, str] = {
@@ -63,6 +72,11 @@ NY_COUNTIES: dict[str, str] = {
 
 OUT_POP = PROCESSED_DIR / "demographics_county_pop.parquet"
 OUT_COMP = PROCESSED_DIR / "demographics_washington_components.parquet"
+OUT_AGE = PROCESSED_DIR / "demographics_washington_age.parquet"
+
+#: Broad age groups for the age chart, in display order. "5 to 17" is the
+#: school-age population.
+AGE_GROUPS: list[str] = ["Under 5", "5 to 17", "18 to 64", "65 and over"]
 
 
 def _ny_population() -> pl.DataFrame:
@@ -190,6 +204,80 @@ def build_washington_components() -> pl.DataFrame:
     return pl.concat([hist, fc], how="vertical").sort("year")
 
 
+def _age_group() -> pl.Expr:
+    """Map single year of age (0–85, top-coded) to the four broad groups."""
+    age = pl.col("age")
+    return (
+        pl.when(age < 5).then(pl.lit(AGE_GROUPS[0]))
+        .when(age < 18).then(pl.lit(AGE_GROUPS[1]))
+        .when(age < 65).then(pl.lit(AGE_GROUPS[2]))
+        .otherwise(pl.lit(AGE_GROUPS[3]))
+        .alias("age_group")
+    )
+
+
+def build_washington_age() -> pl.DataFrame:
+    """Washington County population by broad age group, 1990–2050.
+
+    History comes from ``popfc``'s single-year-of-age table, which stacks two
+    sources that overlap in 2020. We take the CDC bridged-race estimates for
+    1990–2019 and the Census Bureau single-year-of-age **estimates** (July 1,
+    not the April-1 census rows) for 2020–2024. The forecast is the ``popfc``
+    baseline by single year of age, 2025–2050 (its 2024 row is the launch
+    population and is dropped in favor of the history value).
+    """
+    raw = pl.read_parquet(POPFC_AGE_HISTORY).filter(pl.col("geoid") == "36115")
+    hist = (
+        raw.filter(
+            ((pl.col("source") == "cdc_bridged") & (pl.col("year") <= 2019))
+            | (
+                (pl.col("source") == "census_sya")
+                & (pl.col("kind") == "estimate")
+                & (pl.col("year") >= 2020)
+            )
+        )
+        .with_columns(_age_group())
+        .group_by("year", "age_group")
+        .agg(pl.col("population").sum().cast(pl.Float64))
+        .with_columns(pl.lit("history").alias("period"))
+    )
+    fc = (
+        pl.read_parquet(POPFC_AGE_FORECAST)
+        .filter(pl.col("geoid") == "36115")
+        .filter(pl.col("scenario") == "baseline")
+        .filter(pl.col("year") >= 2025)
+        .with_columns(_age_group())
+        .group_by("year", "age_group")
+        .agg(pl.col("population").sum().cast(pl.Float64))
+        .with_columns(pl.lit("forecast").alias("period"))
+    )
+    out = (
+        pl.concat([hist, fc], how="vertical")
+        .select("year", "period", "age_group", "population")
+        .sort("year", "age_group")
+    )
+    # Every year must have exactly the four groups, once each.
+    counts = out.group_by("year").len()
+    assert counts["len"].unique().to_list() == [len(AGE_GROUPS)], counts
+    return out
+
+
+def _age_seam_check(age: pl.DataFrame) -> None:
+    """Print year-over-year changes at the two joins in the age series: 2019→2020
+    (CDC bridged-race estimates meet the Census estimates, which are benchmarked
+    to the 2020 census) and 2024→2025 (history meets the forecast)."""
+    piv = (
+        age.filter(pl.col("year").is_between(2018, 2026))
+        .pivot(on="year", index="age_group", values="population")
+    )
+    for row in piv.iter_rows(named=True):
+        def _yoy(a: int, b: int) -> float:
+            return (row[str(b)] / row[str(a)] - 1) * 100
+        print(f"    {row['age_group']:<12}  18→19 {_yoy(2018, 2019):+5.1f}%   "
+              f"19→20 {_yoy(2019, 2020):+5.1f}%   20→21 {_yoy(2020, 2021):+5.1f}%   "
+              f"24→25 {_yoy(2024, 2025):+5.1f}%   25→26 {_yoy(2025, 2026):+5.1f}%")
+
+
 def _seam_check(pop: pl.DataFrame) -> None:
     """Print year-over-year changes around the splice seams (conventions:
     validate the seam when splicing a series). The 1999→2000 boundary is where
@@ -230,6 +318,14 @@ def main() -> None:
           f"{OUT_COMP.relative_to(PROJECT_ROOT)} "
           f"({comp['year'].min()}–{comp['year'].max()}; "
           f"domestic/intl split on {split} history rows)")
+
+    age = build_washington_age()
+    print("\nSeam check (age groups; joins at 2019→2020 and 2024→2025):")
+    _age_seam_check(age)
+    age.write_parquet(OUT_AGE, compression="zstd")
+    print(f"Wrote {age.height} Washington age-group-years to "
+          f"{OUT_AGE.relative_to(PROJECT_ROOT)} "
+          f"({age['year'].min()}–{age['year'].max()})")
 
 
 if __name__ == "__main__":
