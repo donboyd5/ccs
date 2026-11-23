@@ -10,7 +10,7 @@ Population is declining in rural areas throughout New York. The main reasons are
 -  Out-migration of younger adults, leading to an aging population
 -  Economic factors that make rural areas less attractive for new residents
 
-[CLAUDE: The chapter's exhibits support the first two bullets only in part, and the third not at all. The components table shows births (about 540 a year) well below deaths (about 770), and net migration that swings from year to year. Nothing here shows the ages of people leaving, an aging population, or economic factors. The title promises "rural aging" but there is no age chart. The sibling population project has age detail; do you want an age chart added, or the title and bullets narrowed to what is shown?] [DON: yes, add the age chart]
+[CLAUDE: The age chart is added at the end of the chapter, so the aging statement is now shown. Two bullets still go beyond the exhibits. "Out-migration of younger adults": the table shows net migration for all ages together, not by age. "Economic factors": nothing in the chapter shows these. The population project has migration by age if you want that shown.]
 
 The chart below puts Cambridge's county (Washington County) alongside its
 neighbors on both sides of the state line, reaching back to 1970. Each county's
@@ -18,9 +18,15 @@ population is shown **relative to its own 2010 population** (2010 = 100), so the
 lines compare *trends*, not sizes. Washington County is the red line. Most of
 these counties grew for decades; Washington County's population peaked in 2010
 and has fallen about 6% since, while Saratoga County — the regional outlier —
-has nearly doubled since 1970 and is still growing.
+has nearly doubled since 1970 and is still growing. The dashed lines are a
+forecast: Washington County's population is projected to fall a further 7% by
+2035.[^pop-chart]
 
-[CLAUDE: Two things about the data behind the charts and table below. (1) New York county population stops at 2024, because it comes from your population-forecast project, which has not been updated to the Census Bureau's 2025 estimates. The components table does have the 2025 estimate (a loss of 469), while the second chart treats 2025 as a forecast (a loss of about 265). The two disagree until that project is rerun. (2) In the table, deaths drop from 773 in 2025 to 664 in 2026, the first forecast year. A 14% fall in one year looks like a seam between history and the forecast, not a real change. Worth checking in that project before this is shared.][DON: we'll update that later. Meanwhile, we need a more parsimonious chart. What counties are in it? Let's get down to 5 or 4. we need washington, saratoga, rensselaer, and warren. what else do we have? Bennington? Make the caption just the first sentence and put a foot note for the rest]
+[^pop-chart]: Values below 100 mean a county was smaller then than in 2010. Solid lines are history through 2024; dashed lines are the baseline forecast for 2025–2035 from the [popfc](https://github.com/donboyd5/popfc) population forecast project. New York counties: New York State Department of Labor intercensal estimates through 1999, then Census Bureau and Department of Labor estimates reconciled by popfc. Bennington (Vermont): Census Bureau intercensal estimates for 1970–1999 (from the National Bureau of Economic Research's consolidated file; census-year values are April 1 counts) and Population Estimates Program for 2000–2024. Bennington has no forecast because popfc covers New York only. The small upward steps in the Bennington line at 2000 and 2020 are census rebenchmarks: each census counted more residents than the prior estimates had shown.
+
+[CLAUDE: You asked what counties were in the chart and whether to combine it with the forecast chart. It had six: Washington, Saratoga, Warren, Rensselaer, Bennington (VT) and Rutland (VT). I dropped Rutland, leaving the four you named plus Bennington, which borders the Cambridge district. The population project also has Columbia and Essex if you prefer one of those. I combined history and forecast into the one chart below, because the forecast only continues the same lines. The cost: the forecast years are a small part of a 65-year chart. If you would rather have two charts, say so and I will restore the second.]
+
+[CLAUDE: Parked at your request, to fix before sharing: the population project has not been updated to the Census Bureau's 2025 estimates. Until it is, history here ends at 2024, the table's 2025 loss (469) disagrees with the forecast's (about 265), and deaths drop from 773 in 2025 to 664 in 2026 where history meets the forecast.]
 
 ```{python}
 #| label: setup
@@ -61,34 +67,71 @@ PROCESSED_DIR = REPO_ROOT / "data" / "processed"
 
 pop = pl.read_parquet(PROCESSED_DIR / "demographics_county_pop.parquet")
 components = pl.read_parquet(PROCESSED_DIR / "demographics_washington_components.parquet")
+age = pl.read_parquet(PROCESSED_DIR / "demographics_washington_age.parquet")
+
+#: Years shown. History ends at LAST_HISTORY; the forecast runs to LAST_FORECAST.
+LAST_HISTORY, LAST_FORECAST = 2024, 2035
+AGE_FIRST_YEAR = 1990
+
+#: The counties charted, in legend order (the focus county first).
+CHART_COUNTIES = ["Washington", "Saratoga", "Warren", "Rensselaer", "Bennington County"]
 
 # ---------------------------------------------------------------------------
 # Checks on the statements made in the text of this chapter. If the data
 # change so that a statement is no longer true, the page fails to build.
 # ---------------------------------------------------------------------------
-def _hist(name):
-    rows = pop.filter(
-        (pl.col("geography") == name) & (pl.col("period") == "history")
-    )
+def _series(name, period=None):
+    rows = pop.filter(pl.col("geography") == name)
+    if period:
+        rows = rows.filter(pl.col("period") == period)
     return dict(zip(rows["year"], rows["population"]))
 
 
-_wash, _sara = _hist("Washington"), _hist("Saratoga")
+_wash, _sara = _series("Washington", "history"), _series("Saratoga", "history")
+_wash_all = _series("Washington")
 assert max(_wash, key=_wash.get) == 2010                     # peak year
-assert max(_wash) == 2024                                    # last year of history
+assert max(_wash) == LAST_HISTORY                            # last year of history
 assert round(100 * (_wash[2024] / _wash[2010] - 1)) == -6    # "about 6%"
 assert 1.9 <= _sara[2024] / _sara[1970] < 2.0                # "nearly doubled"
 assert _sara[2024] > _sara[2023]                             # "still growing"
+# "projected to fall a further 7% by 2035"
+assert round(100 * (_wash_all[LAST_FORECAST] / _wash_all[LAST_HISTORY] - 1)) == -7
+# Bennington is the only charted county without a forecast.
+assert [c for c in CHART_COUNTIES if not _series(c, "forecast")] == ["Bennington County"]
 
-#: Short, state-tagged labels for the chart legends (VT counties tagged so a
-#: reader sees the chart spans two states; NY counties are the default context).
+
+def _age(group, year):
+    return age.filter((pl.col("age_group") == group) & (pl.col("year") == year))[
+        "population"
+    ].item()
+
+
+_kids = {y: _age("5 to 17", y) for y in range(AGE_FIRST_YEAR, LAST_FORECAST + 1)}
+_older = {y: _age("65 and over", y) for y in range(AGE_FIRST_YEAR, LAST_FORECAST + 1)}
+# "about 11,000 aged 5 to 17 and about 7,800 aged 65 and over" in 1990
+assert round(_kids[1990], -2) == 11_000 and round(_older[1990], -2) == 7_800
+# "about 8,200 ... a quarter fewer" and "about 13,800 ... 77% more" in 2024
+assert round(_kids[2024], -2) == 8_200 and round(_older[2024], -2) == 13_800
+assert round(100 * (_kids[2024] / _kids[1990] - 1)) == -25
+assert round(100 * (_older[2024] / _older[1990] - 1)) == 77
+# "Since 2011 the county has had more residents aged 65 and over than aged 5 to 17"
+assert min(y for y in _kids if _older[y] > _kids[y]) == 2011
+assert all(_older[y] > _kids[y] for y in range(2011, LAST_FORECAST + 1))
+# "the school-age group falls a further 10% by 2035"
+assert round(100 * (_kids[LAST_FORECAST] / _kids[LAST_HISTORY] - 1)) == -10
+# school-age share of all residents: "18% in 1990, 14% in 2024"
+_total = lambda y: age.filter(pl.col("year") == y)["population"].sum()
+assert round(100 * _kids[1990] / _total(1990)) == 18
+assert round(100 * _kids[2024] / _total(2024)) == 14
+
+#: Short, state-tagged labels for the chart legend (the Vermont county is tagged
+#: so a reader sees the chart spans two states; New York is the default context).
 COUNTY_LABEL: dict[str, str] = {
     "Washington": "Washington",
     "Warren": "Warren",
     "Saratoga": "Saratoga",
     "Rensselaer": "Rensselaer",
     "Bennington County": "Bennington (VT)",
-    "Rutland County": "Rutland (VT)",
 }
 COUNTY_PALETTE: dict[str, str] = {
     "Washington": "#C8102E",      # bold red — Cambridge's county, the focus
@@ -96,8 +139,8 @@ COUNTY_PALETTE: dict[str, str] = {
     "Saratoga": "#3F9C5A",
     "Rensselaer": "#8156A7",
     "Bennington County": "#E08214",
-    "Rutland County": "#6C757D",
 }
+assert set(CHART_COUNTIES) == set(COUNTY_LABEL) == set(COUNTY_PALETTE)
 
 
 def _indexed(df: pl.DataFrame, base_year: int) -> pl.DataFrame:
@@ -116,54 +159,43 @@ def _indexed(df: pl.DataFrame, base_year: int) -> pl.DataFrame:
 
 ```{python}
 #| label: fig-pop-history
-#| fig-cap: "Total population indexed to each county's 2010 population (=100), 1970–2024. Values below 100 mean a county was smaller then than in 2010. NY counties: NYSDOL intercensal estimates via the popfc forecast project. Bennington and Rutland (VT): Census Bureau legacy intercensal estimates (1970–1999, via NBER's consolidation; census-year values are April-1 counts) and Population Estimates Program (2000–2024). The small upward steps in the Vermont lines at 2000 and 2020 are census rebenchmarks — each census counted more residents than the prior estimates had shown."
-g = _indexed(pop.filter(pl.col("year").is_between(1970, 2024)), base_year=2010)
-order = [COUNTY_LABEL[c] for c in ["Washington", "Saratoga", "Warren", "Rensselaer",
-                                   "Bennington County", "Rutland County"]]
-
-(
-    ggplot(g, aes("year", "index", color="county"))
-    + geom_line(size=1)
-    + scale_color_manual(values={COUNTY_LABEL[k]: v for k, v in COUNTY_PALETTE.items()},
-                         limits=order)
-    + scale_x_continuous(breaks=list(range(1970, 2025, 10)))
-    + scale_y_continuous(limits=(50, 115), breaks=list(range(50, 116, 10)))
-    + labs(
-        x=None, y="Population (2010 = 100)",
-        title="Population by county, indexed to 2010",
-        subtitle="1970–2024 (100 = each county's 2010 population)",
-    )
-    + cc.theme_ccs()
+#| fig-cap: "Total population indexed to each county's 2010 population (=100), 1970–2035."
+g = _indexed(
+    pop.filter(pl.col("geography").is_in(CHART_COUNTIES))
+    .filter(pl.col("year").is_between(1970, LAST_FORECAST)),
+    base_year=2010,
 )
-```
+order = [COUNTY_LABEL[c] for c in CHART_COUNTIES]
 
-[CLAUDE: We'll need to simplify the projection graph, too. Does it make sense to combine with the history graph? or keep it separate?]
-
-```{python}
-#| label: fig-pop-forecast
-#| fig-cap: "Total population indexed to 2020 (=100), 2020–2035. Solid lines are history (through 2024); dashed lines are the popfc baseline forecast (2025–2035). NY counties only — Vermont has no forecast in popfc."
-g = _indexed(pop.filter(pl.col("year").is_between(2020, 2035)), base_year=2020)
-order = [COUNTY_LABEL[c] for c in ["Washington", "Saratoga", "Warren", "Rensselaer"]]
-
-hist = g.filter(pl.col("period") == "history")          # 2020–2024
-# Forecast segment, anchored at the 2024 point so the dashed line meets the solid one:
-fc = pl.concat([g.filter(pl.col("year") == 2024), g.filter(pl.col("period") == "forecast")])
+hist = g.filter(pl.col("year") <= LAST_HISTORY)
+# Forecast segment, anchored at the last history point so the dashed line meets
+# the solid one.
+fc = pl.concat(
+    [
+        hist.filter(
+            (pl.col("year") == LAST_HISTORY) & (pl.col("state") == "NY")
+        ),
+        g.filter(pl.col("period") == "forecast"),
+    ]
+)
+washington = hist.filter(pl.col("geography") == "Washington")
 
 (
     ggplot()
     + geom_line(hist, aes("year", "index", color="county"), size=1)
     + geom_line(fc, aes("year", "index", color="county"), linetype="dashed", size=1)
-    + geom_vline(xintercept=2024.5, color="#999999", size=0.6)
-    + annotate("text", x=2025, y=118.5, label="forecast →",
+    + geom_line(washington, aes("year", "index", color="county"), size=2)
+    + geom_vline(xintercept=LAST_HISTORY + 0.5, color="#999999", size=0.6)
+    + annotate("text", x=LAST_HISTORY + 1, y=52, label="forecast →",
                ha="left", color="#666666", size=9)
     + scale_color_manual(values={COUNTY_LABEL[k]: v for k, v in COUNTY_PALETTE.items()},
-                         limits=order)
-    + scale_x_continuous(breaks=list(range(2020, 2036, 5)))
-    + scale_y_continuous(limits=(85, 120), breaks=list(range(85, 121, 5)))
+                         limits=order, name="")
+    + scale_x_continuous(breaks=list(range(1970, LAST_FORECAST + 1, 10)))
+    + scale_y_continuous(limits=(50, 120), breaks=list(range(50, 121, 10)))
     + labs(
-        x=None, y="Population (2020 = 100)",
-        title="Projected population by county, indexed to 2020",
-        subtitle="2020–2035 (solid = history, dashed = forecast)",
+        x="", y="Population (2010 = 100)",
+        title="Population by county, indexed to 2010",
+        subtitle=f"1970–{LAST_FORECAST} (solid = history, dashed = forecast)",
     )
     + cc.theme_ccs()
 )
@@ -172,8 +204,6 @@ fc = pl.concat([g.filter(pl.col("year") == 2024), g.filter(pl.col("period") == "
 The table below breaks Washington County's annual **components of change** into
 its parts — births, deaths, and migration — so the decline can be traced to its
 drivers. Negative migration means more people moved out than in.
-
-[DON: Claude, we should have github link for popfc I think. We will update this.]
 
 ```{python}
 #| label: tbl-components
@@ -216,7 +246,8 @@ mig_cols = ["domestic_mig", "international_mig", "net_mig", "pop_change"]
     .cols_align(columns=mig_cols, align="right")
     .tab_source_note(
         md(
-            "**Source:** Washington County components from the **popfc** forecast "
+            "**Source:** Washington County components from the "
+            "[popfc](https://github.com/donboyd5/popfc) forecast "
             "project (history: U.S. Census Bureau Population Estimates Program, "
             "v2025 vintage, 2021–2025; forecast: popfc baseline cohort-component "
             "model, 2026–2035). **2020 is omitted** because the 2020 Census "
@@ -228,9 +259,58 @@ mig_cols = ["domestic_mig", "international_mig", "net_mig", "pop_change"]
 )
 ```
 
+
+## Fewer school-age residents, more older residents
+
+The chart below shows two age groups in Washington County: residents aged 5 to
+17, the school-age population, and residents aged 65 and over. In 1990 the
+county had about 11,000 residents aged 5 to 17 and about 7,800 aged 65 and
+over. By 2024 the school-age group was about 8,200, a quarter fewer, and the
+older group was about 13,800, 77% more. Since 2011 the county has had more
+residents aged 65 and over than aged 5 to 17. School-age residents were 18% of
+the county's population in 1990 and 14% in 2024. In the forecast the school-age
+group falls a further 10% by 2035.[^age-chart]
+
+[^age-chart]: Solid lines are history through 2024; dashed lines are the baseline forecast for 2025–2035. Source: the [popfc](https://github.com/donboyd5/popfc) population forecast project, from population by single year of age: bridged-race estimates from the Centers for Disease Control and Prevention for 1990–2019 and Census Bureau estimates for 2020–2024. The 2020 estimates are benchmarked to the 2020 census, which counted more children than earlier estimates had shown, so the school-age line steps up about 2% in 2020.
+
+[CLAUDE: New chart and paragraph, added at your request. The paragraph states only what the chart shows; edit freely. I chose ages 5 to 17 and 65 and over because they are the two groups your title names. Working-age residents (18 to 64) fell from about 40,300 in 2010 to about 35,100 in 2024 and could be added as a third line.]
+
+```{python}
+#| label: fig-age-groups
+#| fig-cap: "Washington County residents aged 5 to 17 and aged 65 and over, 1990–2035."
+AGE_PALETTE = {"5 to 17": "#C8102E", "65 and over": "#2C6E9B"}
+g = age.filter(
+    pl.col("age_group").is_in(list(AGE_PALETTE))
+    & pl.col("year").is_between(AGE_FIRST_YEAR, LAST_FORECAST)
+).with_columns((pl.col("population") / 1000).alias("thousands"))
+
+hist = g.filter(pl.col("period") == "history")
+fc = pl.concat(
+    [hist.filter(pl.col("year") == LAST_HISTORY), g.filter(pl.col("period") == "forecast")]
+)
+
+(
+    ggplot()
+    + geom_line(hist, aes("year", "thousands", color="age_group"), size=1.4)
+    + geom_line(fc, aes("year", "thousands", color="age_group"), linetype="dashed", size=1.4)
+    + geom_vline(xintercept=LAST_HISTORY + 0.5, color="#999999", size=0.6)
+    + annotate("text", x=LAST_HISTORY + 1, y=0.6, label="forecast →",
+               ha="left", color="#666666", size=9)
+    + scale_color_manual(values=AGE_PALETTE, limits=list(AGE_PALETTE), name="")
+    + scale_x_continuous(breaks=list(range(AGE_FIRST_YEAR, LAST_FORECAST + 1, 5)))
+    + scale_y_continuous(limits=(0, 17), breaks=list(range(0, 17, 4)))
+    + labs(
+        x="", y="Residents (thousands)",
+        title="Washington County: school-age and older residents",
+        subtitle=f"{AGE_FIRST_YEAR}–{LAST_FORECAST} (solid = history, dashed = forecast)",
+    )
+    + cc.theme_ccs()
+)
+```
+
 *Data sources:*
 
-- **popfc** (Washington County, NY Population Forecast, sibling project) — NY county population history (NYSDOL intercensal estimates 1970–1999, reconciled Census PEP / NYSDOL series 2000–2024) and baseline forecast; Washington County components of change.
-- **U.S. Census Bureau** — Bennington and Rutland county (Vermont) history: legacy county intercensal estimates 1970–1999 (via NBER's consolidated file) and Population Estimates Program 2000–2024.
+- **[popfc](https://github.com/donboyd5/popfc)** (Washington County, NY Population Forecast, sibling project) — NY county population history (NYSDOL intercensal estimates 1970–1999, reconciled Census PEP / NYSDOL series 2000–2024) and baseline forecast; Washington County components of change; Washington County population by age.
+- **U.S. Census Bureau** — Bennington County (Vermont) history: legacy county intercensal estimates 1970–1999 (via NBER's consolidated file) and Population Estimates Program 2000–2024.
 
 See the [Sources](../appendix/sources.qmd) appendix for provenance.
