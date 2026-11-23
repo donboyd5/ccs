@@ -23,8 +23,13 @@ it does not make recommendations.
 python -m venv .venv
 .venv/bin/pip install -r requirements.txt
 cd books/cambridge-comparisons
-QUARTO_PYTHON=../../.venv/bin/python quarto render
+quarto render     # build the whole site into _book/
+quarto preview    # or: view it locally, refreshing as files are saved
 ```
+
+Run both commands from `books/cambridge-comparisons`. The `_environment`
+file in that folder tells Quarto to use the project's `.venv`, so the
+environment does not need to be activated first.
 
 The source data are not stored in this repository. Each folder under
 `data/raw/` has a `SOURCE.md` saying where its data come from and how to

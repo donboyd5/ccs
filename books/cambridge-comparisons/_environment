@@ -1,0 +1,4 @@
+# Tells Quarto which Python to use, so that plain `quarto render` and
+# `quarto preview` work when run from this folder. The path is relative to
+# this folder and points at the project's virtual environment.
+QUARTO_PYTHON=../../.venv/bin/python
